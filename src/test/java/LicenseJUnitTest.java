@@ -1,7 +1,7 @@
 
 import com.era.logger.LoggerUtility;
 import com.era.models.License;
-import com.era.repositories.RepositoryManager;
+import com.era.repositories.RepositoryFactory;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -30,7 +30,7 @@ public class LicenseJUnitTest  {
         
         try{
             
-            License License = RepositoryManager.getInstance().getLicenseRepository().getLicense();
+            License License = RepositoryFactory.getInstance().getLicenseRepository().getLicense();
             
             Assertions.assertTrue(true);
         
@@ -51,9 +51,9 @@ public class LicenseJUnitTest  {
             License.setUser("coritocorito@hotmail.com");
             License.setPassword("123");
             
-            RepositoryManager.getInstance().getLicenseRepository().addLicense(License);
+            RepositoryFactory.getInstance().getLicenseRepository().addLicense(License);
             
-            final License License_ = RepositoryManager.getInstance().getLicenseRepository().getLicense();
+            final License License_ = RepositoryFactory.getInstance().getLicenseRepository().getLicense();
             
             assertNotNull(License_);
             
@@ -70,9 +70,9 @@ public class LicenseJUnitTest  {
         
         try{
             
-            final boolean exists = RepositoryManager.getInstance().getLicenseRepository().existsLicense();
+            final boolean exists = RepositoryFactory.getInstance().getLicenseRepository().existsLicense();
             
-            final License License = RepositoryManager.getInstance().getLicenseRepository().getLicense();
+            final License License = RepositoryFactory.getInstance().getLicenseRepository().getLicense();
             
             if(License!=null && exists){
                 Assertions.assertTrue(true);
@@ -94,9 +94,9 @@ public class LicenseJUnitTest  {
         
         try{
             
-            RepositoryManager.getInstance().getLicenseRepository().deleteLicense();
+            RepositoryFactory.getInstance().getLicenseRepository().deleteLicense();
             
-            final License License = RepositoryManager.getInstance().getLicenseRepository().getLicense();
+            final License License = RepositoryFactory.getInstance().getLicenseRepository().getLicense();
                 
             assertNull(License);
         

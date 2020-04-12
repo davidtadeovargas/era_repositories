@@ -30,17 +30,17 @@ public class CompanyRepository extends Repository {
             this.update(Company);
             
             //Add log
-            RepositoryManager.getInstance().getLogRepository().addCustomerLog(Company.getCompanyCode());
+            RepositoryFactory.getInstance().getLogRepository().addCustomerLog(Company.getCompanyCode());
         }
         else{
             
             this.save(Company);
             
             //Add log
-            RepositoryManager.getInstance().getLogRepository().addCustomerLog(Company.getCompanyCode());
+            RepositoryFactory.getInstance().getLogRepository().addCustomerLog(Company.getCompanyCode());
             
             //Update the customer consecs
-            RepositoryManager.getInstance().getConsecsRepository().updateConsecCustomer(Company.getSer());
+            RepositoryFactory.getInstance().getConsecsRepository().updateConsecCustomer(Company.getSer());
         }
         
         return Company.getId();

@@ -1,7 +1,7 @@
 
 import com.era.logger.LoggerUtility;
 import com.era.models.Serie;
-import com.era.repositories.RepositoryManager;
+import com.era.repositories.RepositoryFactory;
 import com.era.repositories.SerieRepository;
 import com.era.repositories.models.HibernateConfigModel;
 import com.era.repositories.utils.HibernateUtil;
@@ -402,7 +402,7 @@ public class SerieJUnitTest  {
             
             HibernateUtil.getSingleton().setHibernateConfigModel(HibernateConfigModel);
             
-            Serie Serie_ = RepositoryManager.getInstance().getSerieRepository().getSeriePreviusComp();
+            Serie Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSeriePreviusComp();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSeriePreviusComp() returned null");
                 Assertions.fail();
@@ -414,7 +414,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieNoteCredit();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieNoteCredit();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieNoteCredit() returned null");
                 Assertions.fail();
@@ -426,7 +426,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieNoteProvider();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieNoteProvider();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieNoteProvider() returned null");
                 Assertions.fail();
@@ -438,7 +438,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieFAC();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieFAC();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieFAC() returned null");
                 Assertions.fail();
@@ -450,7 +450,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieNotCred();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieNotCred();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieNotCred() returned null");
                 Assertions.fail();
@@ -462,7 +462,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieCots();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieCots();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieCots() returned null");
                 Assertions.fail();
@@ -474,7 +474,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieCustomers();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieCustomers();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieCustomers() returned null");
                 Assertions.fail();
@@ -486,7 +486,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieProviders();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieProviders();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieProviders() returned null");
                 Assertions.fail();
@@ -498,7 +498,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieRemission();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieRemission();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieRemission() returned null");
                 Assertions.fail();
@@ -510,7 +510,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSeriePurchases();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSeriePurchases();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSeriePurchases() returned null");
                 Assertions.fail();
@@ -522,7 +522,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieCreditOrder();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieCreditOrder();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieCreditOrder() returned null");
                 Assertions.fail();
@@ -534,7 +534,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieCXC();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieCXC();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieCXC() returned null");
                 Assertions.fail();
@@ -546,7 +546,7 @@ public class SerieJUnitTest  {
                 return;
             }
             
-            Serie_ = RepositoryManager.getInstance().getSerieRepository().getSerieOrders();
+            Serie_ = RepositoryFactory.getInstance().getSerieRepository().getSerieOrders();
             if(Serie_==null){
                 LoggerUtility.getSingleton().logInfo(SerieJUnitTest.class, "getSerieOrders() returned null");
                 Assertions.fail();

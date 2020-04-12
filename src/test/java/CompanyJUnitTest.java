@@ -1,7 +1,7 @@
 
 import com.era.logger.LoggerUtility;
 import com.era.models.Company;
-import com.era.repositories.RepositoryManager;
+import com.era.repositories.RepositoryFactory;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;

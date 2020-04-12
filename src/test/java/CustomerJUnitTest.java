@@ -1,7 +1,7 @@
 
 import com.era.logger.LoggerUtility;
 import com.era.models.Company;
-import com.era.repositories.RepositoryManager;
+import com.era.repositories.RepositoryFactory;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -69,11 +69,11 @@ public class CustomerJUnitTest  {
         
         try{
             
-            Company Company = RepositoryManager.getInstance().getCompanyRepository().getCustomerByCode("CLI1");
+            Company Company = RepositoryFactory.getInstance().getCompanyRepository().getCustomerByCode("CLI1");
             
-            RepositoryManager.getInstance().getCompanyRepository().deleteById(Company.getId());
+            RepositoryFactory.getInstance().getCompanyRepository().deleteById(Company.getId());
                 
-            Company = RepositoryManager.getInstance().getCompanyRepository().getCustomerByCode("CLI1");
+            Company = RepositoryFactory.getInstance().getCompanyRepository().getCustomerByCode("CLI1");
             
             assertNull(Company);
         
@@ -90,7 +90,7 @@ public class CustomerJUnitTest  {
         
         try{
             
-            List<Company> Customers = (List<Company>) RepositoryManager.getInstance().getCompanyRepository().getAll();
+            List<Company> Customers = (List<Company>) RepositoryFactory.getInstance().getCompanyRepository().getAll();
             
             if(Customers.size()>0){
                 Assertions.assertTrue(true);

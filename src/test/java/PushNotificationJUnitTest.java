@@ -1,7 +1,7 @@
 
 import com.era.logger.LoggerUtility;
 import com.era.models.PushNotification;
-import com.era.repositories.RepositoryManager;
+import com.era.repositories.RepositoryFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -32,11 +32,11 @@ public class PushNotificationJUnitTest  {
         
         try{
             
-            final PushNotification PushNotification = RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Test message", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            final PushNotification PushNotification = RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Test message", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
             
-            final PushNotification PushNotification_ = (PushNotification) RepositoryManager.getInstance().getPushNotificationsRepository().getByID(PushNotification.getId());
+            final PushNotification PushNotification_ = (PushNotification) RepositoryFactory.getInstance().getPushNotificationsRepository().getByID(PushNotification.getId());
         
-            RepositoryManager.getInstance().getPushNotificationsRepository().deleteById(PushNotification_.getId());
+            RepositoryFactory.getInstance().getPushNotificationsRepository().deleteById(PushNotification_.getId());
             
             Assertions.assertNotNull(PushNotification_);
             
@@ -54,14 +54,14 @@ public class PushNotificationJUnitTest  {
         try{
             
             //Insert 3 records
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
             
             //Insert 3 records for the month
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
             
             String query = "UPDATE push_notifications SET created = TIMESTAMPADD(MONTH,1,DATE(created)) WHERE message = 'Month'";
             String sCon = "jdbc:mysql://localhost:3306/dbempresas?user=root&password=a5z8y1Tadeo&verifyServerCertificate=false&useSSL=false";
@@ -70,7 +70,7 @@ public class PushNotificationJUnitTest  {
                 st.executeUpdate(query);
             }
 
-            final List<PushNotification> PushNotification = RepositoryManager.getInstance().getPushNotificationsRepository().getTodayNotifications();
+            final List<PushNotification> PushNotification = RepositoryFactory.getInstance().getPushNotificationsRepository().getTodayNotifications();
             
             LoggerUtility.getSingleton().logInfo(PushNotificationJUnitTest.class, "Tests: Returned size push notifications " + PushNotification.size());
                         
@@ -98,16 +98,16 @@ public class PushNotificationJUnitTest  {
         try{
             
             //Insert 3 records
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Today", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
             
             //Insert more records for the month
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
-            RepositoryManager.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
+            RepositoryFactory.getInstance().getPushNotificationsRepository().newNotification("Month", "C:\\WinNMP\\WWW\\era\\public\\banners\\39775dfaba31615d95.45523463.png","google.com");
             
             String query = "UPDATE push_notifications SET created = TIMESTAMPADD(MONTH,1,DATE(created)) WHERE message = 'Month'";
             String sCon = "jdbc:mysql://localhost:3306/dbempresas?user=root&password=a5z8y1Tadeo&verifyServerCertificate=false&useSSL=false";
@@ -116,7 +116,7 @@ public class PushNotificationJUnitTest  {
                 st.executeUpdate(query);
             }
 
-            final List<PushNotification> PushNotification = RepositoryManager.getInstance().getPushNotificationsRepository().getMonthNotifications();
+            final List<PushNotification> PushNotification = RepositoryFactory.getInstance().getPushNotificationsRepository().getMonthNotifications();
             
             LoggerUtility.getSingleton().logInfo(PushNotificationJUnitTest.class, "Tests: Returned size push notifications " + PushNotification.size());
                         

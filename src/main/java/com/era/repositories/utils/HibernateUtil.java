@@ -202,8 +202,15 @@ public class HibernateUtil {
             LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Building session factory from global username: " + HibernateConfigModel.getUser());
             LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Building session factory from global password: " + HibernateConfigModel.getPassword());                
 
-            //Add anotated classes
-            List<Class> classes = getAnnottatedClasses();
+            List<Class> classes;
+            if(HibernateConfigModel.getDatabase().toLowerCase().compareTo("dbempresas")==0){
+                classes = this.getAnnottatedClassesFordbempresas();                
+            }
+            else{
+                classes = getAnnottatedClasses();
+            }
+            
+            //Add anotated classes            
             for(Class class_:classes){
                 LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Adding annotated class " + class_);
                 AnnotationConfiguration.addAnnotatedClass(class_);
@@ -252,7 +259,7 @@ public class HibernateUtil {
  
     /**
     * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
-    *
+    *   
     * @param packageName The base package
     * @return The classes
     * @throws ClassNotFoundException
@@ -311,9 +318,7 @@ public class HibernateUtil {
         classes.add(CPaymentMethod.class);
         classes.add(CPaymentForm.class);
         classes.add(CFDIRelacionadosPago.class);
-        classes.add(CCountry.class);
         classes.add(CCoin.class);
-        classes.add(CCodigopostal.class);
         classes.add(CClaveprodserv.class);
         classes.add(CClaveUnidad.class);
         classes.add(CAduana.class);
@@ -374,8 +379,7 @@ public class HibernateUtil {
         classes.add(Cxp.class);
         classes.add(Cxc.class);        
         classes.add(Cumple.class);
-        classes.add(CuentasContables.class);
-        classes.add(Country.class);
+        classes.add(CuentasContables.class);        
         classes.add(Cots.class);
         classes.add(Costs.class);
         classes.add(PartcomprsTmp.class);
@@ -470,6 +474,8 @@ public class HibernateUtil {
         classes.add(BasDats.class);
         classes.add(License.class);
         classes.add(ServerSession.class);
+        classes.add(CCodigopostal.class);
+        classes.add(CCountry.class);
         return classes;
     }
     

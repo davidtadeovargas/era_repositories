@@ -11,6 +11,8 @@ import com.era.models.Almas;
 import com.era.models.Anaqs;
 import com.era.models.Banco;
 import com.era.models.BasDats;
+import com.era.models.CCodigopostal;
+import com.era.models.CCountry;
 import com.era.models.Clasemp;
 import com.era.models.Clasificacion;
 import com.era.models.Clasjeracli;
@@ -63,6 +65,7 @@ import com.era.models.Zona;
 import com.era.repositories.utils.HibernateUtil;
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
@@ -91,8 +94,40 @@ public class Repository {
         this.session = session;
     }
     
+    /*
+        Some tables are from dbempresas and when trying to access them need to change the connection
+    */
+    final protected void changeConnectionQuestion(){
+        if( ClassEntity.getName().compareTo(CCountry.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CCodigopostal.class.getName())==0){
+            HibernateUtil.getSingleton().connectToDbEmpresas();
+        }            
+    }
+    
+    final public long getCount() throws Exception {
+        
+        //Some tables are from dbempresas and when trying to access them need to change the connection
+        changeConnectionQuestion();
+        
+        //Open database
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        
+        String hql = "select count(*) from " + ClassEntity.getName();
+        Query query = session.createQuery(hql);        
+        Iterator count = query.iterate();
+        
+        //Close database
+        HibernateUtil.getSingleton().shutdown();
+        
+        //Return the result model
+        return (long) count.next();
+    }
+    
     final public Object getByID(final int id) throws Exception {
                         
+        //Some tables are from dbempresas and when trying to access them need to change the connection
+        changeConnectionQuestion();
+                
         //Open database
         session = HibernateUtil.getSingleton().getSessionFactory().openSession();
         session.beginTransaction();
@@ -108,6 +143,9 @@ public class Repository {
     }
     
     final public List<?> getAll() throws Exception{
+        
+        //Some tables are from dbempresas and when trying to access them need to change the connection
+        changeConnectionQuestion();
         
         //Open database
         session = HibernateUtil.getSingleton().getSessionFactory().openSession();
@@ -130,7 +168,7 @@ public class Repository {
     }
         
     final public List<?> getAllLike(final List<String> likes, final String search) throws Exception{
-        
+    
         //Open database
         session = HibernateUtil.getSingleton().getSessionFactory().openSession();
         session.beginTransaction();
@@ -176,7 +214,7 @@ public class Repository {
     }
     
     final public Object deleteById(final int id) throws Exception {
-
+        
         //Get the license
         final Object Object = this.getByID(id); 
         
@@ -405,9 +443,9 @@ public class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Saving object " + Object.getClass().getName());
         
-        final String user = RepositoryManager.getInstance().getUsersRepository().getUser();
-        final String sucursal = RepositoryManager.getInstance().getUsersRepository().getSucursal();
-        final String station = RepositoryManager.getInstance().getUsersRepository().getStation();
+        final String user = RepositoryFactory.getInstance().getUsersRepository().getUser();
+        final String sucursal = RepositoryFactory.getInstance().getUsersRepository().getSucursal();
+        final String station = RepositoryFactory.getInstance().getUsersRepository().getStation();
                 
         setField(Object, "sucu", sucursal);
         setField(Object, "nocaj", station);
@@ -440,9 +478,9 @@ public class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating sql " + sqlQuery);
         
-        final String user = RepositoryManager.getInstance().getUsersRepository().getUser();
-        final String sucursal = RepositoryManager.getInstance().getUsersRepository().getSucursal();
-        final String station = RepositoryManager.getInstance().getUsersRepository().getStation();
+        final String user = RepositoryFactory.getInstance().getUsersRepository().getUser();
+        final String sucursal = RepositoryFactory.getInstance().getUsersRepository().getSucursal();
+        final String station = RepositoryFactory.getInstance().getUsersRepository().getStation();
                 
         sqlQuery = sqlQuery + ", estac = \"" + user + "\", sucu = \"" + sucursal + "\", nocaj = \"" + station + "\"";
         
@@ -463,9 +501,9 @@ public class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating object " + Object.getClass().getName());
         
-        final String user = RepositoryManager.getInstance().getUsersRepository().getUser();
-        final String sucursal = RepositoryManager.getInstance().getUsersRepository().getSucursal();
-        final String station = RepositoryManager.getInstance().getUsersRepository().getStation();
+        final String user = RepositoryFactory.getInstance().getUsersRepository().getUser();
+        final String sucursal = RepositoryFactory.getInstance().getUsersRepository().getSucursal();
+        final String station = RepositoryFactory.getInstance().getUsersRepository().getStation();
                 
         setField(Object, "sucu", sucursal);
         setField(Object, "nocaj", station);
@@ -722,7 +760,7 @@ public class Repository {
         Log.setCod(cod);
         Log.setAccio(accio);
         
-        RepositoryManager.getInstance().getLogRepository().save(Log);
+        RepositoryFactory.getInstance().getLogRepository().save(Log);
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Log saved");
     }

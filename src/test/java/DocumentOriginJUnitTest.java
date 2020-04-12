@@ -1,7 +1,7 @@
 
 import com.era.logger.LoggerUtility;
 import com.era.models.DocumentOrigin;
-import com.era.repositories.RepositoryManager;
+import com.era.repositories.RepositoryFactory;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -29,79 +29,79 @@ public class DocumentOriginJUnitTest  {
         
         try{
             
-            DocumentOrigin DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginPREV();
+            DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginPREV();
             if(DocumentOrigin.getType().compareTo("PREV")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed PREV");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
             if(DocumentOrigin.getType().compareTo("NOTC")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed NOTP");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginNOTP();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTP();
             if(DocumentOrigin.getType().compareTo("NOTP")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed NOTP");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
             if(DocumentOrigin.getType().compareTo("FAC")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed FAC");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
             if(DocumentOrigin.getType().compareTo("TIK")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed TIK");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginCOT();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginCOT();
             if(DocumentOrigin.getType().compareTo("COT")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed COT");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginEMP();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginEMP();
             if(DocumentOrigin.getType().compareTo("EMP")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed EMP");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginPROV();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginPROV();
             if(DocumentOrigin.getType().compareTo("PROV")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed PROV");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
             if(DocumentOrigin.getType().compareTo("REM")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed REM");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginCOMP();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginCOMP();
             if(DocumentOrigin.getType().compareTo("COMP")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed COMP");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginORDC();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginORDC();
             if(DocumentOrigin.getType().compareTo("ORDC")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed ORDC");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginPAG();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginPAG();
             if(DocumentOrigin.getType().compareTo("PAG")!=0){
                 Assertions.fail();
             }
             LoggerUtility.getSingleton().logInfo(DocumentOriginJUnitTest.class, "Passed PAG");
             
-            DocumentOrigin = RepositoryManager.getInstance().getDocumentOriginRepository().getDocumentOriginPED();
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginPED();
             if(DocumentOrigin.getType().compareTo("PED")!=0){
                 Assertions.fail();
             }
@@ -122,7 +122,7 @@ public class DocumentOriginJUnitTest  {
                 
         try{
             
-            List<DocumentOrigin> documents = (List<DocumentOrigin>) RepositoryManager.getInstance().getDocumentOriginRepository().getAll();
+            List<DocumentOrigin> documents = (List<DocumentOrigin>) RepositoryFactory.getInstance().getDocumentOriginRepository().getAll();
             
             if(documents.size()==13){
                 Assertions.assertTrue(true);
@@ -144,7 +144,7 @@ public class DocumentOriginJUnitTest  {
                 
         try{
             
-            DocumentOrigin DocumentOrigin = (DocumentOrigin) RepositoryManager.getInstance().getDocumentOriginRepository().getByName("REMISIONES");
+            DocumentOrigin DocumentOrigin = (DocumentOrigin) RepositoryFactory.getInstance().getDocumentOriginRepository().getByName("REMISIONES");
             
             if(DocumentOrigin.getName().compareTo("REMISIONES")==0){
                 Assertions.assertTrue(true);

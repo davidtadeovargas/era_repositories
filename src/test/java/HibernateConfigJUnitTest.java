@@ -1,7 +1,7 @@
 
 import com.era.logger.LoggerUtility;
 import com.era.models.Company;
-import com.era.repositories.RepositoryManager;
+import com.era.repositories.RepositoryFactory;
 import com.era.repositories.models.HibernateConfigModel;
 import com.era.repositories.utils.HibernateConfigUtil;
 import org.junit.jupiter.api.Assertions;

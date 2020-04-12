@@ -7,7 +7,7 @@ package com.era.repositories;
 
 import com.era.repositories.utils.HibernateUtil;
 import com.era.models.User;
-import com.era.utilities.UtilityManager;
+import com.era.utilities.UtilitiesFactory;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
@@ -94,7 +94,7 @@ public class UsersRepository extends Repository {
         if(User!=null){
             
             //Decrypt
-            final String passwordDecrypted = UtilityManager.getSingleton().getSecurityUtil().decryptString(User.getPassword());
+            final String passwordDecrypted = UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(User.getPassword());
 
             //Return the result model
             return passwordDecrypted;
@@ -119,7 +119,7 @@ public class UsersRepository extends Repository {
         HibernateUtil.getSingleton().shutdown();
         
         if(User!=null){
-            RepositoryManager.getInstance().getLogRepository().userLoggedToSystem();
+            RepositoryFactory.getInstance().getLogRepository().userLoggedToSystem();
         }
     }
     

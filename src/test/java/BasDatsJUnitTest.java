@@ -3,7 +3,7 @@ import com.era.logger.LoggerUtility;
 import com.era.models.BasDats;
 import com.era.models.License;
 import com.era.repositories.BasDatsRepository;
-import com.era.repositories.RepositoryManager;
+import com.era.repositories.RepositoryFactory;
 import com.era.repositories.utils.HibernateUtil;
 import org.hibernate.classic.Session;
 import org.junit.jupiter.api.Assertions;
@@ -68,7 +68,7 @@ public class BasDatsJUnitTest  {
             
             LoggerUtility.getSingleton().logInfo(CompanyJUnitTest.class, "Getting basdats by company code: " + companyCode);
             
-            BasDats BasDats = RepositoryManager.getInstance().getBasDatsRepository().getByCompanyCode(companyCode);
+            BasDats BasDats = RepositoryFactory.getInstance().getBasDatsRepository().getByCompanyCode(companyCode);
             
             LoggerUtility.getSingleton().logInfo(CompanyJUnitTest.class, "Got " + BasDats);
             
@@ -96,11 +96,11 @@ public class BasDatsJUnitTest  {
             
             LoggerUtility.getSingleton().logInfo(CompanyJUnitTest.class, "Deleting basdats by comapny code: " + companyCode);
             
-            RepositoryManager.getInstance().getBasDatsRepository().deleteBasDats(companyCode);
+            RepositoryFactory.getInstance().getBasDatsRepository().deleteBasDats(companyCode);
             
             LoggerUtility.getSingleton().logInfo(CompanyJUnitTest.class, "Deleted");
             
-            BasDats BasDats = RepositoryManager.getInstance().getBasDatsRepository().getByCompanyCode("TESTCOMPANY01");
+            BasDats BasDats = RepositoryFactory.getInstance().getBasDatsRepository().getByCompanyCode("TESTCOMPANY01");
             
             LoggerUtility.getSingleton().logInfo(CompanyJUnitTest.class, "Validating if effectively the model was removed BasDats = " + BasDats);
             

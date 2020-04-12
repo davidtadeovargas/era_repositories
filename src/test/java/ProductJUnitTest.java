@@ -1,7 +1,7 @@
 
 import com.era.logger.LoggerUtility;
 import com.era.models.Product;
-import com.era.repositories.RepositoryManager;
+import com.era.repositories.RepositoryFactory;
 import com.era.repositories.models.HibernateConfigModel;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.Date;
@@ -239,9 +239,9 @@ public class ProductJUnitTest  {
             Product.setBranchOffice("SUC1");
             Product.setNumberCash("CAJ1");
             
-            RepositoryManager.getInstance().getProductRepository().addOrUpdateProduct(Product);
+            RepositoryFactory.getInstance().getProductRepository().addOrUpdateProduct(Product);
             
-            Product = RepositoryManager.getInstance().getProductRepository().getProductByCode("prod2");
+            Product = RepositoryFactory.getInstance().getProductRepository().getProductByCode("prod2");
             
             Assertions.assertNotNull(Product);
         
@@ -258,9 +258,9 @@ public class ProductJUnitTest  {
         
         try{
             
-            RepositoryManager.getInstance().getProductRepository().deleteProductByCode("prod2");
+            RepositoryFactory.getInstance().getProductRepository().deleteProductByCode("prod2");
             
-            Product Product = RepositoryManager.getInstance().getProductRepository().getProductByCode("prod2");
+            Product Product = RepositoryFactory.getInstance().getProductRepository().getProductByCode("prod2");
                 
             assertNull(Product);
         

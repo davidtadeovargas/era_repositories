@@ -11,7 +11,6 @@ import com.era.repositories.utils.HibernateUtil;
 import java.util.Iterator;
 import java.util.List;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 
 public class SalesRepository extends Repository {
     
@@ -76,7 +75,7 @@ public class SalesRepository extends Repository {
     
     final public List<Sales> getAllNotsCred() throws Exception {
         
-        final Tips Tips = RepositoryManager.getInstance().getTipsRepository().getFacType();
+        final Tips Tips = RepositoryFactory.getInstance().getTipsRepository().getFacType();
         
         //Open database
         session = HibernateUtil.getSingleton().getSessionFactory().openSession();

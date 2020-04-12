@@ -8,7 +8,7 @@ package com.era.repositories;
 import com.era.models.License;
 import com.era.repositories.utils.HibernateUtil;
 import com.era.logger.LoggerUtility;
-import com.era.utilities.UtilityManager;
+import com.era.utilities.UtilitiesFactory;
 import com.era.utilities.exceptions.EncryptionException;
 import org.hibernate.Query;
 
@@ -36,9 +36,9 @@ public class LicenseRepository extends Repository {
         String serverDateEncrypted;        
         try{
                         
-            userEncrypted = UtilityManager.getSingleton().getSecurityUtil().encryptString(License.getUser());
-            passwordEncrypted = UtilityManager.getSingleton().getSecurityUtil().encryptString(License.getPassword());
-            serverDateEncrypted = UtilityManager.getSingleton().getSecurityUtil().encryptString(License.getServerDate());            
+            userEncrypted = UtilitiesFactory.getSingleton().getSecurityUtil().encryptString(License.getUser());
+            passwordEncrypted = UtilitiesFactory.getSingleton().getSecurityUtil().encryptString(License.getPassword());
+            serverDateEncrypted = UtilitiesFactory.getSingleton().getSecurityUtil().encryptString(License.getServerDate());            
 
         }catch(Exception e){
             throw new EncryptionException();
@@ -78,9 +78,9 @@ public class LicenseRepository extends Repository {
             try{
 
                 //Decrypt variables
-                License.setUser(UtilityManager.getSingleton().getSecurityUtil().decryptString(License.getUser()));
-                License.setPassword(UtilityManager.getSingleton().getSecurityUtil().decryptString(License.getPassword()));
-                License.setServerDate(UtilityManager.getSingleton().getSecurityUtil().decryptString(License.getServerDate()));
+                License.setUser(UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(License.getUser()));
+                License.setPassword(UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(License.getPassword()));
+                License.setServerDate(UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(License.getServerDate()));
 
             }catch(Exception e){
                 LoggerUtility.getSingleton().logError(LicenseRepository.class, e);

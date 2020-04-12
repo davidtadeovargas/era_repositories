@@ -5,8 +5,8 @@
  */
 package com.era.repositories;
 
+import com.era.models.CCountry;
 import com.era.repositories.utils.HibernateUtil;
-import com.era.models.Country;
 import org.hibernate.Query;
 
 /**
@@ -16,10 +16,10 @@ import org.hibernate.Query;
 public class CountriesRepository extends Repository {
     
     protected CountriesRepository(){
-        super(Country.class);
+        super(CCountry.class);
     }
     
-    final public Country getCountryByCode(final String countryCode) throws Exception {
+    final public CCountry getCountryByCode(final String countryCode) throws Exception {
         
         //Open database
         session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
@@ -27,7 +27,7 @@ public class CountriesRepository extends Repository {
         String hql = "FROM Country where countryCode = :countryCode";
         Query query = session.createQuery(hql);
         query.setParameter("countryCode", countryCode);
-        Country Country = query.list().size() > 0 ? (Country)query.list().get(0):null;
+        CCountry Country = query.list().size() > 0 ? (CCountry)query.list().get(0):null;
         
         //Close database        
         HibernateUtil.getSingleton().shutdown();

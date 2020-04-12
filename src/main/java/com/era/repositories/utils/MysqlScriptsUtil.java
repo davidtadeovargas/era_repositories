@@ -19,6 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+//set global max_allowed_packet=1000000000;
+
 /**
  *
  * @author PC
@@ -68,26 +70,8 @@ public class MysqlScriptsUtil {
         return testDatabaseConnection("sys",user,password,instance,port);         
     }
     
-    public int creaDB(final String database, String user, String password, String instance, int port) throws Exception {
+    private int loadCatalogFileIntoDatabase(final String catalogFile,final String database, String user, String password, String instance, int port) throws Exception {
         
-        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Creating database " + database);
-
-        //Create the database
-        String query = "CREATE DATABASE " + database;
-        String sCon = "jdbc:mysql://" + instance + ":" + port + "/sys?user=" + user + "&password=" + password + "&verifyServerCertificate=false&useSSL=false";
-        Connection conn = DriverManager.getConnection(sCon);
-        Statement st = conn.createStatement();
-        st.execute(query);
-
-        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " created");
-
-        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Populating database with schemas");
-
-        final HibernateConfigModel HibernateConfigModel = HibernateUtil.getSingleton().getHibernateConfigModel();
-        HibernateUtil.getSingleton().buildSessionFactoryFromHibernateConfigModelCreate(HibernateConfigModel);
-
-        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Finished populating schemas");
-
         //Load catalogs
         Process p = null;
         Runtime runtime = Runtime.getRuntime();
@@ -95,11 +79,11 @@ public class MysqlScriptsUtil {
         if(!new File(mysqldumpExecutable).exists()){
             throw new MysqldumpNotFoundException();
         }       
-        String dbEmpresasSQLPath = "catalogs.sql";
+        String dbEmpresasSQLPath = catalogFile;
         if(!new File(dbEmpresasSQLPath).exists()){
             throw new DBEraSQLFileNotFoundException();
         }                   
-        String exec = mysqldumpExecutable + " --host=" + instance + " --user=" + user +  " --password=" + password + "  " + database + " --execute=\"source " + dbEmpresasSQLPath + "\"";
+        String exec = mysqldumpExecutable + " --max_allowed_packet=100M --host=" + instance + " --user=" + user +  " --password=" + password + "  " + database + " --execute=\"source " + dbEmpresasSQLPath + "\"";
 
         LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " running exec " + exec);
 
@@ -123,6 +107,36 @@ public class MysqlScriptsUtil {
                LoggerUtility.getSingleton().logError(MysqlScriptsUtil.class, e);
            }   
         }        
+
+        return processComplete;
+    }
+    
+    public int loadDBEmpresasCatalogFileIntoDatabase(final String database, String user, String password, String instance, int port) throws Exception {
+        return loadCatalogFileIntoDatabase("base_catalogs.sql",database, user, password, instance, port);       
+    }
+    
+    
+    public int creaDB(final String database, String user, String password, String instance, int port) throws Exception {
+        
+        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Creating database " + database);
+
+        //Create the database
+        String query = "CREATE DATABASE " + database;
+        String sCon = "jdbc:mysql://" + instance + ":" + port + "/sys?user=" + user + "&password=" + password + "&verifyServerCertificate=false&useSSL=false";
+        Connection conn = DriverManager.getConnection(sCon);
+        Statement st = conn.createStatement();
+        st.execute(query);
+
+        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " created");
+
+        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Populating database with schemas");
+
+        final HibernateConfigModel HibernateConfigModel = HibernateUtil.getSingleton().getHibernateConfigModel();
+        HibernateUtil.getSingleton().buildSessionFactoryFromHibernateConfigModelCreate(HibernateConfigModel);
+
+        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Finished populating schemas");       
+        
+        int processComplete = loadCatalogFileIntoDatabase("catalogs.sql",database, user, password, instance, port);
 
         return processComplete;
     }
@@ -218,5 +232,42 @@ public class MysqlScriptsUtil {
         LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " rutaMysql = " + rutaMysql);
                 
         return rutaMysql;
+    }
+    
+    public boolean backupDatabase(  final String user,
+                                    final String password,
+                                    final String instance,
+                                    int port,
+                                    final String dbName,
+                                    final String fileName) throws Exception {
+        
+        final String mysqlPaht = getMySQLPATH(user,password,instance,port);
+        
+        Runtime runtime = Runtime.getRuntime();
+        String mysqldumpExecutable = mysqlPaht.concat("bin\\mysqldump.exe");
+        Process p = runtime.exec(mysqldumpExecutable + " --host=" + instance + "--user=" + user + " --password=" + password + " " + dbName + " --result-file=" + fileName);
+        BufferedReader reader =
+        new BufferedReader(new InputStreamReader(p.getInputStream()));
+        while ((reader.readLine()) != null) {}
+
+        int processComplete = p.waitFor();
+
+        return processComplete==0;
+    }
+    
+    public boolean deleteDatabase(  final String user,
+                                    final String password,
+                                    final String instance,
+                                    int port,
+                                    final String dbName) throws Exception {
+     
+        //Create the database
+        String query = "DROP DATABASE " + dbName;
+        String sCon = "jdbc:mysql://" + instance + ":" + port + "/sys?user=" + user + "&password=" + password + "&verifyServerCertificate=false&useSSL=false";
+        Connection conn = DriverManager.getConnection(sCon);
+        Statement st = conn.createStatement();
+        st.execute(query);
+        
+        return true;
     }
 }

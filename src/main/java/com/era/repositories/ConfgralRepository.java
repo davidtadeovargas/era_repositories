@@ -25,6 +25,25 @@ public class ConfgralRepository extends Repository {
         this.updateSQL("UPDATE Confgral SET val = 0");
     }
     
+    final public Confgral getSistemClasifByConf(final String conf) throws Exception {
+        
+        //Open database
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        session.beginTransaction();
+        
+        String hql = "FROM Confgral where clasif = 'sist' AND conf = :conf";
+        Query query = session.createQuery(hql);
+        query.setParameter("conf", conf);
+        Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
+        
+        //Close database
+        session.getTransaction().commit();
+        HibernateUtil.getSingleton().shutdown();
+        
+        //Return the result model
+        return Confgral;
+    }
+    
     final public Confgral getByClasif(final String clasif) throws Exception {
         
         //Open database

@@ -11,6 +11,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import com.era.logger.LoggerUtility;
 import com.era.repositories.models.HibernateConfigModel;
+import com.era.utilities.FilesUtility;
+import com.era.utilities.UtilitiesFactory;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -245,15 +247,82 @@ public class MysqlScriptsUtil {
         
         Runtime runtime = Runtime.getRuntime();
         String mysqldumpExecutable = mysqlPaht.concat("bin\\mysqldump.exe");
-        Process p = runtime.exec(mysqldumpExecutable + " --host=" + instance + "--user=" + user + " --password=" + password + " " + dbName + " --result-file=" + fileName);
+        final String exec = mysqldumpExecutable + " --host=" + instance + " --user=" + user + " --password=" + password + " " + dbName + " --result-file=" + fileName;
+        Process p = runtime.exec(exec);
         BufferedReader reader =
         new BufferedReader(new InputStreamReader(p.getInputStream()));
         while ((reader.readLine()) != null) {}
-
+        
         int processComplete = p.waitFor();
-
+        
+        if(processComplete!=0){
+            LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, "backupDatabase failed");
+            
+            System.out.println("Failed to execute the following command: " + exec + " due to the following error(s):");
+            try (final BufferedReader b = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+               String line;
+               while ((line = b.readLine()) != null)
+                   System.out.println(line);
+            } catch (final IOException e) {
+               LoggerUtility.getSingleton().logError(MysqlScriptsUtil.class, e);
+           }   
+        }
+        
         return processComplete==0;
     }
+    
+    
+    public boolean importBackupDatabase(final String user,
+                                        final String password,
+                                        final String instance,
+                                        int port,
+                                        final String dbName,
+                                        final String fileName) throws Exception {
+        
+        final String mysqlPaht = getMySQLPATH(user,password,instance,port);
+        
+        final FilesUtility FilesUtility = UtilitiesFactory.getSingleton().getFilesUtility();
+                
+        String connectionFile = "config.cnf";
+        final String appPath = UtilitiesFactory.getSingleton().getPathsUtility().getAppPath();
+        connectionFile = appPath + "\\" + connectionFile;        
+        FilesUtility.createNewFile(connectionFile);
+        final String text = "[mysql]\n" +
+                            "user = " + user + "\n"+
+                            "password = " + password + "\n" +
+                            "host = " + instance + "\n";
+        FilesUtility.writeToExistingFile(connectionFile, text);
+        
+        Runtime runtime = Runtime.getRuntime();
+        String mysqldumpExecutable = mysqlPaht.concat("bin\\mysql.exe");
+        final String exec = mysqldumpExecutable + " --defaults-extra-file=\"" + connectionFile + "\" " + dbName + " --execute=\"source " + fileName + "\"";
+        Process p = runtime.exec(exec);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line = reader.readLine();
+        while (line != null) {
+            String test = "";
+            line = reader.readLine();
+        }
+        
+        int processComplete = p.waitFor();
+        
+        if(processComplete!=0){
+            LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, "importBackupDatabase falied!");
+            
+            System.out.println("Failed to execute the following command: " + exec + " due to the following error(s):");
+            try (final BufferedReader b = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+               while ((line = b.readLine()) != null)
+                   System.out.println(line);
+            } catch (final IOException e) {
+               LoggerUtility.getSingleton().logError(MysqlScriptsUtil.class, e);
+           }   
+        }
+        
+        FilesUtility.deleteFile(connectionFile);
+        
+        return processComplete==0;
+    }
+    
     
     public boolean deleteDatabase(  final String user,
                                     final String password,

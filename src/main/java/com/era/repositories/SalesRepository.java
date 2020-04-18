@@ -113,6 +113,25 @@ public class SalesRepository extends Repository {
         return Sales;
     }
     
+    final public Sales getLastSale() throws Exception {
+        
+        //Open database
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        session.beginTransaction();
+        
+        String hql = "FROM Sales ORDER BY vta DESC";
+        Query query = session.createQuery(hql);        
+        query.setMaxResults(1);
+        Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
+        
+        //Close database
+        session.getTransaction().commit();
+        HibernateUtil.getSingleton().shutdown();
+        
+        //Return the result model
+        return Sales;
+    }
+    
     final public void actualizaVentaTimbrado(  final String transid,
                                                 final String sell,
                                                 final String certsat,

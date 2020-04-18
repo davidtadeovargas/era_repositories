@@ -21,7 +21,7 @@ public class ConfgralRepository extends Repository {
         super(Confgral.class);
     }
     
-    final public void disableAllConfigs() throws Exception{        
+    final public void disableAllConfigs() throws Exception{
         this.updateSQL("UPDATE Confgral SET val = 0");
     }
     
@@ -42,6 +42,45 @@ public class ConfgralRepository extends Repository {
         
         //Return the result model
         return Confgral;
+    }
+    
+    final public Confgral getSalesClasifByConf(final String conf) throws Exception {
+        
+        //Open database
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        session.beginTransaction();
+        
+        String hql = "FROM Confgral where clasif = 'vtas' AND conf = :conf";
+        Query query = session.createQuery(hql);
+        query.setParameter("conf", conf);
+        Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
+        
+        //Close database
+        session.getTransaction().commit();
+        HibernateUtil.getSingleton().shutdown();
+        
+        //Return the result model
+        return Confgral;
+    }
+    
+    final public String getPtovtaAlmacen() throws Exception {
+        
+        //Open database
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        session.beginTransaction();
+        
+        String hql = "FROM Confgral where clasif = 'vtas' AND conf = :conf";
+        Query query = session.createQuery(hql);
+        query.setParameter("conf", "almapto");
+        Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
+        
+        //Close database
+        session.getTransaction().commit();
+        HibernateUtil.getSingleton().shutdown();
+        
+        final String almacen = Confgral==null?null:Confgral.getExtr();
+        
+        return almacen;
     }
     
     final public Confgral getByClasif(final String clasif) throws Exception {

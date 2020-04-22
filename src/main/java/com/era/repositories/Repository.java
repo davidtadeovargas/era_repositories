@@ -13,6 +13,7 @@ import com.era.models.Banco;
 import com.era.models.BasDats;
 import com.era.models.CCodigopostal;
 import com.era.models.CCountry;
+import com.era.models.CRegimenfiscal;
 import com.era.models.Clasemp;
 import com.era.models.Clasificacion;
 import com.era.models.Clasjeracli;
@@ -94,12 +95,34 @@ public class Repository {
         this.session = session;
     }
     
+    public List<?> getAllByPage(final int pageNumber, int pageSize) throws Exception {
+        
+        //Some tables are from dbempresas and when trying to access them need to change the connection
+        changeConnectionQuestion();
+        
+        //Open database
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        
+        String hql = "FROM " + ClassEntity.getName();
+        Query query = session.createQuery(hql);
+        query.setFirstResult(pageNumber - 1);
+        query.setMaxResults(pageSize);
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().shutdown();
+        
+        //Return the result model
+        return records;
+    }
+    
     /*
         Some tables are from dbempresas and when trying to access them need to change the connection
     */
     final protected void changeConnectionQuestion(){
         if( ClassEntity.getName().compareTo(CCountry.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CCodigopostal.class.getName())==0){
+            ClassEntity.getName().compareTo(CCodigopostal.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CRegimenfiscal.class.getName())==0){
             HibernateUtil.getSingleton().connectToDbEmpresas();
         }            
     }

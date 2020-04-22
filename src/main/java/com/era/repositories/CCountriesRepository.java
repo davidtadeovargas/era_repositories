@@ -21,25 +21,26 @@ public class CCountriesRepository extends Repository {
     }
     
     public List<CCountry> getAllByPage(final int pageNumber) throws Exception {
-        
-        //Some tables are from dbempresas and when trying to access them need to change the connection
-        changeConnectionQuestion();
+        final List<CCountry> records = (List<CCountry>) this.getAllByPage(pageNumber,50);
+        return records;
+    }
+    
+    final public CCountry getCountryByCode(final String code) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        session.beginTransaction();
         
-        final int pageSize = 100;
-        
-        String hql = "FROM CCountry";
+        String hql = "FROM CCountry where code = :code";
         Query query = session.createQuery(hql);
-        query.setFirstResult(pageNumber - 1);
-        query.setMaxResults(pageSize);
-        List<CCountry> countries = query.list();
+        query.setParameter("code", code);
+        CCountry CCountry = query.list().size() > 0 ? (CCountry)query.list().get(0):null;
         
-        //Close database        
+        //Close database
+        session.getTransaction().commit();
         HibernateUtil.getSingleton().shutdown();
         
         //Return the result model
-        return countries;
+        return CCountry;
     }
 }

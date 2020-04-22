@@ -6,6 +6,7 @@
 package com.era.repositories;
 
 import com.era.models.CCodigopostal;
+import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.List;
 import org.hibernate.Query;
@@ -21,25 +22,65 @@ public class CCodigoPostalRepository extends Repository {
     }
     
     public List<CCodigopostal> getAllByPage(final int pageNumber) throws Exception {
-        
-        //Some tables are from dbempresas and when trying to access them need to change the connection
-        changeConnectionQuestion();
+        final List<CCodigopostal> records = (List<CCodigopostal>) this.getAllByPage(pageNumber,50);
+        return records;
+    }
+    
+    final public CCodigopostal getByPostalCode(final String cp) throws Exception {
         
         //Open database
         session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
         
-        final int pageSize = 50;
-        
-        String hql = "FROM CCodigopostal";
+        String hql = "FROM CCodigopostal where cp = :cp";
         Query query = session.createQuery(hql);
-        query.setFirstResult(pageNumber - 1);
-        query.setMaxResults(pageSize);
-        List<CCodigopostal> cps = query.list();
+        query.setParameter("cp", cp);
+        CCodigopostal CCodigopostal = query.list().size() > 0 ? (CCodigopostal)query.list().get(0):null;
         
         //Close database        
         HibernateUtil.getSingleton().shutdown();
         
         //Return the result model
-        return cps;
+        return CCodigopostal;
+    }
+        
+    final public boolean existsExpeditionPlace(final String estate) throws Exception {
+        
+        //Open database
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        
+        String hql = "FROM CCodigopostal where estate = :estate";
+        Query query = session.createQuery(hql);
+        query.setParameter("estate", estate);
+        query.setFirstResult(0);
+        query.setMaxResults(5);
+        final boolean result = query.list().size() > 0;
+        
+        //Close database        
+        HibernateUtil.getSingleton().shutdown();
+               
+        return result;
+    }
+    
+    public List<CCodigopostal> getAllByPageExpeditionPlace(final int pageNumber) throws Exception {
+        
+        //Some tables are from dbempresas and when trying to access them need to change the connection
+        changeConnectionQuestion();
+        
+        //Open database
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        
+        final int pageSize = 50;
+        
+        String hql = "FROM CCodigopostal GROUP BY estate";
+        Query query = session.createQuery(hql);
+        query.setFirstResult(pageNumber - 1);
+        query.setMaxResults(pageSize);
+        List<CCodigopostal> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().shutdown();
+        
+        //Return the result model
+        return records;
     }
 }

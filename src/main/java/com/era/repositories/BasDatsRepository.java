@@ -41,6 +41,27 @@ public class BasDatsRepository extends Repository {
         return BasDats;
     }
     
+    final public BasDats getByDBName(final String bd) throws Exception{
+        
+        LoggerUtility.getSingleton().logInfo(BasDatsRepository.class, "Hibernate: Getting basdats by bd: " + bd);
+        
+        //Open database
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        
+        String hql = "FROM BasDats where bd = :bd";
+        Query query = session.createQuery(hql);
+        query.setParameter("bd", bd);
+        BasDats BasDats = query.list().size() > 0 ? (BasDats)query.list().get(0):null;
+        
+        //Close database        
+        HibernateUtil.getSingleton().shutdown();
+        
+        LoggerUtility.getSingleton().logInfo(BasDatsRepository.class, "Hibernate: BasDats returned");
+        
+        //Return the result model
+        return BasDats;
+    }
+    
     final public BasDats deleteBasDats(final String companyCode) throws Exception {
         
         //Some tables are from dbempresas and when trying to access them need to change the connection

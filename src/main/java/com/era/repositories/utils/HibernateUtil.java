@@ -77,6 +77,25 @@ public class HibernateUtil {
         return HibernateConfigModel;
     }
     
+    public HibernateConfigModel createLocalHibernateConfigModel(final String database, final boolean connectToLocal) {
+        
+        final HibernateConfigModel HibernateConfigModel_ = new HibernateConfigModel();
+        HibernateConfigModel_.setInstance(HibernateConfigModel.getInstance());
+        HibernateConfigModel_.setPassword(HibernateConfigModel.getPassword());
+        HibernateConfigModel_.setPort(HibernateConfigModel.getPort());
+        HibernateConfigModel_.setUrl(HibernateConfigModel.getUrl());
+        HibernateConfigModel_.setUser(HibernateConfigModel.getUser());
+        HibernateConfigModel_.setDatabase(database);
+                
+        this.setHibernateConfigModelLocal(HibernateConfigModel_);
+        
+        if(connectToLocal){
+            this.connectToDbLocal();
+        }
+        
+        return HibernateConfigModel_;
+    }
+    
     public SessionFactory buildSessionFactoryFromHibernateConfigModelCreate(HibernateConfigModel HibernateConfigModel) throws Exception{
         return buildSessionFactoryFromHibernateConfigModel(HibernateConfigModel, "create");
     }
@@ -313,8 +332,7 @@ public class HibernateUtil {
         final List<Class> classes = new ArrayList<>();
         classes.add(Company.class);
         classes.add(CTipoRelacion.class);
-        classes.add(CTipoComprobante.class);
-        classes.add(CRegimenfiscal.class);
+        classes.add(CTipoComprobante.class);        
         classes.add(CPaymentMethod.class);
         classes.add(CPaymentForm.class);
         classes.add(CFDIRelacionadosPago.class);
@@ -476,6 +494,7 @@ public class HibernateUtil {
         classes.add(ServerSession.class);
         classes.add(CCodigopostal.class);
         classes.add(CCountry.class);
+        classes.add(CRegimenfiscal.class);
         return classes;
     }
     

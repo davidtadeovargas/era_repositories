@@ -47,14 +47,14 @@ public class HibernateConfigUtil {
         return HibernateConfigModel;
     }
     
-    final private Configuration getConfigurationObject(){
+    private Configuration getConfigurationObject(){
         
         File config = new File("hibernate.cfg.xml");
         Configuration configuration = new Configuration().configure();
         return configuration;
     }
     
-    final private String getInstanceFromJDBCUrl(){
+    private String getInstanceFromJDBCUrl(){
         
         Configuration configuration = getConfigurationObject();
         final String url = configuration.getProperty("hibernate.connection.url");
@@ -68,21 +68,21 @@ public class HibernateConfigUtil {
         return instance;
     }
     
-    final private String getUserFromJDBCUrl(){
+    private String getUserFromJDBCUrl(){
         
         Configuration configuration = getConfigurationObject();
         final String username = configuration.getProperty("hibernate.connection.username");        
         return username;
     }
     
-    final private String getPasswordFromJDBCUrl(){
+    private String getPasswordFromJDBCUrl(){
         
         Configuration configuration = getConfigurationObject();
         final String password = configuration.getProperty("hibernate.connection.password");        
         return password;
     }
     
-    final private int getPortFromJDBCUrl(){
+    private int getPortFromJDBCUrl(){
         
         Configuration configuration = getConfigurationObject();
         final String url = configuration.getProperty("hibernate.connection.url");
@@ -97,7 +97,7 @@ public class HibernateConfigUtil {
         return Integer.valueOf(port);
     }
     
-    final private String getDatabaseFromJDBCUrl(){
+    private String getDatabaseFromJDBCUrl(){
         
         Configuration configuration = getConfigurationObject();
         final String url = configuration.getProperty("hibernate.connection.url");

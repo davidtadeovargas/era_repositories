@@ -74,6 +74,17 @@ public class MysqlScriptsUtil {
     
     private int loadCatalogFileIntoDatabase(final String catalogFile,final String database, String user, String password, String instance, int port) throws Exception {
         
+        final FilesUtility FilesUtility = UtilitiesFactory.getSingleton().getFilesUtility();
+        String connectionFile = "config.cnf";
+        final String appPath = UtilitiesFactory.getSingleton().getPathsUtility().getAppPath();
+        connectionFile = appPath + "\\" + connectionFile;        
+        FilesUtility.createNewFile(connectionFile);
+        final String text = "[mysql]\n" +
+                            "user = " + user + "\n"+
+                            "password = " + password + "\n" +
+                            "host = " + instance + "\n";        
+        FilesUtility.writeToExistingFile(connectionFile, text);
+        
         //Load catalogs
         Process p = null;
         Runtime runtime = Runtime.getRuntime();
@@ -85,7 +96,7 @@ public class MysqlScriptsUtil {
         if(!new File(dbEmpresasSQLPath).exists()){
             throw new DBEraSQLFileNotFoundException();
         }                   
-        String exec = mysqldumpExecutable + " --max_allowed_packet=100M --host=" + instance + " --user=" + user +  " --password=" + password + "  " + database + " --execute=\"source " + dbEmpresasSQLPath + "\"";
+        String exec = mysqldumpExecutable + " --defaults-extra-file=\"" + connectionFile + "\" --max_allowed_packet=100M " + database + " --execute=\"source " + dbEmpresasSQLPath + "\"";
 
         LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " running exec " + exec);
 
@@ -110,6 +121,8 @@ public class MysqlScriptsUtil {
            }   
         }        
 
+        FilesUtility.deleteFile(connectionFile);
+        
         return processComplete;
     }
     
@@ -121,7 +134,7 @@ public class MysqlScriptsUtil {
     public int creaDB(final String database, String user, String password, String instance, int port) throws Exception {
         
         LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Creating database " + database);
-
+        
         //Create the database
         String query = "CREATE DATABASE " + database;
         String sCon = "jdbc:mysql://" + instance + ":" + port + "/sys?user=" + user + "&password=" + password + "&verifyServerCertificate=false&useSSL=false";

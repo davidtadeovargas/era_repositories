@@ -6,7 +6,6 @@
 package com.era.repositories;
 
 import com.era.models.CCodigopostal;
-import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.List;
 import org.hibernate.Query;

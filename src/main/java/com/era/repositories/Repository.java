@@ -464,9 +464,9 @@ public class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Saving object " + Object.getClass().getName());
         
-        final String user = UtilitiesFactory.getSingleton().getUserSessionUtility().getUser();
-        final String sucursal = UtilitiesFactory.getSingleton().getUserSessionUtility().getSucursal();
-        final String station = UtilitiesFactory.getSingleton().getUserSessionUtility().getEstation();
+        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getStation();
+        final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucursal();
+        final String station = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getEstacglo();
                 
         setField(Object, "sucu", sucursal);
         setField(Object, "nocaj", station);
@@ -499,9 +499,9 @@ public class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating sql " + sqlQuery);
         
-        final String user = UtilitiesFactory.getSingleton().getUserSessionUtility().getUser();
-        final String sucursal = UtilitiesFactory.getSingleton().getUserSessionUtility().getSucursal();
-        final String station = UtilitiesFactory.getSingleton().getUserSessionUtility().getEstation();
+        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getStation();
+        final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucursal();
+        final String station = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getEstacglo();
                 
         sqlQuery = sqlQuery + ", estac = \"" + user + "\", sucu = \"" + sucursal + "\", nocaj = \"" + station + "\"";
         
@@ -522,9 +522,9 @@ public class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating object " + Object.getClass().getName());
         
-        final String user = UtilitiesFactory.getSingleton().getUserSessionUtility().getUser();
-        final String sucursal = UtilitiesFactory.getSingleton().getUserSessionUtility().getSucursal();
-        final String station = UtilitiesFactory.getSingleton().getUserSessionUtility().getEstation();
+        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getStation();
+        final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucursal();
+        final String station = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getEstacglo();
                 
         setField(Object, "sucu", sucursal);
         setField(Object, "nocaj", station);

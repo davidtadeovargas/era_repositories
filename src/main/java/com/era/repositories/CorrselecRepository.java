@@ -34,7 +34,7 @@ public class CorrselecRepository extends Repository {
     final public Corrselec getByEstac(final String estac) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Sales where estac = :estac";

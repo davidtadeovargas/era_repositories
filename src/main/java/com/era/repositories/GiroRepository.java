@@ -22,7 +22,7 @@ public class GiroRepository extends Repository {
     final public Giro getByGiro(final String gir) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Giro where gir = :gir";

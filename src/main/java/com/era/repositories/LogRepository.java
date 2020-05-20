@@ -6,6 +6,7 @@
 package com.era.repositories;
 
 import com.era.models.Log;
+import com.era.utilities.UtilitiesFactory;
 
 /**
  *
@@ -45,7 +46,7 @@ public class LogRepository extends Repository {
     
     final public Log userLoggedToSystem() throws Exception {
         
-        final String user = RepositoryFactory.getInstance().getUsersRepository().getUser();
+        final String user = UtilitiesFactory.getSingleton().getUserSessionUtility().getUser();
         
         Log Log = new Log();
         Log.setCod(user);
@@ -60,7 +61,7 @@ public class LogRepository extends Repository {
     
     final public Log userLoggedOutToSystem() throws Exception {
         
-        final String user = RepositoryFactory.getInstance().getUsersRepository().getUser();
+        final String user = UtilitiesFactory.getSingleton().getUserSessionUtility().getUser();
         
         Log Log = new Log();
         Log.setCod(user);

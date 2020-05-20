@@ -25,7 +25,7 @@ public class ComprsRepository extends Repository {
     final public int getTotalComprsByProv(final String prov) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "select count(distinct prov) from Comprs WHERE prov = :prov";
         Query query = session.createQuery(hql);
@@ -44,7 +44,7 @@ public class ComprsRepository extends Repository {
     final public Comprs getByProvAndNoDoc(final String prov, final String nodoc) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM Comprs where prov = :prov AND nodoc = :nodoc";
         Query query = session.createQuery(hql);
@@ -82,7 +82,7 @@ public class ComprsRepository extends Repository {
     final public List<Comprs> getAllByProv(final String prov) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM Comprs where prov = :prov";
         Query query = session.createQuery(hql);

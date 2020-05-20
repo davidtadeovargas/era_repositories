@@ -23,7 +23,7 @@ public class DomentcliRepository extends Repository {
     final public Domentcli getByCustomer(final String codemp) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Domentcli where codemp = :codemp";

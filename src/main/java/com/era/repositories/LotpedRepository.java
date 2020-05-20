@@ -22,7 +22,7 @@ public class LotpedRepository extends Repository {
     final public Lotped getByLotAndPed(final String lot, final String pedimen) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM Lotped where lot = :lot AND configuration = :configuration AND pedimen = :pedimen";
         Query query = session.createQuery(hql);

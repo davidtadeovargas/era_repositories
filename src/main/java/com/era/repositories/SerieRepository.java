@@ -11,7 +11,6 @@ import com.era.models.Serie;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.classic.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
@@ -30,7 +29,7 @@ public class SerieRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(SerieRepository.class, "Hibernate: Getting first serie NOTC");
                 
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         Criteria c = session.createCriteria(Serie.class);
         c.addOrder(Order.asc("id"));
@@ -50,7 +49,7 @@ public class SerieRepository extends Repository {
     final public List<Serie> getAllByType(final String type) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM Serie where type = :type";
         Query query = session.createQuery(hql);
@@ -269,11 +268,11 @@ public class SerieRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(SerieRepository.class, "Hibernate: Getting serie by serie: " + serie);
                 
         //Open database
-        Session session_ = HibernateUtil.getSingleton().getSessionFactory().openSession();
-        session_.beginTransaction();
+        this.openSession();
+        session.beginTransaction();
         
         String hql = "FROM Serie where serie = :serie";
-        Query query = session_.createQuery(hql);
+        Query query = session.createQuery(hql);
         query.setParameter("serie", serie);
         Serie Serie = query.list().size() > 0 ? (Serie)query.list().get(0):null;
         
@@ -288,11 +287,11 @@ public class SerieRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(SerieRepository.class, "Hibernate: Getting serie by type: " + type);
                 
         //Open database
-        Session session_ = HibernateUtil.getSingleton().getSessionFactory().openSession();
-        session_.beginTransaction();
+        this.openSession();
+        session.beginTransaction();
         
         String hql = "FROM Serie where type = :type";
-        Query query = session_.createQuery(hql);
+        Query query = session.createQuery(hql);
         query.setParameter("type", type);
         Serie Serie = query.list().size() > 0 ? (Serie)query.list().get(0):null;
         

@@ -24,7 +24,7 @@ public class PartcomprsRepository extends Repository {
     final public List<Partcomprs> getAllByComp(final String codcom) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM Partcomprs where codcom = :codcom";
         Query query = session.createQuery(hql);

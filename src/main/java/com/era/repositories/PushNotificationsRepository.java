@@ -50,7 +50,7 @@ public class PushNotificationsRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(PushNotificationsRepository.class, "Hibernate: Getting today notifications");
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         Query query = session.createQuery("from PushNotification where date(created) = date(now())");
         List<PushNotification> PushNotifications = query.list();
@@ -70,7 +70,7 @@ public class PushNotificationsRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(PushNotificationsRepository.class, "Hibernate: Getting month notifications");
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         Query query = session.createQuery("from PushNotification where MONTH(date(created)) = MONTH(date(now()))");
         List<PushNotification> PushNotifications = query.list();

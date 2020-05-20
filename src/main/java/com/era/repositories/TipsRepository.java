@@ -22,7 +22,7 @@ public class TipsRepository extends Repository {
     final public Tips getBytType(final String type) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Tips where cod = :type";

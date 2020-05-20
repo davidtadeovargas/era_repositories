@@ -24,7 +24,7 @@ public class SuppliersRepository extends Repository {
     final public Supplier getByProvCode(final String code) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM Supplier where prov = :code";
         Query query = session.createQuery(hql);
@@ -41,7 +41,7 @@ public class SuppliersRepository extends Repository {
     final public Supplier getByRFC(final String rfc, final String nom) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM Supplier where rfc = :rfc AND nom = :nom";
         Query query = session.createQuery(hql);

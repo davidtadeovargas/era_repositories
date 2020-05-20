@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -5,7 +6,6 @@
  */
 package com.era.repositories;
 
-import com.era.models.Supplier;
 import com.era.models.Unid;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.List;
@@ -24,7 +24,7 @@ public class UnidsRepository extends Repository {
     final public List<Unid> getAllClaveSAT() throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM Unid where claveSAT != '' AND claveSAT is not null";
         Query query = session.createQuery(hql);        

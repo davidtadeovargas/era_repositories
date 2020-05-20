@@ -19,10 +19,6 @@ import org.hibernate.SQLQuery;
  */
 public class UsersRepository extends Repository {
 
-    private String user = "INICIAL";
-    private String estac = "INICIAL";
-    private String sucursal = "INICIAL";
-    
     protected UsersRepository(){
         super(User.class);
     }        
@@ -30,7 +26,7 @@ public class UsersRepository extends Repository {
     final public User getUsrByCode(final String code) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM User where estac = :code";
         Query query = session.createQuery(hql);
@@ -47,7 +43,7 @@ public class UsersRepository extends Repository {
     final public boolean isSalesPointUser(final String code) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM User where estac = :code";
         Query query = session.createQuery(hql);
@@ -64,7 +60,7 @@ public class UsersRepository extends Repository {
     final public boolean userExists(final String code) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM User where estac = :code";
         Query query = session.createQuery(hql);
@@ -81,7 +77,7 @@ public class UsersRepository extends Repository {
     final public String getDecryptedUserPassword(final String code) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM User where estac = :code";
         Query query = session.createQuery(hql);
@@ -108,7 +104,7 @@ public class UsersRepository extends Repository {
     final public void userLoggedToSystem(final String code) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM User where estac = :code";
         Query query = session.createQuery(hql);
@@ -126,7 +122,7 @@ public class UsersRepository extends Repository {
     final public List<User> getAllVends() throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM User where vend = true";
         Query query = session.createQuery(hql);        
@@ -142,7 +138,7 @@ public class UsersRepository extends Repository {
     final public List<User> getAllCashAdmin() throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM User where admcaj = true";
         Query query = session.createQuery(hql);        
@@ -158,7 +154,7 @@ public class UsersRepository extends Repository {
     final public void deleteByEstac(final String estac) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         //Save
@@ -182,35 +178,5 @@ public class UsersRepository extends Repository {
         final List<User> users = (List<User>) this.getAllLike(likes, search);
         
         return users;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getStation() {
-        return estac;
-    }
-
-    public void setStation(String estac) {
-        this.estac = estac;
-    }
-
-    public String getSucursal() {
-        return sucursal;
-    }
-
-    public void setSucursal(String sucursal) {
-        this.sucursal = sucursal;
-    }
-    
-    public void setUserInSession(final String user, final String estac, final String sucursal){
-        this.user = user;
-        this.estac = estac;
-        this.sucursal = sucursal;
-    }
+    }   
 }

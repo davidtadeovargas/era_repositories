@@ -25,7 +25,7 @@ public class BasDatsRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(BasDatsRepository.class, "Hibernate: Getting basdats by code: " + companyCode);
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM BasDats where codemp = :codemp";
         Query query = session.createQuery(hql);
@@ -42,11 +42,11 @@ public class BasDatsRepository extends Repository {
     }
     
     final public BasDats getByDBName(final String bd) throws Exception{
-        
+                        
         LoggerUtility.getSingleton().logInfo(BasDatsRepository.class, "Hibernate: Getting basdats by bd: " + bd);
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM BasDats where bd = :bd";
         Query query = session.createQuery(hql);
@@ -63,9 +63,6 @@ public class BasDatsRepository extends Repository {
     }
     
     final public BasDats deleteBasDats(final String companyCode) throws Exception {
-        
-        //Some tables are from dbempresas and when trying to access them need to change the connection
-        changeConnectionQuestion();
         
         LoggerUtility.getSingleton().logInfo(CompanyRepository.class, "Hibernate: Deleting basdats by code: " + companyCode);
         

@@ -21,7 +21,7 @@ public class SalesRepository extends Repository {
     final public int getTotalSalesFromCustomer(final String codemp) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "select count(*) from Sales where codemp = :codemp";
         Query query = session.createQuery(hql);
@@ -38,7 +38,7 @@ public class SalesRepository extends Repository {
     final public Sales getByNotCred(final String notcred) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Sales where notcred = :notcred";
@@ -57,7 +57,7 @@ public class SalesRepository extends Repository {
     final public Sales getByVentaRef(final String vtaRef) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Sales where vtaRef = :vtaRef";
@@ -78,7 +78,7 @@ public class SalesRepository extends Repository {
         final Tips Tips = RepositoryFactory.getInstance().getTipsRepository().getFacType();
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
                 
         String hql = "FROM Sales where tipdoc = :tipdoc";
@@ -97,7 +97,7 @@ public class SalesRepository extends Repository {
     final public Sales getByVenta(final int vta) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Sales where vta = :vta";
@@ -116,7 +116,7 @@ public class SalesRepository extends Repository {
     final public Sales getLastSale() throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Sales ORDER BY vta DESC";

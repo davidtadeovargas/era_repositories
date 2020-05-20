@@ -23,7 +23,7 @@ public class ERPermisosRepository extends Repository {
     final public ERPermisos getByUsuario(final int FKIdUsuario) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM ERPermisos where FKIdUsuario = :FKIdUsuario";
         Query query = session.createQuery(hql);

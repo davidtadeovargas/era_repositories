@@ -23,7 +23,7 @@ public class ImpuesXProductRepository extends Repository {
     final public List<ImpuesXProduct> getAllByProd(final String produ) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM ImpuesXProduct WHERE produ = :produ";

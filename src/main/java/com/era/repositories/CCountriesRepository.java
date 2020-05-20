@@ -28,7 +28,7 @@ public class CCountriesRepository extends Repository {
     final public CCountry getCountryByCode(final String code) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM CCountry where code = :code";

@@ -64,6 +64,7 @@ import com.era.models.User;
 import com.era.models.Warehouse;
 import com.era.models.Zona;
 import com.era.repositories.utils.HibernateUtil;
+import com.era.utilities.UtilitiesFactory;
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Iterator;
@@ -84,6 +85,7 @@ public class Repository {
     
     
     protected Repository(final Class ClassEntity){
+        
         this.ClassEntity = ClassEntity;
     }
     
@@ -97,11 +99,8 @@ public class Repository {
     
     public List<?> getAllByPage(final int pageNumber, int pageSize) throws Exception {
         
-        //Some tables are from dbempresas and when trying to access them need to change the connection
-        changeConnectionQuestion();
-        
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM " + ClassEntity.getName();
         Query query = session.createQuery(hql);
@@ -116,24 +115,29 @@ public class Repository {
         return records;
     }
     
-    /*
-        Some tables are from dbempresas and when trying to access them need to change the connection
-    */
-    final protected void changeConnectionQuestion(){
+    public void openSession() throws Exception {
+        
+        //Determine if open dbempresas or a local one
         if( ClassEntity.getName().compareTo(CCountry.class.getName())==0 ||
             ClassEntity.getName().compareTo(CCodigopostal.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CRegimenfiscal.class.getName())==0){
+            ClassEntity.getName().compareTo(CRegimenfiscal.class.getName())==0 || 
+            ClassEntity.getName().compareTo(BasDats.class.getName())==0 ||
+            ClassEntity.getName().compareTo(License.class.getName())==0 || 
+            ClassEntity.getName().compareTo(ServerSession.class.getName())==0){
             HibernateUtil.getSingleton().connectToDbEmpresas();
-        }            
+        }
+        else{
+            HibernateUtil.getSingleton().connectToDbLocal();
+        }
+        
+        //Open the session
+        session = HibernateUtil.getSingleton().getSessionFactory().openSession();     
     }
     
     final public long getCount() throws Exception {
         
-        //Some tables are from dbempresas and when trying to access them need to change the connection
-        changeConnectionQuestion();
-        
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "select count(*) from " + ClassEntity.getName();
         Query query = session.createQuery(hql);        
@@ -148,11 +152,8 @@ public class Repository {
     
     final public Object getByID(final int id) throws Exception {
                         
-        //Some tables are from dbempresas and when trying to access them need to change the connection
-        changeConnectionQuestion();
-                
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Geting by id " + id + " from " + ClassEntity.getName());
@@ -167,11 +168,8 @@ public class Repository {
     
     final public List<?> getAll() throws Exception{
         
-        //Some tables are from dbempresas and when trying to access them need to change the connection
-        changeConnectionQuestion();
-        
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Geting all objects from " + ClassEntity.getName());
@@ -193,7 +191,7 @@ public class Repository {
     final public List<?> getAllLike(final List<String> likes, final String search) throws Exception{
     
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String cad = "WHERE";
@@ -220,7 +218,7 @@ public class Repository {
     final public Object getByNoRefer(final String norefer) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM " + ClassEntity.getName() + " WHERE norefer = :norefer";
@@ -258,7 +256,7 @@ public class Repository {
     final public Object delete(final Object Object) throws Exception {
 
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Deleting Object " + Object.getClass().getName());
@@ -300,7 +298,7 @@ public class Repository {
     final public Object getByCode(final String code) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM " + ClassEntity.getName() + " where code = :code";
@@ -320,7 +318,7 @@ public class Repository {
     final public Object getByCod(final String cod) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM " + ClassEntity.getName() + " where cod = :cod";
@@ -339,7 +337,7 @@ public class Repository {
     final public Object getByDescription(final String description) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM " + ClassEntity.getName() + " where description = :description";
@@ -358,7 +356,7 @@ public class Repository {
     final public List<?> getAllByNameFilter(final String filter) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         Query query = session.createQuery("from " + ClassEntity.getName() + " where name like '%:filter%'");
@@ -376,7 +374,7 @@ public class Repository {
     final public List<?> getAllByCodeFilter(final String filter) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         Query query = session.createQuery("from " + ClassEntity.getName() + " where code like '%:filter%'");
@@ -394,7 +392,7 @@ public class Repository {
     final public List<?> getAllByDescriptionFilter(final String filter) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         Query query = session.createQuery("from " + ClassEntity.getName() + " where description like '%:filter%'");
@@ -412,7 +410,7 @@ public class Repository {
     final public Object getByName(final String name) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM " + ClassEntity.getName() + " where name = :name";
@@ -461,14 +459,14 @@ public class Repository {
     final public Object save(final Object Object) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Saving object " + Object.getClass().getName());
         
-        final String user = RepositoryFactory.getInstance().getUsersRepository().getUser();
-        final String sucursal = RepositoryFactory.getInstance().getUsersRepository().getSucursal();
-        final String station = RepositoryFactory.getInstance().getUsersRepository().getStation();
+        final String user = UtilitiesFactory.getSingleton().getUserSessionUtility().getUser();
+        final String sucursal = UtilitiesFactory.getSingleton().getUserSessionUtility().getSucursal();
+        final String station = UtilitiesFactory.getSingleton().getUserSessionUtility().getEstation();
                 
         setField(Object, "sucu", sucursal);
         setField(Object, "nocaj", station);
@@ -496,14 +494,14 @@ public class Repository {
     final public void updateSQL(String sqlQuery) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating sql " + sqlQuery);
         
-        final String user = RepositoryFactory.getInstance().getUsersRepository().getUser();
-        final String sucursal = RepositoryFactory.getInstance().getUsersRepository().getSucursal();
-        final String station = RepositoryFactory.getInstance().getUsersRepository().getStation();
+        final String user = UtilitiesFactory.getSingleton().getUserSessionUtility().getUser();
+        final String sucursal = UtilitiesFactory.getSingleton().getUserSessionUtility().getSucursal();
+        final String station = UtilitiesFactory.getSingleton().getUserSessionUtility().getEstation();
                 
         sqlQuery = sqlQuery + ", estac = \"" + user + "\", sucu = \"" + sucursal + "\", nocaj = \"" + station + "\"";
         
@@ -519,14 +517,14 @@ public class Repository {
     final public Object update(final Object Object) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating object " + Object.getClass().getName());
         
-        final String user = RepositoryFactory.getInstance().getUsersRepository().getUser();
-        final String sucursal = RepositoryFactory.getInstance().getUsersRepository().getSucursal();
-        final String station = RepositoryFactory.getInstance().getUsersRepository().getStation();
+        final String user = UtilitiesFactory.getSingleton().getUserSessionUtility().getUser();
+        final String sucursal = UtilitiesFactory.getSingleton().getUserSessionUtility().getSucursal();
+        final String station = UtilitiesFactory.getSingleton().getUserSessionUtility().getEstation();
                 
         setField(Object, "sucu", sucursal);
         setField(Object, "nocaj", station);

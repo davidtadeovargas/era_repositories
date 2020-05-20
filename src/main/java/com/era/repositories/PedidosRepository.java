@@ -9,7 +9,6 @@ import com.era.models.Pedidos;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.List;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 
 /**
  *
@@ -28,7 +27,7 @@ public class PedidosRepository extends Repository {
     final public List<Pedidos> getAllByVta(final int vta) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM Pedidos where vta = :vta";
         Query query = session.createQuery(hql);

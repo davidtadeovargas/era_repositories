@@ -34,7 +34,7 @@ public class ServerSessionRepository extends Repository {
     final public ServerSession getServerSession() throws Exception {
                         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         Query query = session.createQuery("from ServerSession");
         ServerSession ServerSession = query.list().size() > 0 ? (ServerSession) query.list().get(0):null;

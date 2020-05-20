@@ -26,7 +26,7 @@ public class TaxesRepository extends Repository {
     final public Tax getByCodeImpue(final String codimpue) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Tax WHERE codimpue = :codimpue";
@@ -44,7 +44,7 @@ public class TaxesRepository extends Repository {
     final public void deleteByCodimpue(final String codimpue) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         //Save

@@ -24,7 +24,7 @@ public class CxcRepository extends Repository {
     final public Cxc getByNorefer(final String norefer) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Cxc WHERE norefer = :norefer";
@@ -47,7 +47,7 @@ public class CxcRepository extends Repository {
                             final String empre) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Cxc WHERE norefer = :norefer AND noser = :noser AND id_venta = :id_venta AND empre = :empre";
@@ -69,7 +69,7 @@ public class CxcRepository extends Repository {
     final public void deleteByConfg(final String norefer) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         //Save

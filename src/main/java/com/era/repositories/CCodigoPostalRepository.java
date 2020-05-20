@@ -28,7 +28,7 @@ public class CCodigoPostalRepository extends Repository {
     final public CCodigopostal getByPostalCode(final String cp) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM CCodigopostal where cp = :cp";
         Query query = session.createQuery(hql);
@@ -45,7 +45,7 @@ public class CCodigoPostalRepository extends Repository {
     final public boolean existsExpeditionPlace(final String estate) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM CCodigopostal where estate = :estate";
         Query query = session.createQuery(hql);
@@ -62,11 +62,8 @@ public class CCodigoPostalRepository extends Repository {
     
     public List<CCodigopostal> getAllByPageExpeditionPlace(final int pageNumber) throws Exception {
         
-        //Some tables are from dbempresas and when trying to access them need to change the connection
-        changeConnectionQuestion();
-        
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         final int pageSize = 50;
         

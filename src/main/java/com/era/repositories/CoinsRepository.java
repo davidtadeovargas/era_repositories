@@ -6,7 +6,6 @@
 package com.era.repositories;
 
 import com.era.models.Coin;
-import com.era.models.CuentasContables;
 import com.era.repositories.utils.HibernateUtil;
 import org.hibernate.Query;
 
@@ -23,7 +22,7 @@ public class CoinsRepository extends Repository {
     final public Coin getByCoin(final String mon) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Coin where mon = :mon";

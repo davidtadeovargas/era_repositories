@@ -23,7 +23,7 @@ public class DeliverAddressCustomerRepository extends Repository {
     final public List<DeliverAddressCustomer> getByCustomerCode(final String customerCode) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         List<DeliverAddressCustomer> deliveries;
         String hql = "FROM DeliverAddressCustomer where customerCode = :customerCode";
@@ -41,7 +41,7 @@ public class DeliverAddressCustomerRepository extends Repository {
     final public DeliverAddressCustomer getByCustomerCodeSingle(final String customerCode) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         List<DeliverAddressCustomer> deliveries;
         String hql = "FROM DeliverAddressCustomer where customerCode = :customerCode";
@@ -59,7 +59,7 @@ public class DeliverAddressCustomerRepository extends Repository {
     final public void deleteByCustomerCode(final String customerCode) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         List<DeliverAddressCustomer> deliveries = this.getByCustomerCode(customerCode);
         for(DeliverAddressCustomer DeliverAddressCustomer:deliveries){

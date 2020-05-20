@@ -89,7 +89,7 @@ public class ConsecsRepository extends Repository {
     private Consec getConsec(final String serie, final String type) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM Consec where type = :type AND serie = :serie";
         Query query = session.createQuery(hql);
@@ -107,7 +107,7 @@ public class ConsecsRepository extends Repository {
     private List<Consec> getByType(final String type) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM Consec where type = :type";
         Query query = session.createQuery(hql);

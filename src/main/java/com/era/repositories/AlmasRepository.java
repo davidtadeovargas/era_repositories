@@ -23,7 +23,7 @@ public class AlmasRepository extends Repository {
     final public Almas getByAlma(final String alma) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Almas WHERE alma = :alma";
@@ -42,7 +42,7 @@ public class AlmasRepository extends Repository {
     final public void deleteByAlma(final String alma) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Almas WHERE almca = :alma";

@@ -22,7 +22,7 @@ public class CRegimenFiscalRepository extends Repository {
     final public CRegimenfiscal getRegimenByCode(final String c_RegimenFiscal) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM CRegimenfiscal where c_RegimenFiscal = :c_RegimenFiscal";
         Query query = session.createQuery(hql);

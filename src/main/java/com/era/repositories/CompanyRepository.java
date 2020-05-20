@@ -51,7 +51,7 @@ public class CompanyRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(CompanyRepository.class, "Hibernate: Getting customer by code " + companyCode);
                 
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM Company where companyCode = :companyCode";
         Query query = session.createQuery(hql);
@@ -70,7 +70,7 @@ public class CompanyRepository extends Repository {
     final public Company getCustomerBySerieAndCode(final String serie,final String companyCode) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM Company where companyCode = :companyCode and serie = :serie";
         Query query = session.createQuery(hql);
@@ -88,7 +88,7 @@ public class CompanyRepository extends Repository {
     final public Company rfcExists(final String existRFC, final String rfcOri) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM Company where rfc = :existRFC and rfc != :rfcOri";
         Query query = session.createQuery(hql);
@@ -106,7 +106,7 @@ public class CompanyRepository extends Repository {
     final public void deleteByCodemp(final String codemp) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         //Save

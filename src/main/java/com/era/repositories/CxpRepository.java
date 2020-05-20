@@ -25,7 +25,7 @@ public class CxpRepository extends Repository {
     final public Cxp getByNorefer(final String norefer) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Cxp WHERE norefer = :norefer";
@@ -44,7 +44,7 @@ public class CxpRepository extends Repository {
     final public void deleteByConfg(final String norefer) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         //Save
@@ -60,7 +60,7 @@ public class CxpRepository extends Repository {
     final public double getPendientePago(final String prov) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         //Save

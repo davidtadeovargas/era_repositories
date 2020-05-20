@@ -22,7 +22,7 @@ public class CountriesRepository extends Repository {
     final public CCountry getCountryByCode(final String countryCode) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();        
+        this.openSession();
         
         String hql = "FROM Country where countryCode = :countryCode";
         Query query = session.createQuery(hql);

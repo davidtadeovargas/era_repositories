@@ -23,7 +23,7 @@ public class IngresosEncabRepository extends Repository {
     final public IngresosEncab getByNoserNorefer(final String noser, final String norefer) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM IngresosEncab WHERE noser = :noser AND norefer = :norefer";

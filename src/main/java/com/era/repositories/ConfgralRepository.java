@@ -28,7 +28,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getSistemClasifByConf(final String conf) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Confgral where clasif = 'sist' AND conf = :conf";
@@ -47,7 +47,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getSalesClasifByConf(final String conf) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Confgral where clasif = 'vtas' AND conf = :conf";
@@ -66,7 +66,7 @@ public class ConfgralRepository extends Repository {
     final public String getPtovtaAlmacen() throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Confgral where clasif = 'vtas' AND conf = :conf";
@@ -86,7 +86,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getByClasif(final String clasif) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Confgral where clasif = :clasif";
@@ -106,7 +106,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getByConfigPostdecimal() throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Confgral where clasif = :clasif AND conf = :conf";
@@ -126,7 +126,7 @@ public class ConfgralRepository extends Repository {
     final public boolean initWithSalesPointWindow() throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Confgral where clasif = :clasif AND conf = :conf";
@@ -146,7 +146,7 @@ public class ConfgralRepository extends Repository {
     final public List<Confgral> getAllActivesByClasif(final String clasif) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Confgral where clasif = :clasif AND val = 1";
@@ -165,7 +165,7 @@ public class ConfgralRepository extends Repository {
     final public List<Confgral> getAllActivesByConf(final String clasif) throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Confgral where clasif = :clasif";
@@ -184,7 +184,7 @@ public class ConfgralRepository extends Repository {
     final public List<Confgral> getAllActivesConfs() throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         String hql = "FROM Confgral where val = :val";
@@ -211,7 +211,7 @@ public class ConfgralRepository extends Repository {
     final public void deleteByConfg(final String conf) throws Exception{
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         session.beginTransaction();
         
         //Save

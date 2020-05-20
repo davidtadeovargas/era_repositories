@@ -22,7 +22,7 @@ public class GeneralConfigsRepository extends Repository {
     final public GeneralConfig getConfigCFDIi33() throws Exception {
         
         //Open database
-        session = HibernateUtil.getSingleton().getSessionFactory().openSession();
+        this.openSession();
         
         String hql = "FROM GeneralConfig where casification = :casification AND configuration = :configuration";
         Query query = session.createQuery(hql);

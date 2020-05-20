@@ -119,6 +119,24 @@ public class UsersRepository extends Repository {
         }
     }
     
+    final public void userDeloggedToSystem(final String code) throws Exception {
+        
+        //Open database
+        this.openSession();
+        
+        String hql = "FROM User where estac = :code";
+        Query query = session.createQuery(hql);
+        query.setParameter("code", code);
+        User User = query.list().size() > 0 ? (User)query.list().get(0):null;
+        
+        //Close database        
+        HibernateUtil.getSingleton().shutdown();
+        
+        if(User!=null){
+            RepositoryFactory.getInstance().getLogRepository().userLoggedOutToSystem();
+        }
+    }
+    
     final public List<User> getAllVends() throws Exception {
         
         //Open database

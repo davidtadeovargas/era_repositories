@@ -193,18 +193,29 @@ public class Repository {
         //Open database
         this.openSession();
         session.beginTransaction();
-        
-        String cad = "WHERE";
-        cad = likes.stream().map((like) -> " " + like + " ('%" + search + "%') OR").reduce(cad, String::concat);
+             
+        //Get results
+        String cad;
         if(likes.isEmpty()){
             cad = "";
         }
         else{
-            cad = cad.substring(0,cad.length() - 3);
-        }        
-        
+            
+            cad = "WHERE ";
+            for(String like:likes){
+                cad += like + " LIKE:" + like + " OR ";
+            }
+            if(cad.endsWith(" OR ")){
+                cad = cad.substring(0, cad.length() - " OR ".length());
+            }
+        }
         String hql = "FROM " + ClassEntity.getName() + " " + cad;
-        Query query = session.createQuery(hql);        
+        Query query = session.createQuery(hql);
+        if(!cad.isEmpty()){
+            for(String like:likes){
+                query.setString(like,"%" + search + "%");
+            }
+        }
         List<?> list = query.list();
         
         //Close database
@@ -292,7 +303,15 @@ public class Repository {
     }
     
     final public void deleteByCode(final String code) throws Exception{
-        this.deleteSQL("DELETE FROM " + ClassEntity.getName() + " WHERE code = \"" + code + "\"");
+        
+        this.openSession();
+        final String stringQuery = "delete " + ClassEntity.getName() + " where code = :code";
+        LoggerUtility.getSingleton().logInfo(Repository.class, "Deleting by code: " + stringQuery);
+        final Query query = session.createQuery(stringQuery);
+        query.setParameter("code", code);
+        int result = query.executeUpdate();
+        
+        LoggerUtility.getSingleton().logInfo(Repository.class, "Deleting by code finished with result: " + result);
     }
     
     final public Object getByCode(final String code) throws Exception {
@@ -464,9 +483,9 @@ public class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Saving object " + Object.getClass().getName());
         
-        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getStation();
-        final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucursal();
-        final String station = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getEstacglo();
+        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getCode();
+        final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucu();
+        final String station = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getEstac();
                 
         setField(Object, "sucu", sucursal);
         setField(Object, "nocaj", station);
@@ -497,13 +516,16 @@ public class Repository {
         this.openSession();
         session.beginTransaction();
         
-        LoggerUtility.getSingleton().logInfo(Repository.class, "Updating sql " + sqlQuery);
-        
-        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getStation();
-        final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucursal();
-        final String station = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getEstacglo();
+        LoggerUtility.getSingleton().logInfo(Repository.class, "Updating sql " + sqlQuery);                
                 
-        sqlQuery = sqlQuery + ", estac = \"" + user + "\", sucu = \"" + sucursal + "\", nocaj = \"" + station + "\"";
+        if(!sqlQuery.toLowerCase().startsWith("delete from")){
+            
+            final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getCode();
+            final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucu();
+            final String station = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getEstac();
+        
+            sqlQuery = sqlQuery + ", estac = \"" + user + "\", sucu = \"" + sucursal + "\", nocaj = \"" + station + "\"";
+        }        
         
         session.createSQLQuery(sqlQuery).executeUpdate();
         
@@ -522,9 +544,9 @@ public class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating object " + Object.getClass().getName());
         
-        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getStation();
-        final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucursal();
-        final String station = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getEstacglo();
+        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getCode();
+        final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucu();
+        final String station = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getEstac();
                 
         setField(Object, "sucu", sucursal);
         setField(Object, "nocaj", station);
@@ -693,7 +715,7 @@ public class Repository {
             }
             else if(Object instanceof User){
                 User User = (User)Object;
-                cod = User.getEstacglo();
+                cod = User.getEstac();
             }
             else if(Object instanceof Unid){
                 Unid Unid = (Unid)Object;

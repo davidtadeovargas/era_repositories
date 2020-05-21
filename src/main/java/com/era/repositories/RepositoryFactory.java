@@ -139,8 +139,7 @@ public class RepositoryFactory {
     private GralsRepository GralsRepository;
     private GiroRepository GiroRepository;
     private resp355834Repository resp355834Repository;
-    private ZonaRepository ZonaRepository;
-    private WarehouseRepository WarehouseRepository;    
+    private ZonaRepository ZonaRepository;    
     private UsuarioserieRepository UsuarioserieRepository;    
     private UbiadRepository UbiadRepository;
     private TraspasRepository TraspasRepository;
@@ -683,10 +682,6 @@ public class RepositoryFactory {
 
     public ZonaRepository getZonaRepository() {
         if(ZonaRepository==null){ZonaRepository = new ZonaRepository();}return ZonaRepository;
-    }
-
-    public WarehouseRepository getWarehouseRepository() {
-        if(WarehouseRepository==null){WarehouseRepository = new WarehouseRepository();}return WarehouseRepository;
     }
 
     public UsuarioserieRepository getUsuarioserieRepository() {

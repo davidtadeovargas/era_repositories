@@ -11,7 +11,6 @@ import com.era.utilities.UtilitiesFactory;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 
 /**
  *
@@ -28,7 +27,7 @@ public class UsersRepository extends Repository {
         //Open database
         this.openSession();
         
-        String hql = "FROM User where estac = :code";
+        String hql = "FROM User where code = :code";
         Query query = session.createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
@@ -55,12 +54,22 @@ public class UsersRepository extends Repository {
         this.save(User);                
     }
     
+    final public void updateUser(final User User) throws Exception {
+        
+        //Encrypt the user pasword
+        final String passwordEncrypted = UtilitiesFactory.getSingleton().getSecurityUtil().encryptString(User.getPassword().trim());
+        User.setPassword(passwordEncrypted);
+        
+        //Save the user
+        this.update(User);                
+    }
+    
     final public boolean isSalesPointUser(final String code) throws Exception {
         
         //Open database
         this.openSession();
         
-        String hql = "FROM User where estac = :code";
+        String hql = "FROM User where code = :code";
         Query query = session.createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
@@ -77,7 +86,7 @@ public class UsersRepository extends Repository {
         //Open database
         this.openSession();
         
-        String hql = "FROM User where estac = :code";
+        String hql = "FROM User where code = :code";
         Query query = session.createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
@@ -94,7 +103,7 @@ public class UsersRepository extends Repository {
         //Open database
         this.openSession();
         
-        String hql = "FROM User where estac = :code";
+        String hql = "FROM User where code = :code";
         Query query = session.createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
@@ -121,7 +130,7 @@ public class UsersRepository extends Repository {
         //Open database
         this.openSession();
         
-        String hql = "FROM User where estac = :code";
+        String hql = "FROM User where code = :code";
         Query query = session.createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
@@ -139,7 +148,7 @@ public class UsersRepository extends Repository {
         //Open database
         this.openSession();
         
-        String hql = "FROM User where estac = :code";
+        String hql = "FROM User where code = :code";
         Query query = session.createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
@@ -184,26 +193,11 @@ public class UsersRepository extends Repository {
         return users;
     }
     
-    final public void deleteByEstac(final String estac) throws Exception{
-        
-        //Open database
-        this.openSession();
-        session.beginTransaction();
-        
-        //Save
-        final SQLQuery SQLQuery = session.createSQLQuery("DELETE FROM User WHERE estac = :estac");
-        SQLQuery.setParameter("estac", estac);
-        SQLQuery.executeUpdate();
-        
-        //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
-    }
-    
     final public List<User> getByLikeEncabezados(final String search) throws Exception{
         
         final List<String> likes = new ArrayList<>();
-        likes.add("estac");
+        likes.add("code");
+        likes.add("nom");
         likes.add("pass");
         likes.add("falt");
         likes.add("fmod");

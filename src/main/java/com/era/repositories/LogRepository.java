@@ -46,7 +46,7 @@ public class LogRepository extends Repository {
     
     final public Log userLoggedToSystem() throws Exception {
         
-        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getStation();
+        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getCode();
         
         Log Log = new Log();
         Log.setCod(user);
@@ -61,7 +61,7 @@ public class LogRepository extends Repository {
     
     final public Log userLoggedOutToSystem() throws Exception {
         
-        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getStation();
+        final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getCode();
         
         Log Log = new Log();
         Log.setCod(user);

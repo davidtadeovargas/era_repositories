@@ -40,6 +40,21 @@ public class UsersRepository extends Repository {
         return User;
     }
     
+    final public void addUser(final User User) throws Exception {
+        
+        //Get the current default printer
+        final String defaultPrinter = UtilitiesFactory.getSingleton().getPrintersUtility().getDefaultPrinter();
+        User.setTicketPrinter(defaultPrinter);
+        User.setInvoicePrinter(defaultPrinter);
+        
+        //Encrypt the user pasword
+        final String passwordEncrypted = UtilitiesFactory.getSingleton().getSecurityUtil().encryptString(User.getPassword().trim());
+        User.setPassword(passwordEncrypted);
+        
+        //Save the user
+        this.save(User);                
+    }
+    
     final public boolean isSalesPointUser(final String code) throws Exception {
         
         //Open database
@@ -196,5 +211,5 @@ public class UsersRepository extends Repository {
         final List<User> users = (List<User>) this.getAllLike(likes, search);
         
         return users;
-    }   
+    }
 }

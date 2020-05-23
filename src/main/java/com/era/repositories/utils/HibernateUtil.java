@@ -345,8 +345,7 @@ public class HibernateUtil {
         classes.add(Auxiliar.class);
         classes.add(Asocdesc.class);
         classes.add(AsientosContables.class);
-        classes.add(Anaqs.class);
-        classes.add(Almas.class);
+        classes.add(Anaqs.class);        
         classes.add(Aduana.class);
         classes.add(Activos.class);
         classes.add(Actfijcat.class);

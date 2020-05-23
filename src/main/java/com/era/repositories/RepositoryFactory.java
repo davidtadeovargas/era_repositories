@@ -63,7 +63,6 @@ public class RepositoryFactory {
     private AsocdescRepository AsocdescRepository;
     private AsientosContablesRepository AsientosContablesRepository;
     private AnaqsRepository AnaqsRepository;
-    private AlmasRepository AlmasRepository;
     private AduanaRepository AduanaRepository;
     private ActivosRepository ActivosRepository;
     private ActfijcatRepository ActfijcatRepository;
@@ -374,10 +373,6 @@ public class RepositoryFactory {
 
     public AnaqsRepository getAnaqsRepository() {
         if(AnaqsRepository==null){AnaqsRepository = new AnaqsRepository();}return AnaqsRepository;
-    }
-
-    public AlmasRepository getAlmasRepository() {
-        if(AlmasRepository==null){AlmasRepository = new AlmasRepository();}return AlmasRepository;
     }
 
     public AduanaRepository getAduanaRepository() {

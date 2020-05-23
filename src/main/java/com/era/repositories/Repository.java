@@ -7,7 +7,6 @@ package com.era.repositories;
 
 import com.era.logger.LoggerUtility;
 import com.era.models.Aduana;
-import com.era.models.Almas;
 import com.era.models.Anaqs;
 import com.era.models.Banco;
 import com.era.models.BasDats;
@@ -696,10 +695,6 @@ public class Repository {
             else if(Object instanceof Anaqs){
                 Anaqs Anaqs = (Anaqs)Object;
                 cod = Anaqs.getCod();
-            }
-            else if(Object instanceof Almas){
-                Almas Almas = (Almas)Object;
-                cod = Almas.getAlma();
             }
             else if(Object instanceof Aduana){
                 Aduana Aduana = (Aduana)Object;

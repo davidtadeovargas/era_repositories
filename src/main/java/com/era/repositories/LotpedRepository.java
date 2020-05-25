@@ -22,16 +22,16 @@ public class LotpedRepository extends Repository {
     final public Lotped getByLotAndPed(final String lot, final String pedimen) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Lotped where lot = :lot AND configuration = :configuration AND pedimen = :pedimen";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("lot", lot);
         query.setParameter("pedimen", pedimen);
         Lotped Lotped = query.list().size() > 0 ? (Lotped)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Lotped;

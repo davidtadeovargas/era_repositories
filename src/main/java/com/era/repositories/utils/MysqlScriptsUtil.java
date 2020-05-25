@@ -130,8 +130,11 @@ public class MysqlScriptsUtil {
         return loadCatalogFileIntoDatabase("base_catalogs.sql",database, user, password, instance, port);       
     }
     
-    
-    public int creaDB(final String database, String user, String password, String instance, int port) throws Exception {
+    public int loadLocalCatalogFileIntoDatabase(final String database, String user, String password, String instance, int port) throws Exception {
+        return loadCatalogFileIntoDatabase("catalogs.sql",database, user, password, instance, port);       
+    }
+        
+    public void creaDB(final String database, String user, String password, String instance, int port) throws Exception {
         
         LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Creating database " + database);
         
@@ -142,21 +145,10 @@ public class MysqlScriptsUtil {
         Statement st = conn.createStatement();
         st.execute(query);
 
-        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " created");
-
-        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Populating database with schemas");
-
-        final HibernateConfigModel HibernateConfigModel = HibernateUtil.getSingleton().getHibernateConfigModel();
-        HibernateUtil.getSingleton().buildSessionFactoryFromHibernateConfigModelCreate(HibernateConfigModel);
-
-        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Finished populating schemas");       
-        
-        int processComplete = loadCatalogFileIntoDatabase("catalogs.sql",database, user, password, instance, port);
-
-        return processComplete;
+        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " created");        
     }
     
-    public boolean existsDBEmpresasDatabase(String user, String password, String instance, int port) throws Exception {
+    public boolean existsDB(String database, String user, String password, String instance, int port) throws Exception {
         
         LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " checking if dbempresas exists");
                 
@@ -182,11 +174,9 @@ public class MysqlScriptsUtil {
         return exists;
     }
             
-    public int creaDBDBEmpresas(String user, String password, String instance, int port) throws Exception {
+    public void creaDBDBEmpresas(String user, String password, String instance, int port) throws Exception {
         
-        int result = creaDB("dbempresas", user, password, instance, port);
-        
-        return result;
+        creaDB("dbempresas", user, password, instance, port);                
     }
     
     public void rollbackDBEmpresas(String user, String password, String instance, int port) throws Exception {
@@ -200,13 +190,6 @@ public class MysqlScriptsUtil {
         Statement st = conn.createStatement();
         st.execute(query);
 
-        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " finished");
-    }
-    
-    public void creaDBEmpresas(String user, String password, String instance, int port) throws Exception {
-        
-        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Creatin simple dbempresas");
-        creaDBJDBC("dbempresas",user, password, instance, port);        
         LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " finished");
     }
     

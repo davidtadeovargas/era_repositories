@@ -23,17 +23,17 @@ public class DomentcliRepository extends Repository {
     final public Domentcli getByCustomer(final String codemp) throws Exception {
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         String hql = "FROM Domentcli where codemp = :codemp";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("codemp", codemp);
         Domentcli Domentcli = query.list().size() > 0 ? (Domentcli)query.list().get(0):null;
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Domentcli;

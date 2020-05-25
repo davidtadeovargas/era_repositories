@@ -24,17 +24,17 @@ public class CxcRepository extends Repository {
     final public Cxc getByNorefer(final String norefer) throws Exception{
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         String hql = "FROM Cxc WHERE norefer = :norefer";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("norefer", norefer);
         List<Cxc> list = query.list();
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return list.size()>0?list.get(0):null;
@@ -47,11 +47,11 @@ public class CxcRepository extends Repository {
                             final String empre) throws Exception{
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         String hql = "FROM Cxc WHERE norefer = :norefer AND noser = :noser AND id_venta = :id_venta AND empre = :empre";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("norefer", norefer);
         query.setParameter("noser", noser);
         query.setParameter("id_venta", id_venta);
@@ -59,8 +59,8 @@ public class CxcRepository extends Repository {
         List<Cxc> list = query.list();
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return list.size()>0?list.get(0):null;
@@ -69,17 +69,17 @@ public class CxcRepository extends Repository {
     final public void deleteByConfg(final String norefer) throws Exception{
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         //Save
-        final SQLQuery SQLQuery = session.createSQLQuery("DELETE FROM Cxc WHERE norefer = :norefer");
+        final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Cxc WHERE norefer = :norefer");
         SQLQuery.setParameter("norefer", norefer);
         SQLQuery.executeUpdate();
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
     }
     
     final public void cancelaCXC(final int id) throws Exception{

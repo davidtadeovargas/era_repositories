@@ -25,16 +25,16 @@ public class ComprsRepository extends Repository {
     final public int getTotalComprsByProv(final String prov) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "select count(distinct prov) from Comprs WHERE prov = :prov";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("prov", prov);
         Iterator count = query.iterate();
         final int count_ = (int) count.next();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return count_;
@@ -44,16 +44,16 @@ public class ComprsRepository extends Repository {
     final public Comprs getByProvAndNoDoc(final String prov, final String nodoc) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Comprs where prov = :prov AND nodoc = :nodoc";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("prov", prov);
         query.setParameter("nodoc", nodoc);
         Comprs Comprs = query.list().size() > 0 ? (Comprs)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Comprs;
@@ -82,15 +82,15 @@ public class ComprsRepository extends Repository {
     final public List<Comprs> getAllByProv(final String prov) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Comprs where prov = :prov";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("prov", prov);
         List<Comprs> Comprs = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Comprs;

@@ -28,15 +28,15 @@ public class PartvtaRepository extends Repository {
     final public int getPartidasXImpuesto(final String codimpue) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "select count(*) from Partvta where codimpue = :codimpue";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("codimpue", codimpue);
         Iterator count = query.iterate();
         
         //Close database
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return (int) count.next();

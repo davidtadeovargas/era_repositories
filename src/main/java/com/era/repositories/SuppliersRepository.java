@@ -24,15 +24,15 @@ public class SuppliersRepository extends Repository {
     final public Supplier getByProvCode(final String code) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Supplier where prov = :code";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("code", code);
         Supplier Supplier = query.list().size() > 0 ? (Supplier)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Supplier;
@@ -41,16 +41,16 @@ public class SuppliersRepository extends Repository {
     final public Supplier getByRFC(final String rfc, final String nom) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Supplier where rfc = :rfc AND nom = :nom";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("rfc", rfc);
         query.setParameter("nom", nom);
         Supplier Supplier = query.list().size() > 0 ? (Supplier)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Supplier;

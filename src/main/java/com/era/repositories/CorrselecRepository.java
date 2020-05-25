@@ -34,17 +34,17 @@ public class CorrselecRepository extends Repository {
     final public Corrselec getByEstac(final String estac) throws Exception {
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         String hql = "FROM Sales where estac = :estac";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("estac", estac);
         Corrselec Corrselec = query.list().size() > 0 ? (Corrselec)query.list().get(0):null;
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Corrselec;

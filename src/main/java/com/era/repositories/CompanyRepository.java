@@ -51,15 +51,15 @@ public class CompanyRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(CompanyRepository.class, "Hibernate: Getting customer by code " + companyCode);
                 
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Company where companyCode = :companyCode";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("companyCode", companyCode);
         Company Customer = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         LoggerUtility.getSingleton().logInfo(CompanyRepository.class, "Hibernate: Returning customer");
         
@@ -70,16 +70,16 @@ public class CompanyRepository extends Repository {
     final public Company getCustomerBySerieAndCode(final String serie,final String companyCode) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Company where companyCode = :companyCode and serie = :serie";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("serie", serie);
         query.setParameter("companyCode", companyCode);
         Company Company = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Company;
@@ -88,16 +88,16 @@ public class CompanyRepository extends Repository {
     final public Company rfcExists(final String existRFC, final String rfcOri) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Company where rfc = :existRFC and rfc != :rfcOri";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("existRFC", existRFC);
         query.setParameter("rfcOri", rfcOri);
         Company Company = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Company;
@@ -106,17 +106,17 @@ public class CompanyRepository extends Repository {
     final public void deleteByCodemp(final String codemp) throws Exception{
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         //Save
-        final SQLQuery SQLQuery = session.createSQLQuery("DELETE FROM Company WHERE codemp = :codemp");
+        final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Company WHERE codemp = :codemp");
         SQLQuery.setParameter("codemp", codemp);
         SQLQuery.executeUpdate();
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
     }
     
     final public List<Company> getByLikeEncabezados(final String search) throws Exception{

@@ -22,16 +22,16 @@ public class CRegimenFiscalRepository extends Repository {
     final public CRegimenfiscal getRegimenByCode(final String c_RegimenFiscal) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM CRegimenfiscal where c_RegimenFiscal = :c_RegimenFiscal";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         final int intc_RegimenFiscal = Integer.valueOf(c_RegimenFiscal);
         query.setParameter("c_RegimenFiscal", intc_RegimenFiscal);
         CRegimenfiscal CRegimenfiscal = query.list().size() > 0 ? (CRegimenfiscal)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return CRegimenfiscal;

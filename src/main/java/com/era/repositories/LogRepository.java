@@ -6,7 +6,11 @@
 package com.era.repositories;
 
 import com.era.models.Log;
+import com.era.repositories.utils.HibernateUtil;
 import com.era.utilities.UtilitiesFactory;
+import java.util.Date;
+import org.hibernate.Transaction;
+import org.hibernate.classic.Session;
 
 /**
  *
@@ -42,6 +46,12 @@ public class LogRepository extends Repository {
         this.save(Log);
         
         return Log;
+    }
+    
+    //This method do not save as normal others repositories methods
+    final public void save(Log Log) throws Exception {
+        this.saveInNewConnection(Log);
+        
     }
     
     final public Log userLoggedToSystem() throws Exception {

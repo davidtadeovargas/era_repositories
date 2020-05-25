@@ -24,16 +24,16 @@ public class UsersRepository extends Repository {
     
     final public User getUsrByCode(final String code) throws Exception {
         
-        //Open database
-        this.openSession();
+        //Open database        
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM User where code = :code";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return User;
@@ -67,15 +67,15 @@ public class UsersRepository extends Repository {
     final public boolean isSalesPointUser(final String code) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM User where code = :code";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return User!=null?User.isUserOfsalesOfPoint():false;
@@ -84,15 +84,15 @@ public class UsersRepository extends Repository {
     final public boolean userExists(final String code) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM User where code = :code";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return User!=null;
@@ -101,15 +101,15 @@ public class UsersRepository extends Repository {
     final public String getDecryptedUserPassword(final String code) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM User where code = :code";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         if(User!=null){
             
@@ -128,15 +128,15 @@ public class UsersRepository extends Repository {
     final public void userLoggedToSystem(final String code) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM User where code = :code";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         if(User!=null){
             RepositoryFactory.getInstance().getLogRepository().userLoggedToSystem();
@@ -146,15 +146,15 @@ public class UsersRepository extends Repository {
     final public void userDeloggedToSystem(final String code) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM User where code = :code";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("code", code);
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         if(User!=null){
             RepositoryFactory.getInstance().getLogRepository().userLoggedOutToSystem();
@@ -164,14 +164,14 @@ public class UsersRepository extends Repository {
     final public List<User> getAllVends() throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM User where vend = true";
-        Query query = session.createQuery(hql);        
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<User> users = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return users;
@@ -180,14 +180,14 @@ public class UsersRepository extends Repository {
     final public List<User> getAllCashAdmin() throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM User where admcaj = true";
-        Query query = session.createQuery(hql);        
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<User> users = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return users;

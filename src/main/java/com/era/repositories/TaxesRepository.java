@@ -26,16 +26,16 @@ public class TaxesRepository extends Repository {
     final public Tax getByCodeImpue(final String codimpue) throws Exception{
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         String hql = "FROM Tax WHERE codimpue = :codimpue";
-        Query query = session.createQuery(hql);        
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<Tax> list = query.list();
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return list.size()>0?list.get(0):null;
@@ -44,17 +44,17 @@ public class TaxesRepository extends Repository {
     final public void deleteByCodimpue(final String codimpue) throws Exception{
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         //Save
-        final SQLQuery SQLQuery = session.createSQLQuery("DELETE FROM Tax WHERE codimpue = :codimpue");
+        final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Tax WHERE codimpue = :codimpue");
         SQLQuery.setParameter("codimpue", codimpue);
         SQLQuery.executeUpdate();
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
     }
     
     final public List<Tax> getByLikeEncabezados(final String search) throws Exception{

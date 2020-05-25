@@ -24,15 +24,15 @@ public class PartcomprsRepository extends Repository {
     final public List<Partcomprs> getAllByComp(final String codcom) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Partcomprs where codcom = :codcom";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("codcom", codcom);        
         List<Partcomprs> parts = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return parts;

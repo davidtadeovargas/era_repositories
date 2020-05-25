@@ -50,15 +50,15 @@ public class PushNotificationsRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(PushNotificationsRepository.class, "Hibernate: Getting today notifications");
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
-        Query query = session.createQuery("from PushNotification where date(created) = date(now())");
+        Query query = HibernateUtil.getSingleton().getSession().createQuery("from PushNotification where date(created) = date(now())");
         List<PushNotification> PushNotifications = query.list();
         
         LoggerUtility.getSingleton().logInfo(LicenseRepository.class, "Hibernate: push notifications: " + PushNotifications);
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         LoggerUtility.getSingleton().logInfo(LicenseRepository.class, "Hibernate: Returning push notifications");
         
@@ -70,15 +70,15 @@ public class PushNotificationsRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(PushNotificationsRepository.class, "Hibernate: Getting month notifications");
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
-        Query query = session.createQuery("from PushNotification where MONTH(date(created)) = MONTH(date(now()))");
+        Query query = HibernateUtil.getSingleton().getSession().createQuery("from PushNotification where MONTH(date(created)) = MONTH(date(now()))");
         List<PushNotification> PushNotifications = query.list();
         
         LoggerUtility.getSingleton().logInfo(LicenseRepository.class, "Hibernate: push notifications: " + PushNotifications);
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         LoggerUtility.getSingleton().logInfo(LicenseRepository.class, "Hibernate: Returning push notifications");
         

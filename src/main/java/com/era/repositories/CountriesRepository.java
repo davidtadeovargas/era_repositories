@@ -22,15 +22,15 @@ public class CountriesRepository extends Repository {
     final public CCountry getCountryByCode(final String countryCode) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Country where countryCode = :countryCode";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("countryCode", countryCode);
         CCountry Country = query.list().size() > 0 ? (CCountry)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Country;

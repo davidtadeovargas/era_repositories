@@ -25,15 +25,15 @@ public class DocumentOriginRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(DocumentOriginRepository.class, "Hibernate: Getting document origin by type " + type);
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM DocumentOrigin where type = :type";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("type", type);
         DocumentOrigin DocumentOrigin = query.list().size() > 0 ? (DocumentOrigin)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         LoggerUtility.getSingleton().logInfo(DocumentOriginRepository.class, "Hibernate: Returning document by type");
         

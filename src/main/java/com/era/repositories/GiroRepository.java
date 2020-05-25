@@ -22,17 +22,17 @@ public class GiroRepository extends Repository {
     final public Giro getByGiro(final String gir) throws Exception {
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         String hql = "FROM Giro where gir = :gir";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("gir", gir);
         Giro Giro = query.list().size() > 0 ? (Giro)query.list().get(0):null;
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Giro;

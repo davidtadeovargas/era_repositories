@@ -22,16 +22,16 @@ public class GeneralConfigsRepository extends Repository {
     final public GeneralConfig getConfigCFDIi33() throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM GeneralConfig where casification = :casification AND configuration = :configuration";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("casification", "sist");
         query.setParameter("configuration", "cfdi33");
         GeneralConfig GeneralConfig = query.list().size() > 0 ? (GeneralConfig)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return GeneralConfig;

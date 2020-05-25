@@ -215,44 +215,6 @@ public class ProductJUnitTest  {
     
     
     @Test
-    @Order(5)
-    public final void addMinimumProductTest(){
-        
-        try{
-            
-            final HibernateConfigModel HibernateConfigModel = new HibernateConfigModel();
-            HibernateConfigModel.setDatabase("TESTERA_5e1a153f2b4a9");
-            HibernateConfigModel.setInstance("localhost");
-            HibernateConfigModel.setPassword("a5z8y1Tadeo");
-            HibernateConfigModel.setPort(3306);
-            HibernateConfigModel.setUser("root");            
-            
-            HibernateUtil.getSingleton().setHibernateConfigModel(HibernateConfigModel);
-            
-            Product Product = new Product(); //92
-            Product.setCodeProduct("prod2");
-            Product.setKeySAT("clavesat");
-            Product.setUnit("unid");
-            Product.setCodeTax("impue");
-            Product.setDescription("descrip");
-            Product.setEstation("ESTAC1");
-            Product.setBranchOffice("SUC1");
-            Product.setNumberCash("CAJ1");
-            
-            RepositoryFactory.getInstance().getProductRepository().addOrUpdateProduct(Product);
-            
-            Product = RepositoryFactory.getInstance().getProductRepository().getProductByCode("prod2");
-            
-            Assertions.assertNotNull(Product);
-        
-        }catch(Exception e){
-            LoggerUtility.getSingleton().logError(CompanyJUnitTest.class, e);
-            
-            Assertions.fail();
-        }
-    }
-    
-    @Test
     @Order(6)
     public final void deleteProductByCodeTest(){
         

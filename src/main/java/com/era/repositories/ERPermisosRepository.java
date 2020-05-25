@@ -23,15 +23,15 @@ public class ERPermisosRepository extends Repository {
     final public ERPermisos getByUsuario(final int FKIdUsuario) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM ERPermisos where FKIdUsuario = :FKIdUsuario";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("FKIdUsuario", FKIdUsuario);        
         ERPermisos ERPermisos = query.list().size() > 0 ? (ERPermisos)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return ERPermisos;

@@ -7,16 +7,13 @@ package com.era.repositories.utils;
 
 import com.era.logger.LoggerUtility;
 import com.era.repositories.models.HibernateConfigModel;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import com.era.models.*;
-import java.util.Enumeration;
 import java.util.List;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.classic.Session;
 
 /**
  *
@@ -27,21 +24,35 @@ public class HibernateUtil {
     //Singleton
     private static HibernateUtil HibernateUtil;
     
-    private SessionFactory sessionFactory;
-    private SessionFactory sessionFactoryAnother;
+    private SessionFactory sessionFactoryCurrent;
+    private SessionFactory sessionFactoryDbEmpresas;
+    private SessionFactory sessionFactoryLocal;
  
     private Transaction Transaction;
     
-    private HibernateConfigModel HibernateConfigModel;    
+    private HibernateConfigModel HibernateConfigModelCurrent;
     private HibernateConfigModel HibernateConfigModelDbEmpresas;
     private HibernateConfigModel HibernateConfigModelLocal;
-    
-    private boolean reloadBuildSessionFactory;
+        
+    private Session Session;
     
     
     private HibernateUtil(){
         //Singleton
     }
+
+    public SessionFactory getSessionFactoryCurrent() {
+        return sessionFactoryCurrent;
+    }
+
+    public SessionFactory getSessionFactoryDbEmpresas() {
+        return sessionFactoryDbEmpresas;
+    }
+
+    public SessionFactory getSessionFactoryLocal() {
+        return sessionFactoryLocal;
+    }
+       
     
     final static public HibernateUtil getSingleton(){
         if(HibernateUtil==null){
@@ -49,62 +60,75 @@ public class HibernateUtil {
         }
         return HibernateUtil;
     } 
-    
-    final public void setHibernateConfigModel(HibernateConfigModel HibernateConfigModel_){
-        reloadBuildSessionFactory = true;
-        HibernateConfigModel = HibernateConfigModel_;
+
+    public Session getSession() {
+        return Session;
+    }
+            
+    public void useDbEmpresas() {
+        this.HibernateConfigModelCurrent = this.HibernateConfigModelDbEmpresas;
+        this.sessionFactoryCurrent = this.sessionFactoryDbEmpresas;
+    }
+    public void useDbLocal() {
+        this.HibernateConfigModelCurrent = this.HibernateConfigModelLocal;
+        this.sessionFactoryCurrent = this.sessionFactoryLocal;
     }
 
     public void setHibernateConfigModelDbEmpresas(HibernateConfigModel HibernateConfigModelDbEmpresas) {
-        HibernateUtil.HibernateConfigModelDbEmpresas = HibernateConfigModelDbEmpresas;
-        HibernateConfigModel = HibernateUtil.HibernateConfigModelDbEmpresas;
+        this.HibernateConfigModelDbEmpresas = HibernateConfigModelDbEmpresas;
+    }    
+    public void createDbEmpresas() throws Exception {
+                
+        final AnnotationConfiguration AnnotationConfiguration = createSessionFactoryFromHibernateConfigModel(HibernateConfigModelDbEmpresas, "create");        
+        this.sessionFactoryDbEmpresas = this.buildSessionFactoryFordbempresas(AnnotationConfiguration);
+    }
+    public void loadDbEmpresas() throws Exception {
+        
+        if(this.sessionFactoryDbEmpresas == null){
+            final AnnotationConfiguration AnnotationConfiguration = createSessionFactoryFromHibernateConfigModel(HibernateConfigModelDbEmpresas, "none");        
+            this.sessionFactoryDbEmpresas = this.buildSessionFactoryFordbempresas(AnnotationConfiguration);                
+        }        
     }
 
     public void setHibernateConfigModelLocal(HibernateConfigModel HibernateConfigModelLocal) {
-        HibernateUtil.HibernateConfigModelLocal = HibernateConfigModelLocal;
-        HibernateConfigModel = HibernateUtil.HibernateConfigModelDbEmpresas;
-    }
-
-    public void connectToDbEmpresas() {
-        setHibernateConfigModel(HibernateConfigModelDbEmpresas);
-    }
-    
-    public void connectToDbLocal() {
-        setHibernateConfigModel(HibernateConfigModelLocal);
-    }
-    
-    public HibernateConfigModel getHibernateConfigModel() {
-        return HibernateConfigModel;
-    }
-    
-    public HibernateConfigModel createLocalHibernateConfigModel(final String database, final boolean connectToLocal) {
+        this.HibernateConfigModelLocal = HibernateConfigModelLocal;
+    }        
+    public void createDbLocal() throws Exception {
         
-        final HibernateConfigModel HibernateConfigModel_ = new HibernateConfigModel();
-        HibernateConfigModel_.setInstance(HibernateConfigModel.getInstance());
-        HibernateConfigModel_.setPassword(HibernateConfigModel.getPassword());
-        HibernateConfigModel_.setPort(HibernateConfigModel.getPort());
-        HibernateConfigModel_.setUrl(HibernateConfigModel.getUrl());
-        HibernateConfigModel_.setUser(HibernateConfigModel.getUser());
+        final AnnotationConfiguration AnnotationConfiguration = createSessionFactoryFromHibernateConfigModel(HibernateConfigModelLocal, "create");
+        this.sessionFactoryLocal = this.buildSessionFactoryForLocal(AnnotationConfiguration);
+    }
+    public void loadDbLocal() throws Exception {
+        
+        if(this.sessionFactoryLocal == null){
+            final AnnotationConfiguration AnnotationConfiguration = createSessionFactoryFromHibernateConfigModel(HibernateConfigModelLocal, "none");        
+            this.sessionFactoryLocal = this.buildSessionFactoryForLocal(AnnotationConfiguration);
+        }        
+    }
+    public HibernateConfigModel getHibernateConfigModelCurrent() {
+        return HibernateConfigModelCurrent;
+    }
+    public HibernateConfigModel getHibernateConfigModelDbempresas() {
+        return HibernateConfigModelDbEmpresas;
+    }
+    public HibernateConfigModel getHibernateConfigModelLocal() {
+        return HibernateConfigModelLocal;
+    }
+    
+    public HibernateConfigModel createLocalHibernateConfigModel(final String database) {
+        
+        final HibernateConfigModel HibernateConfigModel_ = new HibernateConfigModel();        
+        HibernateConfigModel_.setInstance(this.HibernateConfigModelCurrent.getInstance());
+        HibernateConfigModel_.setPassword(this.HibernateConfigModelCurrent.getPassword());
+        HibernateConfigModel_.setPort(this.HibernateConfigModelCurrent.getPort());
+        HibernateConfigModel_.setUrl(this.HibernateConfigModelCurrent.getUrl());
+        HibernateConfigModel_.setUser(this.HibernateConfigModelCurrent.getUser());
         HibernateConfigModel_.setDatabase(database);
                 
-        this.setHibernateConfigModelLocal(HibernateConfigModel_);
-        
-        if(connectToLocal){
-            this.connectToDbLocal();
-        }
-        
         return HibernateConfigModel_;
     }
     
-    public SessionFactory buildSessionFactoryFromHibernateConfigModelCreate(HibernateConfigModel HibernateConfigModel) throws Exception{
-        return buildSessionFactoryFromHibernateConfigModel(HibernateConfigModel, "create");
-    }
-    
-    public SessionFactory buildSessionFactoryFromHibernateConfigModelUpdate(HibernateConfigModel HibernateConfigModel) throws Exception{
-        return buildSessionFactoryFromHibernateConfigModel(HibernateConfigModel, "update");
-    }
-    
-    private AnnotationConfiguration getSessionFactoryFromHibernateConfigModel(HibernateConfigModel HibernateConfigModel, final String hbm2ddlauto) throws Exception{
+    private AnnotationConfiguration createSessionFactoryFromHibernateConfigModel(HibernateConfigModel HibernateConfigModel, final String hbm2ddlauto) throws Exception{
         final AnnotationConfiguration AnnotationConfiguration = new AnnotationConfiguration().configure();
         AnnotationConfiguration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
         AnnotationConfiguration.setProperty("hibernate.connection.url", "jdbc:mysql://" + HibernateConfigModel.getInstance() + ":" + HibernateConfigModel.getPort() + "/" + HibernateConfigModel.getDatabase());
@@ -113,16 +137,10 @@ public class HibernateUtil {
         AnnotationConfiguration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         AnnotationConfiguration.setProperty("show_sql", "true");
         AnnotationConfiguration.setProperty("format_sql", "true");
-        AnnotationConfiguration.setProperty("hibernate.hbm2ddl.auto", hbm2ddlauto);
-        
-        reloadBuildSessionFactory = false;
+        AnnotationConfiguration.setProperty("hibernate.hbm2ddl.auto", hbm2ddlauto);        
         return AnnotationConfiguration;
     }
-    
-    public SessionFactory buildSessionFactoryFordbempresasCreate(HibernateConfigModel HibernateConfigModel) throws Exception{
-        
-        //Create config file
-        final AnnotationConfiguration AnnotationConfiguration = getSessionFactoryFromHibernateConfigModel(HibernateConfigModel,"create");
+    public SessionFactory buildSessionFactoryFordbempresas(final AnnotationConfiguration AnnotationConfiguration) throws Exception{
         
         //Add anotated classes
         List<Class> classes = getAnnottatedClassesFordbempresas();
@@ -131,203 +149,70 @@ public class HibernateUtil {
             AnnotationConfiguration.addAnnotatedClass(class_);
         }
 
-        sessionFactory = AnnotationConfiguration.buildSessionFactory();
+        final SessionFactory sessionFactory = AnnotationConfiguration.buildSessionFactory();
         
         return sessionFactory;
     }
     
-    private SessionFactory buildSessionFactoryFordbempresasUpdate(HibernateConfigModel HibernateConfigModel) throws Exception{
-        
-        //Create config file
-        final AnnotationConfiguration AnnotationConfiguration = getSessionFactoryFromHibernateConfigModel(HibernateConfigModel,"update");
+    private SessionFactory buildSessionFactoryForLocal(final AnnotationConfiguration AnnotationConfiguration) throws Exception{
         
         //Add anotated classes
-        List<Class> classes = getAnnottatedClassesFordbempresas();
+        List<Class> classes = getAnnottatedClassesForLocal();
         for(Class class_:classes){
             LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Adding annotated class " + class_);
             AnnotationConfiguration.addAnnotatedClass(class_);
         }
 
-        sessionFactory = AnnotationConfiguration.buildSessionFactory();
-        
-        return sessionFactory;
+       final SessionFactory sessionFactory = AnnotationConfiguration.buildSessionFactory();
+       return sessionFactory;
     }
     
-    private SessionFactory buildSessionFactoryFordbempresasNone(HibernateConfigModel HibernateConfigModel) throws Exception{
+    public void createNewLocalDatabase(final String db) throws Exception {
         
-        //Create config file
-        final AnnotationConfiguration AnnotationConfiguration = getSessionFactoryFromHibernateConfigModel(HibernateConfigModel,"none");
-        
-        //Add anotated classes
-        List<Class> classes = getAnnottatedClassesFordbempresas();
-        for(Class class_:classes){
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Adding annotated class " + class_);
-            AnnotationConfiguration.addAnnotatedClass(class_);
-        }
+        //Get hibernate configuration file
+        HibernateConfigModel HibernateConfigModel = this.getHibernateConfigModelCurrent();
 
-        sessionFactory = AnnotationConfiguration.buildSessionFactory();
-        
-        return sessionFactory;
-    }
-    
-    private SessionFactory buildSessionFactoryFordbempresas(HibernateConfigModel HibernateConfigModel, final String hbm2ddlauto) throws Exception{
-        
-        //Create config file
-        final AnnotationConfiguration AnnotationConfiguration = getSessionFactoryFromHibernateConfigModel(HibernateConfigModel,hbm2ddlauto);
-        
-        //Add anotated classes
-        List<Class> classes = getAnnottatedClassesFordbempresas();
-        for(Class class_:classes){
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Adding annotated class " + class_);
-            AnnotationConfiguration.addAnnotatedClass(class_);
-        }
+        //Save the local connections params for local db
+        HibernateConfigModel HibernateConfigModel_ = new HibernateConfigModel();
+        HibernateConfigModel_.setInstance(HibernateConfigModel.getInstance());
+        HibernateConfigModel_.setPassword(HibernateConfigModel.getPassword());
+        HibernateConfigModel_.setPort(HibernateConfigModel.getPort());
+        HibernateConfigModel_.setUrl(HibernateConfigModel.getUrl());
+        HibernateConfigModel_.setUser(HibernateConfigModel.getUser());
+        HibernateConfigModel_.setDatabase(db);
+        this.setHibernateConfigModelLocal(HibernateConfigModel_);
 
-        sessionFactory = AnnotationConfiguration.buildSessionFactory();
-        
-        return sessionFactory;
-    }
-    
-    
-    private SessionFactory buildSessionFactoryFromHibernateConfigModel(HibernateConfigModel HibernateConfigModel, final String hbm2ddlauto) throws Exception{
-        
-        final AnnotationConfiguration AnnotationConfiguration = getSessionFactoryFromHibernateConfigModel(HibernateConfigModel,hbm2ddlauto);
-        
-        //Add anotated classes
-        List<Class> classes = getAnnottatedClasses();
-        for(Class class_:classes){
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Adding annotated class " + class_);
-            AnnotationConfiguration.addAnnotatedClass(class_);
-        }
+        //Create the new company with JDBC and read all the catalogs script from disk
+        MysqlScriptsUtil.getInstance().creaDB(HibernateConfigModel_.getDatabase(), HibernateConfigModel.getUser(), HibernateConfigModel.getPassword(), HibernateConfigModel.getInstance(), HibernateConfigModel.getPort());
 
-        sessionFactory = AnnotationConfiguration.buildSessionFactory();
-        
-        return sessionFactory;
+        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Populating database with schemas");
+
+        //Create the hibernate schemes
+        createDbLocal();
+
+        LoggerUtility.getSingleton().logInfo(MysqlScriptsUtil.class, " Finished populating schemas");
+
+        //Load the base catalogs for dbempresas
+        MysqlScriptsUtil.getInstance().loadLocalCatalogFileIntoDatabase(HibernateConfigModel_.getDatabase(), HibernateConfigModel_.getUser(), HibernateConfigModel_.getPassword(), HibernateConfigModel_.getInstance(), HibernateConfigModel_.getPort());
     }
     
-    private SessionFactory buildSessionFactory() throws Exception 
-    {
-        LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Creating SessionFactory");
-        
-        //If the user previusly defined the connection params use them
-        if(HibernateConfigModel != null){
-            
-            //Create config file
-            final AnnotationConfiguration AnnotationConfiguration = getSessionFactoryFromHibernateConfigModel(HibernateConfigModel,"none");
-            
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Building session factory from global HibernateConfigModel");
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Building session factory from global instance: " + HibernateConfigModel.getInstance());
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Building session factory from global database: " + HibernateConfigModel.getDatabase());
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Building session factory from global port: " + HibernateConfigModel.getPort());
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Building session factory from global username: " + HibernateConfigModel.getUser());
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Building session factory from global password: " + HibernateConfigModel.getPassword());                
-
-            List<Class> classes;
-            if(HibernateConfigModel.getDatabase().toLowerCase().compareTo("dbempresas")==0){
-                classes = this.getAnnottatedClassesFordbempresas();                
-            }
-            else{
-                classes = getAnnottatedClasses();
-            }
-            
-            //Add anotated classes            
-            for(Class class_:classes){
-                LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Adding annotated class " + class_);
-                AnnotationConfiguration.addAnnotatedClass(class_);
-            }
-
-            sessionFactory = AnnotationConfiguration.buildSessionFactory();
-            return sessionFactory;
-        }
-        else{
-            
-            // Create the SessionFactory from hibernate.cfg.xml                            
-            final AnnotationConfiguration AnnotationConfiguration = getAnnotationConfiguration();                
-            return AnnotationConfiguration.configure().buildSessionFactory();
-        }                    
-    }
- 
-    public AnnotationConfiguration getAnnotationConfiguration() throws Exception{
-        
-        // Create the SessionFactory from hibernate.cfg.xml            
-        final AnnotationConfiguration AnnotationConfiguration = new AnnotationConfiguration();
-        List<Class> classes = getAnnottatedClasses();
-        for(Class class_:classes){
-            LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Adding annotated class " + class_);
-            AnnotationConfiguration.addAnnotatedClass(class_);
-        }
-        return AnnotationConfiguration.configure();
-    }
-    
-    public void openSessionInTransaction() throws Exception  {        
-        Transaction = getSessionFactory().openSession().beginTransaction();
+    public void begginTransaction() throws Exception  {        
+        this. Transaction = this.Session.beginTransaction();
     }
     
     public void commitTransacton() throws Exception {
-        Transaction.commit();
-        shutdown();
+        this.Transaction.commit();
+    }
+
+    public Transaction getTransaction() {
+        return Transaction;
+    }
+            
+    public void rollbackTransaction() throws Exception  {        
+        this.Transaction.rollback();
     }
     
-    public SessionFactory getSessionFactory() throws Exception {
-        
-        if(sessionFactory==null || reloadBuildSessionFactory){
-            sessionFactory = buildSessionFactory();
-        }            
-        
-        return sessionFactory;
-    }
- 
-    /**
-    * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
-    *   
-    * @param packageName The base package
-    * @return The classes
-    * @throws ClassNotFoundException
-    * @throws IOException
-    */
-   private Class[] getClasses(String packageName)
-           throws ClassNotFoundException, IOException {
-       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-       assert classLoader != null;
-       String path = packageName.replace('.', '/');
-       Enumeration<URL> resources = classLoader.getResources(path);
-       List<File> dirs = new ArrayList<>();
-       while (resources.hasMoreElements()) {
-           URL resource = resources.nextElement();
-           dirs.add(new File(resource.getFile()));
-       }
-       ArrayList<Class> classes = new ArrayList<>();
-       for (File directory : dirs) {
-           classes.addAll(findClasses(directory, packageName));
-       }
-       return classes.toArray(new Class[classes.size()]);
-   }
-   
-   /**
-    * Recursive method used to find all classes in a given directory and subdirs.
-    *
-    * @param directory   The base directory
-    * @param packageName The package name for classes found inside the base directory
-    * @return The classes
-    * @throws ClassNotFoundException
-    */
-   private List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
-       List<Class> classes = new ArrayList<>();
-       if (!directory.exists()) {
-           return classes;
-       }
-       File[] files = directory.listFiles();
-       for (File file : files) {
-           if (file.isDirectory()) {
-               assert !file.getName().contains(".");
-               classes.addAll(findClasses(file, packageName + "." + file.getName()));
-           } else if (file.getName().endsWith(".class")) {
-               classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
-           }
-       }
-       return classes;
-   }
-
-    private List<Class> getAnnottatedClasses() throws Exception {
+    private List<Class> getAnnottatedClassesForLocal() throws Exception {
         
         final List<Class> classes = new ArrayList<>();
         classes.add(Company.class);
@@ -497,41 +382,40 @@ public class HibernateUtil {
         return classes;
     }
     
-    public SessionFactory getSessionFactoryFromNewDatabase(final String database) throws Exception {
+    public void closeSession() throws Exception {
+        this.Session.close();
+    }
+
+    public void openSession(Class ClassEntity) throws Exception {
         
-        //If the user previusly defined the connection params use them
-        HibernateConfigModel HibernateConfigModel_;
-        if(HibernateConfigModel != null){
-            HibernateConfigModel_ = HibernateConfigModel;                        
+        //Determine if open dbempresas or a local one
+        if( ClassEntity.getName().compareTo(CCountry.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CCodigopostal.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CRegimenfiscal.class.getName())==0 || 
+            ClassEntity.getName().compareTo(BasDats.class.getName())==0 ||
+            ClassEntity.getName().compareTo(License.class.getName())==0 || 
+            ClassEntity.getName().compareTo(ServerSession.class.getName())==0){
+            useDbEmpresas();
         }
-        else{                        
-            HibernateConfigModel_ = HibernateConfigUtil.getInstance().getHibernateConfigFile();   
-        }        
+        else{
+            useDbLocal();
+        }
         
-        //Create config file
-        final AnnotationConfiguration AnnotationConfiguration = getSessionFactoryFromHibernateConfigModel(HibernateConfigModel_,"none");
+        this.Session = this.sessionFactoryCurrent.openSession();        
+    }
+    
+    public AnnotationConfiguration getLocalAnnotationConfiguration() throws Exception{
         
-        //Add anotated classes
-        List<Class> classes = getAnnottatedClasses();
+        // Create the SessionFactory from hibernate.cfg.xml            
+        final AnnotationConfiguration AnnotationConfiguration = new AnnotationConfiguration();
+        List<Class> classes = this.getAnnottatedClassesForLocal();
         for(Class class_:classes){
             LoggerUtility.getSingleton().logInfo(HibernateUtil.class, "Adding annotated class " + class_);
             AnnotationConfiguration.addAnnotatedClass(class_);
         }
-        
-        sessionFactoryAnother = AnnotationConfiguration.buildSessionFactory();
-        
-        return sessionFactoryAnother;
+        return AnnotationConfiguration.configure();
     }
     
-    public void shutdown() throws Exception {
-        getSessionFactory().close();
-    }
-    
-    public void shutdownAnother() {
-        // Close caches and connection pools
-        sessionFactoryAnother.close();
-    }
-
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone(); //To change body of generated methods, choose Tools | Templates.

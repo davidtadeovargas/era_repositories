@@ -81,31 +81,4 @@ public class HibernateUtilJUnitTest  {
             Assertions.fail();
         }            
     }*/
-    
-    @Test
-    @Order(2)
-    public void getAnnotationConfigurationTest() {
-        
-        try{
-            
-            HibernateConfigModel HibernateConfigModel = new HibernateConfigModel();
-            HibernateConfigModel.setDatabase("testsss");
-            HibernateConfigModel.setInstance("localhost");
-            HibernateConfigModel.setPassword("a5z8y1Tadeo");
-            HibernateConfigModel.setUser("root");
-            HibernateConfigModel.setPort(3306);
-            
-            HibernateUtil.getSingleton().setHibernateConfigModel(HibernateConfigModel);
-            
-            MysqlScriptsUtil.getInstance().creaDBJDBC(HibernateConfigModel.getDatabase(), HibernateConfigModel.getUser(), HibernateConfigModel.getPassword(), HibernateConfigModel.getInstance(), 3306);
-            
-            HibernateUtil.getSingleton().buildSessionFactoryFromHibernateConfigModelCreate(HibernateConfigModel);
-            
-        }catch(Exception e){
-            
-            LoggerUtility.getSingleton().logError(HibernateConfigJUnitTest.class, e);
-            
-            Assertions.fail();
-        }            
-    }
 }

@@ -24,14 +24,14 @@ public class UnidsRepository extends Repository {
     final public List<Unid> getAllClaveSAT() throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Unid where claveSAT != '' AND claveSAT is not null";
-        Query query = session.createQuery(hql);        
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<Unid> Unids = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Unids;

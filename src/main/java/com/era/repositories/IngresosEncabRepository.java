@@ -23,18 +23,18 @@ public class IngresosEncabRepository extends Repository {
     final public IngresosEncab getByNoserNorefer(final String noser, final String norefer) throws Exception{
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         String hql = "FROM IngresosEncab WHERE noser = :noser AND norefer = :norefer";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("noser", noser);
         query.setParameter("norefer", norefer);
         List<IngresosEncab> list = query.list();
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return list.size()>0?list.get(0):null;

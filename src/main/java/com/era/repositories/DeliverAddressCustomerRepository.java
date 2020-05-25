@@ -23,16 +23,16 @@ public class DeliverAddressCustomerRepository extends Repository {
     final public List<DeliverAddressCustomer> getByCustomerCode(final String customerCode) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         List<DeliverAddressCustomer> deliveries;
         String hql = "FROM DeliverAddressCustomer where customerCode = :customerCode";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("customerCode", customerCode);
         deliveries = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return deliveries;
@@ -41,16 +41,16 @@ public class DeliverAddressCustomerRepository extends Repository {
     final public DeliverAddressCustomer getByCustomerCodeSingle(final String customerCode) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         List<DeliverAddressCustomer> deliveries;
         String hql = "FROM DeliverAddressCustomer where customerCode = :customerCode";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("customerCode", customerCode);
         deliveries = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return deliveries.size()>0?deliveries.get(0):null;
@@ -59,14 +59,14 @@ public class DeliverAddressCustomerRepository extends Repository {
     final public void deleteByCustomerCode(final String customerCode) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         List<DeliverAddressCustomer> deliveries = this.getByCustomerCode(customerCode);
         for(DeliverAddressCustomer DeliverAddressCustomer:deliveries){
-            session.delete(DeliverAddressCustomer);
+            HibernateUtil.getSingleton().getSession().delete(DeliverAddressCustomer);
         }
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
     }
 }

@@ -27,15 +27,15 @@ public class PedidosRepository extends Repository {
     final public List<Pedidos> getAllByVta(final int vta) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Pedidos where vta = :vta";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("vta", vta);        
         List<Pedidos> pedidos = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return pedidos;

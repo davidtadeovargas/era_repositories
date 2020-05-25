@@ -23,17 +23,17 @@ public class ImpuesXProductRepository extends Repository {
     final public List<ImpuesXProduct> getAllByProd(final String produ) throws Exception{
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        HibernateUtil.getSingleton().begginTransaction();        
         
         String hql = "FROM ImpuesXProduct WHERE produ = :produ";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("produ", produ);
         List<ImpuesXProduct> list = query.list();
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().commitTransacton();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return list;

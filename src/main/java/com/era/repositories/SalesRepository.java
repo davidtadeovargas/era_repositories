@@ -11,6 +11,7 @@ import com.era.repositories.utils.HibernateUtil;
 import java.util.Iterator;
 import java.util.List;
 import org.hibernate.Query;
+import org.hibernate.classic.Session;
 
 public class SalesRepository extends Repository {
     
@@ -21,15 +22,16 @@ public class SalesRepository extends Repository {
     final public int getTotalSalesFromCustomer(final String codemp) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);
         
         String hql = "select count(*) from Sales where codemp = :codemp";
-        Query query = session.createQuery(hql);
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
         query.setParameter("codemp", codemp);
         Iterator count = query.iterate();
         
         //Close database
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return (int) count.next();
@@ -38,17 +40,19 @@ public class SalesRepository extends Repository {
     final public Sales getByNotCred(final String notcred) throws Exception {
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);
+        HibernateUtil.getSingleton().begginTransaction();
+        
         
         String hql = "FROM Sales where notcred = :notcred";
-        Query query = session.createQuery(hql);
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
         query.setParameter("notcred", notcred);
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().commitTransacton();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Sales;
@@ -57,17 +61,18 @@ public class SalesRepository extends Repository {
     final public Sales getByVentaRef(final String vtaRef) throws Exception {
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);
+        HibernateUtil.getSingleton().begginTransaction();        
         
         String hql = "FROM Sales where vtaRef = :vtaRef";
-        Query query = session.createQuery(hql);
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
         query.setParameter("vtaRef", vtaRef);
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().commitTransacton();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Sales;
@@ -78,17 +83,18 @@ public class SalesRepository extends Repository {
         final Tips Tips = RepositoryFactory.getInstance().getTipsRepository().getFacType();
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);
+        HibernateUtil.getSingleton().begginTransaction();
                 
         String hql = "FROM Sales where tipdoc = :tipdoc";
-        Query query = session.createQuery(hql);
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
         query.setParameter("tipdoc", Tips.getCod());
         List<Sales> Sales = query.list();
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().commitTransacton();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Sales;
@@ -97,17 +103,18 @@ public class SalesRepository extends Repository {
     final public Sales getByVenta(final int vta) throws Exception {
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);
+        HibernateUtil.getSingleton().begginTransaction();
         
         String hql = "FROM Sales where vta = :vta";
-        Query query = session.createQuery(hql);
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
         query.setParameter("vta", vta);
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().commitTransacton();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Sales;
@@ -116,17 +123,18 @@ public class SalesRepository extends Repository {
     final public Sales getLastSale() throws Exception {
         
         //Open database
-        this.openSession();
-        session.beginTransaction();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);
+        HibernateUtil.getSingleton().begginTransaction();
         
         String hql = "FROM Sales ORDER BY vta DESC";
-        Query query = session.createQuery(hql);        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);        
         query.setMaxResults(1);
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
         //Close database
-        session.getTransaction().commit();
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().commitTransacton();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return Sales;

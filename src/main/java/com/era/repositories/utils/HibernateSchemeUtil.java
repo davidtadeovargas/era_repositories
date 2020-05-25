@@ -25,7 +25,7 @@ public class HibernateSchemeUtil {
     
     
     private HibernateSchemeUtil() throws Exception{        
-        this.Configuration = HibernateUtil.getSingleton().getAnnotationConfiguration();
+        this.Configuration = HibernateUtil.getSingleton().getLocalAnnotationConfiguration();
     }
     
     //HibernateSchemeUtil.getSingleton().getProductScheme().getColumnLength();

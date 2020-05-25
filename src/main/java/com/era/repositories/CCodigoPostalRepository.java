@@ -28,15 +28,15 @@ public class CCodigoPostalRepository extends Repository {
     final public CCodigopostal getByPostalCode(final String cp) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM CCodigopostal where cp = :cp";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("cp", cp);
         CCodigopostal CCodigopostal = query.list().size() > 0 ? (CCodigopostal)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return CCodigopostal;
@@ -45,17 +45,17 @@ public class CCodigoPostalRepository extends Repository {
     final public boolean existsExpeditionPlace(final String estate) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM CCodigopostal where estate = :estate";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("estate", estate);
         query.setFirstResult(0);
         query.setMaxResults(5);
         final boolean result = query.list().size() > 0;
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
                
         return result;
     }
@@ -63,18 +63,18 @@ public class CCodigoPostalRepository extends Repository {
     public List<CCodigopostal> getAllByPageExpeditionPlace(final int pageNumber) throws Exception {
         
         //Open database
-        this.openSession();
+        HibernateUtil.getSingleton().openSession(ClassEntity);
         
         final int pageSize = 50;
         
         String hql = "FROM CCodigopostal GROUP BY estate";
-        Query query = session.createQuery(hql);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setFirstResult(pageNumber - 1);
         query.setMaxResults(pageSize);
         List<CCodigopostal> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().shutdown();
+        HibernateUtil.getSingleton().closeSession();
         
         //Return the result model
         return records;

@@ -1,832 +1,629 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.era.repositories;
 
 import com.era.logger.LoggerUtility;
 
-/**
- *
- * @author PC
- */
 public class RepositoryFactory {
-    
-    //Singleton
-    private static RepositoryFactory RepositoryManager;
-    
-    //Repositories
-    private CompanyRepository CompanyRepository;
-    private LicenseRepository LicenseRepository;
-    private PushNotificationsRepository PushNotificationsRepository;
-    private BasDatsRepository BasDatsRepository;
-    private ProductRepository ProductRepository;
-    private SerieRepository SerieRepository;
-    private DocumentOriginRepository DocumentOriginRepository;    
-    private ServerSessionRepository ServerSessionRepository;
-    private SuppliersRepository SuppliersRepository;
-    private UsersRepository UsersRepository;
-    private MetodosPagoRepository MetodosPagoRepository;
-    private DeliverAddressCustomerRepository DeliverAddressCustomerRepository;
-    private LogRepository LogRepository;
-    private ConsecsRepository ConsecsRepository;    
-    private UsoCfdiRepository UsoCfdiRepository;
-    private GeneralConfigsRepository GeneralConfigsRepository;
-    private PaymentFormsRepository PaymentFormsRepository;
-    private SalesRepository SalesRepository;
-    private WarehousesRepository WarehousesRepository;
-    private UserPermissionRepository UserPermissionRepository;
-    private ConcepsRepository ConcepsRepository;
-    private CoinsRepository CoinsRepository;
-    private MeasureRepository MeasureRepository;
-    private TaxesRepository TaxesRepository;
-    private PaymentRepository PaymentRepository;
-    private UnidsRepository UnidsRepository;
-    private LinesRepository LinesRepository;
-    private CAduanaRepository CAduanaRepository;
-    private CClaveunidadRepository CClaveunidadRepository;
-    private CCodigoPostalRepository CCodigoPostalRepository;
-    private CPaymentRepository CPaymentRepository;
-    private CPaymentMethodRepository CPaymentMethodRepository;
-    private CCoinRepository CCoinRepository;
-    private CCountriesRepository CCountriesRepository;
-    private CRegimenFiscalRepository CRegimenFiscalRepository;
-    private CTipoComprobanteRepository CTipoComprobanteRepository;
-    private CTipoRelacionRepository CTipoRelacionRepository;
-    private CUsoCFDIRepository CUsoCFDIRepository;
-    private CClaveProdServRepository CClaveProdServRepository;    
-    private CPaymentFormRepository CPaymentFormRepository;
-    private CFDIRelacionadosPagoRepository CFDIRelacionadosPagoRepository;
-    private BancoRepository BancoRepository;
-    private AuxiliarRepository AuxiliarRepository;
-    private AsocdescRepository AsocdescRepository;
-    private AsientosContablesRepository AsientosContablesRepository;
-    private AnaqsRepository AnaqsRepository;
-    private AduanaRepository AduanaRepository;
-    private ActivosRepository ActivosRepository;
-    private ActfijcatRepository ActfijcatRepository;
-    private ActfijRepository ActfijRepository;
-    private CortszxRepository CortszxRepository;
-    private CortesRepository CortesRepository;
-    private CorrselecRepository CorrselecRepository;
-    private CorreoTerminalRepository CorreoTerminalRepository;
-    private ControlexportarRepository ControlexportarRepository;
-    private ContrasRepository ContrasRepository;
-    private ConfgralRepository ConfgralRepository;
-    private ConceppagRepository ConceppagRepository;
-    private ConcepnotRepository ConcepnotRepository;
-    private ComprsTmpRepository ComprsTmpRepository;
-    private ComprsRepository ComprsRepository;
-    private ColosRepository ColosRepository;
-    private ClasprovRepository ClasprovRepository;
-    private ClasprodRepository ClasprodRepository;
-    private ClasjeraprovRepository ClasjeraprovRepository;
-    private ClasjeraprodRepository ClasjeraprodRepository;
-    private ClasjeracliRepository ClasjeracliRepository;
-    private ClasificacionRepository ClasificacionRepository;
-    private ClasempRepository ClasempRepository;
-    private ChatRepository ChatRepository;
-    private GeneralConfigRepository GeneralConfigRepository;
-    private GaranRepository GaranRepository;
-    private FlujactRepository FlujactRepository;
-    private FlujRepository FlujRepository;
-    private FacturasRepository FacturasRepository;
-    private FabsRepository FabsRepository;
-    private ExistalmaRepository ExistalmaRepository;
-    private EstadiscorRepository EstadiscorRepository;
-    private ERPermisosRepository ERPermisosRepository;
-    private ERMmovimientosInventRepositoryario ERMmovimientosInventRepositoryario;
-    private EREjerciciosRepository EREjerciciosRepository;
-    private DomentcliRepository DomentcliRepository;
-    private DocumentosPagoRepository DocumentosPagoRepository;
-    private DocumentosOrigenRepository DocumentosOrigenRepository;
-    private DocumentosContabilizadosRepository DocumentosContabilizadosRepository;
-    private DatoscpRepository DatoscpRepository;
-    private CxpRepository CxpRepository;
-    private CxcRepository CxcRepository;
-    private CumpleRepository CumpleRepository;
-    private CuentasContablesRepository CuentasContablesRepository;
-    private CotsRepository CotsRepository;
-    private CostsRepository CostsRepository;
-    private PartcomprsTmpRepository PartcomprsTmpRepository;
-    private PartcomprsRepository PartcomprsRepository;
-    private OrdsRepository OrdsRepository;
-    private MsjsRepository MsjsRepository;
-    private MovimientosPagosRepository MovimientosPagosRepository;
-    private MovimientosAsientosRepository MovimientosAsientosRepository;
-    private MoninvenRepository MoninvenRepository;
-    private ModificaImpuestosRepository ModificaImpuestosRepository;
-    private ModelprodRepository ModelprodRepository;
-    private ModelRepository ModelRepository;
-    private MetogoPagoRepository MetogoPagoRepository;
-    private MedsRepository MedsRepository;
-    private MaxminconfRepository MaxminconfRepository;
-    private MarcsRepository MarcsRepository;
-    private MarcprodRepository MarcprodRepository;
-    private LugsRepository LugsRepository;    
-    private KitsRepository KitsRepository;
-    private IngresosEncabRepository IngresosEncabRepository;
-    private IngresRepository IngresRepository;
-    private ImpuesxpartidapedRepository ImpuesxpartidapedRepository;
-    private ImpuesxpartidacotRepository ImpuesxpartidacotRepository;
-    private ImpuestosXVentaRepository ImpuestosXVentaRepository;
-    private ImpuestosXCompraRepository ImpuestosXCompraRepository;
-    private ImpuestosVentaRepository ImpuestosVentaRepository;
-    private ImpuesXProductRepository ImpuesXProductRepository;
-    private HistAntiguedaddesaldoRepository HistAntiguedaddesaldoRepository;
-    private GralsRepository GralsRepository;
-    private GiroRepository GiroRepository;
-    private resp355834Repository resp355834Repository;
-    private ZonaRepository ZonaRepository;    
-    private UsuarioserieRepository UsuarioserieRepository;    
-    private UbiadRepository UbiadRepository;
-    private TraspasRepository TraspasRepository;
-    private TipscambRepository TipscambRepository;
-    private TipsRepository TipsRepository;
-    private TipactfijRepository TipactfijRepository;
-    private TerprodcompaRepository TerprodcompaRepository;
-    private TermarcamodeloRepository TermarcamodeloRepository;
-    private TarsRepository TarsRepository;
-    private TallcoloRepository TallcoloRepository;
-    private TallRepository TallRepository;    
-    private SucursalRepository SucursalRepository;
-    private SubramosRepository SubramosRepository;
-    private SerieprodRepository SerieprodRepository;
-    private SectoresRepository SectoresRepository;
-    private RutsRepository RutsRepository;
-    private RubrRepository RubrRepository;
-    private ResponsableRepository ResponsableRepository;
-    private ResplogRepository ResplogRepository;
-    private RespRepository RespRepository;
-    private RegistrosRepository RegistrosRepository;
-    private RegistroemailRepository RegistroemailRepository;
-    private PushNotificationRepository PushNotificationRepository;
-    private ProdpartRepository ProdpartRepository;
-    private PrevcomprsRepository PrevcomprsRepository;
-    private PetisRepository PetisRepository;
-    private PesRepository PesRepository;
-    private PersRepository PersRepository;
-    private PedidosPartsRepository PedidosPartsRepository;
-    private PedidosRepository PedidosRepository;
-    private PartvtaRepository PartvtaRepository;
-    private PartprevcomprsTmpRepository PartprevcomprsTmpRepository;
-    private PartprevcomprsRepository PartprevcomprsRepository;
-    private PartordsRepository PartordsRepository;
-    private PartflujactRepository PartflujactRepository;
-    private PartcotRepository PartcotRepository;
-    private LotpedRepository LotpedRepository;
-    
-    //Singleton
-    private RepositoryFactory(){
-    }
-    
-    final public static RepositoryFactory getInstance(){
-        
-        LoggerUtility.getSingleton().logInfo(LicenseRepository.class, "Hibernate: Getting instance repository manager");
-        
-        if(RepositoryManager==null){
-            RepositoryManager = new RepositoryFactory();
-        }
-        return RepositoryManager;
-    }
-    
-    public CompanyRepository getCompanyRepository() {
-        if(CompanyRepository==null){CompanyRepository = new CompanyRepository();}return CompanyRepository;
-    }
 
-    public LicenseRepository getLicenseRepository() {
-        if(LicenseRepository==null){LicenseRepository = new LicenseRepository();}return LicenseRepository;
-    }
-
-    public PushNotificationsRepository getPushNotificationsRepository() {
-        if(PushNotificationsRepository==null){PushNotificationsRepository = new PushNotificationsRepository();}return PushNotificationsRepository;
-    }
-
-    public BasDatsRepository getBasDatsRepository() {
-        if(BasDatsRepository==null){BasDatsRepository = new BasDatsRepository();}return BasDatsRepository;
-    }
-
-    public ProductRepository getProductRepository() {
-        if(ProductRepository==null){ProductRepository = new ProductRepository();}return ProductRepository;
-    }
-
-    public SerieRepository getSerieRepository() {
-        if(SerieRepository==null){SerieRepository = new SerieRepository();}return SerieRepository;
-    }
-
-    public DocumentOriginRepository getDocumentOriginRepository() {
-        if(DocumentOriginRepository==null){DocumentOriginRepository = new DocumentOriginRepository();}return DocumentOriginRepository;
-    }
-
-    public ServerSessionRepository getServerSessionRepository() {
-        if(ServerSessionRepository==null){ServerSessionRepository = new ServerSessionRepository();}return ServerSessionRepository;
-    }
-
-    public SuppliersRepository getSuppliersRepository() {
-        if(SuppliersRepository==null){SuppliersRepository = new SuppliersRepository();}return SuppliersRepository;
-    }
-
-    public UsersRepository getUsersRepository() {
-        if(UsersRepository==null){UsersRepository = new UsersRepository();}return UsersRepository;
-    }
-
-    public MetodosPagoRepository getMetodosPagoRepository() {
-        if(MetodosPagoRepository==null){MetodosPagoRepository = new MetodosPagoRepository();}return MetodosPagoRepository;
-    }
-
-    public DeliverAddressCustomerRepository getDeliverAddressCustomerRepository() {
-        if(DeliverAddressCustomerRepository==null){DeliverAddressCustomerRepository = new DeliverAddressCustomerRepository();}return DeliverAddressCustomerRepository;
-    }
-
-    public LogRepository getLogRepository() {
-        if(LogRepository==null){LogRepository = new LogRepository();}return LogRepository;
-    }
-
-    public ConsecsRepository getConsecsRepository() {
-        if(ConsecsRepository==null){ConsecsRepository = new ConsecsRepository();}return ConsecsRepository;
-    }
-
-    public UsoCfdiRepository getUsoCfdiRepository() {
-        if(UsoCfdiRepository==null){UsoCfdiRepository = new UsoCfdiRepository();}return UsoCfdiRepository;
-    }
-
-    public GeneralConfigsRepository getGeneralConfigsRepository() {
-        if(GeneralConfigsRepository==null){GeneralConfigsRepository = new GeneralConfigsRepository();}return GeneralConfigsRepository;
-    }
-
-    public PaymentFormsRepository getPaymentFormsRepository() {
-        if(PaymentFormsRepository==null){PaymentFormsRepository = new PaymentFormsRepository();}return PaymentFormsRepository;
-    }
-
-    public SalesRepository getSalesRepository() {
-        if(SalesRepository==null){SalesRepository = new SalesRepository();}return SalesRepository;
-    }
-
-    public WarehousesRepository getWarehousesRepository() {
-        if(WarehousesRepository==null){WarehousesRepository = new WarehousesRepository();}return WarehousesRepository;
-    }
-
-    public UserPermissionRepository getUserPermissionRepository() {
-        if(UserPermissionRepository==null){UserPermissionRepository = new UserPermissionRepository();}return UserPermissionRepository;
-    }
-
-    public ConcepsRepository getConcepsRepository() {
-        if(ConcepsRepository==null){ConcepsRepository = new ConcepsRepository();}return ConcepsRepository;
-    }
-
-    public CoinsRepository getCoinsRepository() {
-        if(CoinsRepository==null){CoinsRepository = new CoinsRepository();}return CoinsRepository;
-    }
-
-    public MeasureRepository getMeasureRepository() {
-        if(MeasureRepository==null){MeasureRepository = new MeasureRepository();}return MeasureRepository;
-    }
-
-    public TaxesRepository getTaxesRepository() {
-        if(TaxesRepository==null){TaxesRepository = new TaxesRepository();}return TaxesRepository;
-    }
-
-    public PaymentRepository getPaymentRepository() {
-        if(PaymentRepository==null){PaymentRepository = new PaymentRepository();}return PaymentRepository;
-    }
-
-    public UnidsRepository getUnidsRepository() {
-        if(UnidsRepository==null){UnidsRepository = new UnidsRepository();}return UnidsRepository;
-    }
-
-    public LinesRepository getLinesRepository() {
-        if(LinesRepository==null){LinesRepository = new LinesRepository();}return LinesRepository;
-    }
-
-    public CAduanaRepository getCAduanaRepository() {
-        if(CAduanaRepository==null){CAduanaRepository = new CAduanaRepository();}return CAduanaRepository;
-    }
-
-    public CClaveunidadRepository getCClaveunidadRepository() {
-        if(CClaveunidadRepository==null){CClaveunidadRepository = new CClaveunidadRepository();}return CClaveunidadRepository;
-    }
-
-    public CCodigoPostalRepository getCCodigoPostalRepository() {
-        if(CCodigoPostalRepository==null){CCodigoPostalRepository = new CCodigoPostalRepository();}return CCodigoPostalRepository;
-    }
-
-    public CPaymentRepository getCPaymentRepository() {
-        if(CPaymentRepository==null){CPaymentRepository = new CPaymentRepository();}return CPaymentRepository;
-    }
-
-    public CPaymentMethodRepository getCPaymentMethodRepository() {
-        if(CPaymentMethodRepository==null){CPaymentMethodRepository = new CPaymentMethodRepository();}return CPaymentMethodRepository;
-    }
-
-    public CCoinRepository getCCoinRepository() {
-        if(CCoinRepository==null){CCoinRepository = new CCoinRepository();}return CCoinRepository;
-    }
-
-    public CCountriesRepository getCCountriesRepository() {
-        if(CCountriesRepository==null){CCountriesRepository = new CCountriesRepository();}return CCountriesRepository;
-    }
-
-    public CRegimenFiscalRepository getCRegimenFiscalRepository() {
-        if(CRegimenFiscalRepository==null){CRegimenFiscalRepository = new CRegimenFiscalRepository();}return CRegimenFiscalRepository;
-    }
-
-    public CTipoComprobanteRepository getCTipoComprobanteRepository() {
-        if(CTipoComprobanteRepository==null){CTipoComprobanteRepository = new CTipoComprobanteRepository();}return CTipoComprobanteRepository;
-    }
-
-    public CTipoRelacionRepository getCTipoRelacionRepository() {
-        if(CTipoRelacionRepository==null){CTipoRelacionRepository = new CTipoRelacionRepository();}return CTipoRelacionRepository;
-    }
-
-    public CUsoCFDIRepository getCUsoCFDIRepository() {
-        if(CUsoCFDIRepository==null){CUsoCFDIRepository = new CUsoCFDIRepository();}return CUsoCFDIRepository;
-    }
-
-    public CClaveProdServRepository getCClaveProdServRepository() {
-        if(CClaveProdServRepository==null){CClaveProdServRepository = new CClaveProdServRepository();}return CClaveProdServRepository;
-    }
-
-    public CPaymentFormRepository getCPaymentFormRepository() {
-        if(CPaymentFormRepository==null){CPaymentFormRepository = new CPaymentFormRepository();}return CPaymentFormRepository;
-    }
-
-    public CFDIRelacionadosPagoRepository getCFDIRelacionadosPagoRepository() {
-        if(CFDIRelacionadosPagoRepository==null){CFDIRelacionadosPagoRepository = new CFDIRelacionadosPagoRepository();}return CFDIRelacionadosPagoRepository;
-    }
-
-    public BancoRepository getBancoRepository() {
-        if(BancoRepository==null){BancoRepository = new BancoRepository();}return BancoRepository;
-    }
-
-    public AuxiliarRepository getAuxiliarRepository() {
-        if(AuxiliarRepository==null){AuxiliarRepository = new AuxiliarRepository();}return AuxiliarRepository;
-    }
-
-    public AsocdescRepository getAsocdescRepository() {
-        if(AsocdescRepository==null){AsocdescRepository = new AsocdescRepository();}return AsocdescRepository;
-    }
-
-    public AsientosContablesRepository getAsientosContablesRepository() {
-        if(AsientosContablesRepository==null){AsientosContablesRepository = new AsientosContablesRepository();}return AsientosContablesRepository;
-    }
-
-    public AnaqsRepository getAnaqsRepository() {
-        if(AnaqsRepository==null){AnaqsRepository = new AnaqsRepository();}return AnaqsRepository;
-    }
-
-    public AduanaRepository getAduanaRepository() {
-        if(AduanaRepository==null){AduanaRepository = new AduanaRepository();}return AduanaRepository;
-    }
-
-    public ActivosRepository getActivosRepository() {
-        if(ActivosRepository==null){ActivosRepository = new ActivosRepository();}return ActivosRepository;
-    }
-
-    public ActfijcatRepository getActfijcatRepository() {
-        if(ActfijcatRepository==null){ActfijcatRepository = new ActfijcatRepository();}return ActfijcatRepository;
-    }
-
-    public ActfijRepository getActfijRepository() {
-        if(ActfijRepository==null){ActfijRepository = new ActfijRepository();}return ActfijRepository;
-    }
-
-    public CortszxRepository getCortszxRepository() {
-        if(CortszxRepository==null){CortszxRepository = new CortszxRepository();}return CortszxRepository;
-    }
-
-    public CortesRepository getCortesRepository() {
-        if(CortesRepository==null){CortesRepository = new CortesRepository();}return CortesRepository;
-    }
-
-    public CorrselecRepository getCorrselecRepository() {
-        if(CorrselecRepository==null){CorrselecRepository = new CorrselecRepository();}return CorrselecRepository;
-    }
-
-    public CorreoTerminalRepository getCorreoTerminalRepository() {
-        if(CorreoTerminalRepository==null){CorreoTerminalRepository = new CorreoTerminalRepository();}return CorreoTerminalRepository;
-    }
-
-    public ControlexportarRepository getControlexportarRepository() {
-        if(ControlexportarRepository==null){ControlexportarRepository = new ControlexportarRepository();}return ControlexportarRepository;
-    }
-
-    public ContrasRepository getContrasRepository() {
-        if(ContrasRepository==null){ContrasRepository = new ContrasRepository();}return ContrasRepository;
-    }
-
-    public ConfgralRepository getConfgralRepository() {
-        if(ConfgralRepository==null){ConfgralRepository = new ConfgralRepository();}return ConfgralRepository;
-    }
-
-    public ConceppagRepository getConceppagRepository() {
-        if(ConceppagRepository==null){ConceppagRepository = new ConceppagRepository();}return ConceppagRepository;
-    }
-
-    public ConcepnotRepository getConcepnotRepository() {
-        if(ConcepnotRepository==null){ConcepnotRepository = new ConcepnotRepository();}return ConcepnotRepository;
-    }
-
-    public ComprsTmpRepository getComprsTmpRepository() {
-        if(ComprsTmpRepository==null){ComprsTmpRepository = new ComprsTmpRepository();}return ComprsTmpRepository;
-    }
-
-    public ComprsRepository getComprsRepository() {
-        if(ComprsRepository==null){ComprsRepository = new ComprsRepository();}return ComprsRepository;
-    }
-
-    public ColosRepository getColosRepository() {
-        if(ColosRepository==null){ColosRepository = new ColosRepository();}return ColosRepository;
-    }
-
-    public ClasprovRepository getClasprovRepository() {
-        if(ClasprovRepository==null){ClasprovRepository = new ClasprovRepository();}return ClasprovRepository;
-    }
-
-    public ClasprodRepository getClasprodRepository() {
-        if(ClasprodRepository==null){ClasprodRepository = new ClasprodRepository();}return ClasprodRepository;
-    }
-
-    public ClasjeraprovRepository getClasjeraprovRepository() {
-        if(ClasjeraprovRepository==null){ClasjeraprovRepository = new ClasjeraprovRepository();}return ClasjeraprovRepository;
-    }
-
-    public ClasjeraprodRepository getClasjeraprodRepository() {
-        if(ClasjeraprodRepository==null){ClasjeraprodRepository = new ClasjeraprodRepository();}return ClasjeraprodRepository;
-    }
-
-    public ClasjeracliRepository getClasjeracliRepository() {
-        if(ClasjeracliRepository==null){ClasjeracliRepository = new ClasjeracliRepository();}return ClasjeracliRepository;
-    }
-
-    public ClasificacionRepository getClasificacionRepository() {
-        if(ClasificacionRepository==null){ClasificacionRepository = new ClasificacionRepository();}return ClasificacionRepository;
-    }
-
-    public ClasempRepository getClasempRepository() {
-        if(ClasempRepository==null){ClasempRepository = new ClasempRepository();}return ClasempRepository;
-    }
-
-    public ChatRepository getChatRepository() {
-        if(ChatRepository==null){ChatRepository = new ChatRepository();}return ChatRepository;
-    }
-
-    public GeneralConfigRepository getGeneralConfigRepository() {
-        if(GeneralConfigRepository==null){GeneralConfigRepository = new GeneralConfigRepository();}return GeneralConfigRepository;
-    }
-
-    public GaranRepository getGaranRepository() {
-        if(GaranRepository==null){GaranRepository = new GaranRepository();}return GaranRepository;
-    }
-
-    public FlujactRepository getFlujactRepository() {
-        if(FlujactRepository==null){FlujactRepository = new FlujactRepository();}return FlujactRepository;
-    }
-
-    public FlujRepository getFlujRepository() {
-        if(FlujRepository==null){FlujRepository = new FlujRepository();}return FlujRepository;
-    }
-
-    public FacturasRepository getFacturasRepository() {
-        if(FacturasRepository==null){FacturasRepository = new FacturasRepository();}return FacturasRepository;
-    }
-
-    public FabsRepository getFabsRepository() {
-        if(FabsRepository==null){FabsRepository = new FabsRepository();}return FabsRepository;
-    }
-
-    public ExistalmaRepository getExistalmaRepository() {
-        if(ExistalmaRepository==null){ExistalmaRepository = new ExistalmaRepository();}return ExistalmaRepository;
-    }
-
-    public EstadiscorRepository getEstadiscorRepository() {
-        if(EstadiscorRepository==null){EstadiscorRepository = new EstadiscorRepository();}return EstadiscorRepository;
-    }
-
-    public ERPermisosRepository getERPermisosRepository() {
-        if(ERPermisosRepository==null){ERPermisosRepository = new ERPermisosRepository();}return ERPermisosRepository;
-    }
-
-    public ERMmovimientosInventRepositoryario getERMmovimientosInventRepositoryario() {
-        if(ERMmovimientosInventRepositoryario==null){ERMmovimientosInventRepositoryario = new ERMmovimientosInventRepositoryario();}return ERMmovimientosInventRepositoryario;
-    }
-
-    public EREjerciciosRepository getEREjerciciosRepository() {
-        if(EREjerciciosRepository==null){EREjerciciosRepository = new EREjerciciosRepository();}return EREjerciciosRepository;
-    }
-
-    public DomentcliRepository getDomentcliRepository() {
-        if(DomentcliRepository==null){DomentcliRepository = new DomentcliRepository();}return DomentcliRepository;
-    }
-
-    public DocumentosPagoRepository getDocumentosPagoRepository() {
-        if(DocumentosPagoRepository==null){DocumentosPagoRepository = new DocumentosPagoRepository();}return DocumentosPagoRepository;
-    }
-
-    public DocumentosOrigenRepository getDocumentosOrigenRepository() {
-        if(DocumentosOrigenRepository==null){DocumentosOrigenRepository = new DocumentosOrigenRepository();}return DocumentosOrigenRepository;
-    }
-
-    public DocumentosContabilizadosRepository getDocumentosContabilizadosRepository() {
-        if(DocumentosContabilizadosRepository==null){DocumentosContabilizadosRepository = new DocumentosContabilizadosRepository();}return DocumentosContabilizadosRepository;
-    }
-
-    public DatoscpRepository getDatoscpRepository() {
-        if(DatoscpRepository==null){DatoscpRepository = new DatoscpRepository();}return DatoscpRepository;
-    }
-
-    public CxpRepository getCxpRepository() {
-        if(CxpRepository==null){CxpRepository = new CxpRepository();}return CxpRepository;
-    }
-
-    public CxcRepository getCxcRepository() {
-        if(CxcRepository==null){CxcRepository = new CxcRepository();}return CxcRepository;
-    }
-
-    public CumpleRepository getCumpleRepository() {
-        if(CumpleRepository==null){CumpleRepository = new CumpleRepository();}return CumpleRepository;
-    }
-
-    public CuentasContablesRepository getCuentasContablesRepository() {
-        if(CuentasContablesRepository==null){CuentasContablesRepository = new CuentasContablesRepository();}return CuentasContablesRepository;
-    }
-
-    public CotsRepository getCotsRepository() {
-        if(CotsRepository==null){CotsRepository = new CotsRepository();}return CotsRepository;
-    }
-
-    public CostsRepository getCostsRepository() {
-        if(CostsRepository==null){CostsRepository = new CostsRepository();}return CostsRepository;
-    }
-
-    public PartcomprsTmpRepository getPartcomprsTmpRepository() {
-        if(PartcomprsTmpRepository==null){PartcomprsTmpRepository = new PartcomprsTmpRepository();}return PartcomprsTmpRepository;
-    }
-
-    public PartcomprsRepository getPartcomprsRepository() {
-        if(PartcomprsRepository==null){PartcomprsRepository = new PartcomprsRepository();}return PartcomprsRepository;
-    }
-
-    public OrdsRepository getOrdsRepository() {
-        if(OrdsRepository==null){OrdsRepository = new OrdsRepository();}return OrdsRepository;
-    }
-
-    public MsjsRepository getMsjsRepository() {
-        if(MsjsRepository==null){MsjsRepository = new MsjsRepository();}return MsjsRepository;
-    }
-
-    public MovimientosPagosRepository getMovimientosPagosRepository() {
-        if(MovimientosPagosRepository==null){MovimientosPagosRepository = new MovimientosPagosRepository();}return MovimientosPagosRepository;
-    }
-
-    public MovimientosAsientosRepository getMovimientosAsientosRepository() {
-        if(MovimientosAsientosRepository==null){MovimientosAsientosRepository = new MovimientosAsientosRepository();}return MovimientosAsientosRepository;
-    }
-
-    public MoninvenRepository getMoninvenRepository() {
-        if(MoninvenRepository==null){MoninvenRepository = new MoninvenRepository();}return MoninvenRepository;
-    }
-
-    public ModificaImpuestosRepository getModificaImpuestosRepository() {
-        if(ModificaImpuestosRepository==null){ModificaImpuestosRepository = new ModificaImpuestosRepository();}return ModificaImpuestosRepository;
-    }
-
-    public ModelprodRepository getModelprodRepository() {
-        if(ModelprodRepository==null){ModelprodRepository = new ModelprodRepository();}return ModelprodRepository;
-    }
-
-    public ModelRepository getModelRepository() {
-        if(ModelRepository==null){ModelRepository = new ModelRepository();}return ModelRepository;
-    }
-
-    public MetogoPagoRepository getMetogoPagoRepository() {
-        if(MetogoPagoRepository==null){MetogoPagoRepository = new MetogoPagoRepository();}return MetogoPagoRepository;
-    }
-
-    public MedsRepository getMedsRepository() {
-        if(MedsRepository==null){MedsRepository = new MedsRepository();}return MedsRepository;
-    }
-
-    public MaxminconfRepository getMaxminconfRepository() {
-        if(MaxminconfRepository==null){MaxminconfRepository = new MaxminconfRepository();}return MaxminconfRepository;
-    }
-
-    public MarcsRepository getMarcsRepository() {
-        if(MarcsRepository==null){MarcsRepository = new MarcsRepository();}return MarcsRepository;
-    }
-
-    public MarcprodRepository getMarcprodRepository() {
-        if(MarcprodRepository==null){MarcprodRepository = new MarcprodRepository();}return MarcprodRepository;
-    }
-
-    public LugsRepository getLugsRepository() {
-        if(LugsRepository==null){LugsRepository = new LugsRepository();}return LugsRepository;
-    }
-
-    public KitsRepository getKitsRepository() {
-        if(KitsRepository==null){KitsRepository = new KitsRepository();}return KitsRepository;
-    }
-
-    public IngresosEncabRepository getIngresosEncabRepository() {
-        if(IngresosEncabRepository==null){IngresosEncabRepository = new IngresosEncabRepository();}return IngresosEncabRepository;
-    }
-
-    public IngresRepository getIngresRepository() {
-        if(IngresRepository==null){IngresRepository = new IngresRepository();}return IngresRepository;
-    }
-
-    public ImpuesxpartidapedRepository getImpuesxpartidapedRepository() {
-        if(ImpuesxpartidapedRepository==null){ImpuesxpartidapedRepository = new ImpuesxpartidapedRepository();}return ImpuesxpartidapedRepository;
-    }
-
-    public ImpuesxpartidacotRepository getImpuesxpartidacotRepository() {
-        if(ImpuesxpartidacotRepository==null){ImpuesxpartidacotRepository = new ImpuesxpartidacotRepository();}return ImpuesxpartidacotRepository;
-    }
-
-    public ImpuestosXVentaRepository getImpuestosXVentaRepository() {
-        if(ImpuestosXVentaRepository==null){ImpuestosXVentaRepository = new ImpuestosXVentaRepository();}return ImpuestosXVentaRepository;
-    }
-
-    public ImpuestosXCompraRepository getImpuestosXCompraRepository() {
-        if(ImpuestosXCompraRepository==null){ImpuestosXCompraRepository = new ImpuestosXCompraRepository();}return ImpuestosXCompraRepository;
-    }
-
-    public ImpuestosVentaRepository getImpuestosVentaRepository() {
-        if(ImpuestosVentaRepository==null){ImpuestosVentaRepository = new ImpuestosVentaRepository();}return ImpuestosVentaRepository;
-    }
-
-    public ImpuesXProductRepository getImpuesXProductRepository() {
-        if(ImpuesXProductRepository==null){ImpuesXProductRepository = new ImpuesXProductRepository();}return ImpuesXProductRepository;
-    }
-
-    public HistAntiguedaddesaldoRepository getHistAntiguedaddesaldoRepository() {
-        if(HistAntiguedaddesaldoRepository==null){HistAntiguedaddesaldoRepository = new HistAntiguedaddesaldoRepository();}return HistAntiguedaddesaldoRepository;
-    }
-
-    public GralsRepository getGralsRepository() {
-        if(GralsRepository==null){GralsRepository = new GralsRepository();}return GralsRepository;
-    }
-
-    public GiroRepository getGiroRepository() {
-        if(GiroRepository==null){GiroRepository = new GiroRepository();}return GiroRepository;
-    }
-
-    public resp355834Repository getresp355834Repository() {
-        if(resp355834Repository==null){resp355834Repository = new resp355834Repository();}return resp355834Repository;
-    }
-
-    public ZonaRepository getZonaRepository() {
-        if(ZonaRepository==null){ZonaRepository = new ZonaRepository();}return ZonaRepository;
-    }
-
-    public UsuarioserieRepository getUsuarioserieRepository() {
-        if(UsuarioserieRepository==null){UsuarioserieRepository = new UsuarioserieRepository();}return UsuarioserieRepository;
-    }
-
-    public UbiadRepository getUbiadRepository() {
-        if(UbiadRepository==null){UbiadRepository = new UbiadRepository();}return UbiadRepository;
-    }
-
-    public TraspasRepository getTraspasRepository() {
-        if(TraspasRepository==null){TraspasRepository = new TraspasRepository();}return TraspasRepository;
-    }
-
-    public TipscambRepository getTipscambRepository() {
-        if(TipscambRepository==null){TipscambRepository = new TipscambRepository();}return TipscambRepository;
-    }
-
-    public TipsRepository getTipsRepository() {
-        if(TipsRepository==null){TipsRepository = new TipsRepository();}return TipsRepository;
-    }
-
-    public TipactfijRepository getTipactfijRepository() {
-        if(TipactfijRepository==null){TipactfijRepository = new TipactfijRepository();}return TipactfijRepository;
-    }
-
-    public TerprodcompaRepository getTerprodcompaRepository() {
-        if(TerprodcompaRepository==null){TerprodcompaRepository = new TerprodcompaRepository();}return TerprodcompaRepository;
-    }
-
-    public TermarcamodeloRepository getTermarcamodeloRepository() {
-        if(TermarcamodeloRepository==null){TermarcamodeloRepository = new TermarcamodeloRepository();}return TermarcamodeloRepository;
-    }
-
-    public TarsRepository getTarsRepository() {
-        if(TarsRepository==null){TarsRepository = new TarsRepository();}return TarsRepository;
-    }
-
-    public TallcoloRepository getTallcoloRepository() {
-        if(TallcoloRepository==null){TallcoloRepository = new TallcoloRepository();}return TallcoloRepository;
-    }
-
-    public TallRepository getTallRepository() {
-        if(TallRepository==null){TallRepository = new TallRepository();}return TallRepository;
-    }
-
-    public SucursalRepository getSucursalRepository() {
-        if(SucursalRepository==null){SucursalRepository = new SucursalRepository();}return SucursalRepository;
-    }
-
-    public SubramosRepository getSubramosRepository() {
-        if(SubramosRepository==null){SubramosRepository = new SubramosRepository();}return SubramosRepository;
-    }
-
-    public SerieprodRepository getSerieprodRepository() {
-        if(SerieprodRepository==null){SerieprodRepository = new SerieprodRepository();}return SerieprodRepository;
-    }
-
-    public SectoresRepository getSectoresRepository() {
-        if(SectoresRepository==null){SectoresRepository = new SectoresRepository();}return SectoresRepository;
-    }
-
-    public RutsRepository getRutsRepository() {
-        if(RutsRepository==null){RutsRepository = new RutsRepository();}return RutsRepository;
-    }
-
-    public RubrRepository getRubrRepository() {
-        if(RubrRepository==null){RubrRepository = new RubrRepository();}return RubrRepository;
-    }
-
-    public ResponsableRepository getResponsableRepository() {
-        if(ResponsableRepository==null){ResponsableRepository = new ResponsableRepository();}return ResponsableRepository;
-    }
-
-    public ResplogRepository getResplogRepository() {
-        if(ResplogRepository==null){ResplogRepository = new ResplogRepository();}return ResplogRepository;
-    }
-
-    public RespRepository getRespRepository() {
-        if(RespRepository==null){RespRepository = new RespRepository();}return RespRepository;
-    }
-
-    public RegistrosRepository getRegistrosRepository() {
-        if(RegistrosRepository==null){RegistrosRepository = new RegistrosRepository();}return RegistrosRepository;
-    }
-
-    public RegistroemailRepository getRegistroemailRepository() {
-        if(RegistroemailRepository==null){RegistroemailRepository = new RegistroemailRepository();}return RegistroemailRepository;
-    }
-
-    public PushNotificationRepository getPushNotificationRepository() {
-        if(PushNotificationRepository==null){PushNotificationRepository = new PushNotificationRepository();}return PushNotificationRepository;
-    }
-
-    public ProdpartRepository getProdpartRepository() {
-        if(ProdpartRepository==null){ProdpartRepository = new ProdpartRepository();}return ProdpartRepository;
-    }
-
-    public PrevcomprsRepository getPrevcomprsRepository() {
-        if(PrevcomprsRepository==null){PrevcomprsRepository = new PrevcomprsRepository();}return PrevcomprsRepository;
-    }
-
-    public PetisRepository getPetisRepository() {
-        if(PetisRepository==null){PetisRepository = new PetisRepository();}return PetisRepository;
-    }
-
-    public PesRepository getPesRepository() {
-        if(PesRepository==null){PesRepository = new PesRepository();}return PesRepository;
-    }
-
-    public PersRepository getPersRepository() {
-        if(PersRepository==null){PersRepository = new PersRepository();}return PersRepository;
-    }
-
-    public PedidosPartsRepository getPedidosPartsRepository() {
-        if(PedidosPartsRepository==null){PedidosPartsRepository = new PedidosPartsRepository();}return PedidosPartsRepository;
-    }
-
-    public PedidosRepository getPedidosRepository() {
-        if(PedidosRepository==null){PedidosRepository = new PedidosRepository();}return PedidosRepository;
-    }
-
-    public PartvtaRepository getPartvtaRepository() {
-        if(PartvtaRepository==null){PartvtaRepository = new PartvtaRepository();}return PartvtaRepository;
-    }
-
-    public PartprevcomprsTmpRepository getPartprevcomprsTmpRepository() {
-        if(PartprevcomprsTmpRepository==null){PartprevcomprsTmpRepository = new PartprevcomprsTmpRepository();}return PartprevcomprsTmpRepository;
-    }
-
-    public PartprevcomprsRepository getPartprevcomprsRepository() {
-        if(PartprevcomprsRepository==null){PartprevcomprsRepository = new PartprevcomprsRepository();}return PartprevcomprsRepository;
-    }
-
-    public PartordsRepository getPartordsRepository() {
-        if(PartordsRepository==null){PartordsRepository = new PartordsRepository();}return PartordsRepository;
-    }
-
-    public PartflujactRepository getPartflujactRepository() {
-        if(PartflujactRepository==null){PartflujactRepository = new PartflujactRepository();}return PartflujactRepository;
-    }
-
-    public PartcotRepository getPartcotRepository() {
-        if(PartcotRepository==null){PartcotRepository = new PartcotRepository();}return PartcotRepository;
-    }
-    
-    public LotpedRepository getLotpedRepository(){
-        if(LotpedRepository==null){
-            LotpedRepository = new LotpedRepository();
-        }
-        return LotpedRepository;
-    }
+   private static RepositoryFactory RepositoryFactory;
+
+   private CompanysRepository CompanysRepository;
+   private CTipoRelacionsRepository CTipoRelacionsRepository;
+   private CTipoComprobantesRepository CTipoComprobantesRepository;
+   private CPaymentMethodsRepository CPaymentMethodsRepository;
+   private CPaymentFormsRepository CPaymentFormsRepository;
+   private CFDIRelacionadosPagosRepository CFDIRelacionadosPagosRepository;
+   private CCoinsRepository CCoinsRepository;
+   private CClaveprodservsRepository CClaveprodservsRepository;
+   private CClaveUnidadsRepository CClaveUnidadsRepository;
+   private CAduanasRepository CAduanasRepository;
+   private BasDatssRepository BasDatssRepository;
+   private BancosRepository BancosRepository;
+   private AuxiliarsRepository AuxiliarsRepository;
+   private AsocdescsRepository AsocdescsRepository;
+   private AsientosContablessRepository AsientosContablessRepository;
+   private AnaqssRepository AnaqssRepository;
+   private AduanasRepository AduanasRepository;
+   private ActivossRepository ActivossRepository;
+   private ActfijcatsRepository ActfijcatsRepository;
+   private ActfijsRepository ActfijsRepository;
+   private CortszxsRepository CortszxsRepository;
+   private CortessRepository CortessRepository;
+   private CorrselecsRepository CorrselecsRepository;
+   private CorreoTerminalsRepository CorreoTerminalsRepository;
+   private ControlexportarsRepository ControlexportarsRepository;
+   private ContrassRepository ContrassRepository;
+   private ConsecsRepository ConsecsRepository;
+   private ConfgralsRepository ConfgralsRepository;
+   private ConcepssRepository ConcepssRepository;
+   private ConceppagsRepository ConceppagsRepository;
+   private ConcepnotsRepository ConcepnotsRepository;
+   private ComprsTmpsRepository ComprsTmpsRepository;
+   private ComprssRepository ComprssRepository;
+   private CompasRepository CompasRepository;
+   private ColossRepository ColossRepository;
+   private CoinsRepository CoinsRepository;
+   private ClasprovsRepository ClasprovsRepository;
+   private ClasprodsRepository ClasprodsRepository;
+   private ClasjeraprovsRepository ClasjeraprovsRepository;
+   private ClasjeraprodsRepository ClasjeraprodsRepository;
+   private ClasjeraclisRepository ClasjeraclisRepository;
+   private ClasificacionsRepository ClasificacionsRepository;
+   private ClasempsRepository ClasempsRepository;
+   private ChatsRepository ChatsRepository;
+   private CUsoCFDIsRepository CUsoCFDIsRepository;
+   private GeneralConfigsRepository GeneralConfigsRepository;
+   private GaransRepository GaransRepository;
+   private FlujactsRepository FlujactsRepository;
+   private FlujsRepository FlujsRepository;
+   private FacturassRepository FacturassRepository;
+   private FabssRepository FabssRepository;
+   private ExistalmasRepository ExistalmasRepository;
+   private EstadiscorsRepository EstadiscorsRepository;
+   private ERPermisossRepository ERPermisossRepository;
+   private ERMmovimientosInventariosRepository ERMmovimientosInventariosRepository;
+   private EREjerciciossRepository EREjerciciossRepository;
+   private DomentclisRepository DomentclisRepository;
+   private DocumentosPagosRepository DocumentosPagosRepository;
+   private DocumentosOrigensRepository DocumentosOrigensRepository;
+   private DocumentosContabilizadossRepository DocumentosContabilizadossRepository;
+   private DocumentOriginsRepository DocumentOriginsRepository;
+   private DeliverAddressCustomersRepository DeliverAddressCustomersRepository;
+   private DatoscpsRepository DatoscpsRepository;
+   private CxpsRepository CxpsRepository;
+   private CxcsRepository CxcsRepository;
+   private CumplesRepository CumplesRepository;
+   private CuentasContablessRepository CuentasContablessRepository;
+   private CotssRepository CotssRepository;
+   private CostssRepository CostssRepository;
+   private PartcomprsTmpsRepository PartcomprsTmpsRepository;
+   private PartcomprssRepository PartcomprssRepository;
+   private OrdssRepository OrdssRepository;
+   private MsjssRepository MsjssRepository;
+   private MovimientosPagossRepository MovimientosPagossRepository;
+   private MovimientosAsientossRepository MovimientosAsientossRepository;
+   private MoninvensRepository MoninvensRepository;
+   private ModificaImpuestossRepository ModificaImpuestossRepository;
+   private ModelprodsRepository ModelprodsRepository;
+   private ModelsRepository ModelsRepository;
+   private MetogoPagosRepository MetogoPagosRepository;
+   private MedssRepository MedssRepository;
+   private MeasuresRepository MeasuresRepository;
+   private MaxminconfsRepository MaxminconfsRepository;
+   private MarcssRepository MarcssRepository;
+   private MarcprodsRepository MarcprodsRepository;
+   private LugssRepository LugssRepository;
+   private LogsRepository LogsRepository;
+   private LinesRepository LinesRepository;
+   private LicensesRepository LicensesRepository;
+   private KitssRepository KitssRepository;
+   private IngresosEncabsRepository IngresosEncabsRepository;
+   private IngressRepository IngressRepository;
+   private ImpuesxpartidapedsRepository ImpuesxpartidapedsRepository;
+   private ImpuesxpartidacotsRepository ImpuesxpartidacotsRepository;
+   private ImpuestosXVentasRepository ImpuestosXVentasRepository;
+   private ImpuestosXComprasRepository ImpuestosXComprasRepository;
+   private ImpuestosVentasRepository ImpuestosVentasRepository;
+   private ImpuesXProductsRepository ImpuesXProductsRepository;
+   private HistAntiguedaddesaldosRepository HistAntiguedaddesaldosRepository;
+   private GralssRepository GralssRepository;
+   private GirosRepository GirosRepository;
+   private resp355834sRepository resp355834sRepository;
+   private ZonasRepository ZonasRepository;
+   private WarehousesRepository WarehousesRepository;
+   private UsuarioseriesRepository UsuarioseriesRepository;
+   private UsoCFDIsRepository UsoCFDIsRepository;
+   private UserPermissionsRepository UserPermissionsRepository;
+   private UsersRepository UsersRepository;
+   private UnidsRepository UnidsRepository;
+   private UbiadsRepository UbiadsRepository;
+   private TraspassRepository TraspassRepository;
+   private TipscambsRepository TipscambsRepository;
+   private TipssRepository TipssRepository;
+   private TipactfijsRepository TipactfijsRepository;
+   private TerprodcompasRepository TerprodcompasRepository;
+   private TermarcamodelosRepository TermarcamodelosRepository;
+   private TaxsRepository TaxsRepository;
+   private TarssRepository TarssRepository;
+   private TallcolosRepository TallcolosRepository;
+   private TallsRepository TallsRepository;
+   private SuppliersRepository SuppliersRepository;
+   private SucursalsRepository SucursalsRepository;
+   private SubramossRepository SubramossRepository;
+   private ServerSessionsRepository ServerSessionsRepository;
+   private SerieprodsRepository SerieprodsRepository;
+   private SeriesRepository SeriesRepository;
+   private SectoressRepository SectoressRepository;
+   private SalessRepository SalessRepository;
+   private RutssRepository RutssRepository;
+   private RubrsRepository RubrsRepository;
+   private ResponsablesRepository ResponsablesRepository;
+   private ResplogsRepository ResplogsRepository;
+   private RespsRepository RespsRepository;
+   private RegistrossRepository RegistrossRepository;
+   private RegistroemailsRepository RegistroemailsRepository;
+   private PushNotificationsRepository PushNotificationsRepository;
+   private ProductsRepository ProductsRepository;
+   private ProdpartsRepository ProdpartsRepository;
+   private PrevcomprssRepository PrevcomprssRepository;
+   private PetissRepository PetissRepository;
+   private PessRepository PessRepository;
+   private PerssRepository PerssRepository;
+   private PedidosPartssRepository PedidosPartssRepository;
+   private PedidossRepository PedidossRepository;
+   private PaymentFormsRepository PaymentFormsRepository;
+   private PaymentsRepository PaymentsRepository;
+   private PartvtasRepository PartvtasRepository;
+   private PartprevcomprsTmpsRepository PartprevcomprsTmpsRepository;
+   private PartprevcomprssRepository PartprevcomprssRepository;
+   private PartordssRepository PartordssRepository;
+   private PartflujactsRepository PartflujactsRepository;
+   private PartcotsRepository PartcotsRepository;
+
+   private RepositoryFactory(){
+   }
+
+   final public static RepositoryFactory getInstance(){
+       LoggerUtility.getSingleton().logInfo(RepositoryFactory.class, "Hibernate: Getting instance repository manager");
+       if(RepositoryFactory==null){
+           RepositoryFactory = new RepositoryFactory();
+       }
+       return RepositoryFactory;
+   }
+
+   public CompanysRepository getCompanysRepository() {
+       if(CompanysRepository==null){CompanysRepository = new CompanysRepository();}return CompanysRepository;
+   }
+   public CTipoRelacionsRepository getCTipoRelacionsRepository() {
+       if(CTipoRelacionsRepository==null){CTipoRelacionsRepository = new CTipoRelacionsRepository();}return CTipoRelacionsRepository;
+   }
+   public CTipoComprobantesRepository getCTipoComprobantesRepository() {
+       if(CTipoComprobantesRepository==null){CTipoComprobantesRepository = new CTipoComprobantesRepository();}return CTipoComprobantesRepository;
+   }
+   public CPaymentMethodsRepository getCPaymentMethodsRepository() {
+       if(CPaymentMethodsRepository==null){CPaymentMethodsRepository = new CPaymentMethodsRepository();}return CPaymentMethodsRepository;
+   }
+   public CPaymentFormsRepository getCPaymentFormsRepository() {
+       if(CPaymentFormsRepository==null){CPaymentFormsRepository = new CPaymentFormsRepository();}return CPaymentFormsRepository;
+   }
+   public CFDIRelacionadosPagosRepository getCFDIRelacionadosPagosRepository() {
+       if(CFDIRelacionadosPagosRepository==null){CFDIRelacionadosPagosRepository = new CFDIRelacionadosPagosRepository();}return CFDIRelacionadosPagosRepository;
+   }
+   public CCoinsRepository getCCoinsRepository() {
+       if(CCoinsRepository==null){CCoinsRepository = new CCoinsRepository();}return CCoinsRepository;
+   }
+   public CClaveprodservsRepository getCClaveprodservsRepository() {
+       if(CClaveprodservsRepository==null){CClaveprodservsRepository = new CClaveprodservsRepository();}return CClaveprodservsRepository;
+   }
+   public CClaveUnidadsRepository getCClaveUnidadsRepository() {
+       if(CClaveUnidadsRepository==null){CClaveUnidadsRepository = new CClaveUnidadsRepository();}return CClaveUnidadsRepository;
+   }
+   public CAduanasRepository getCAduanasRepository() {
+       if(CAduanasRepository==null){CAduanasRepository = new CAduanasRepository();}return CAduanasRepository;
+   }
+   public BasDatssRepository getBasDatssRepository() {
+       if(BasDatssRepository==null){BasDatssRepository = new BasDatssRepository();}return BasDatssRepository;
+   }
+   public BancosRepository getBancosRepository() {
+       if(BancosRepository==null){BancosRepository = new BancosRepository();}return BancosRepository;
+   }
+   public AuxiliarsRepository getAuxiliarsRepository() {
+       if(AuxiliarsRepository==null){AuxiliarsRepository = new AuxiliarsRepository();}return AuxiliarsRepository;
+   }
+   public AsocdescsRepository getAsocdescsRepository() {
+       if(AsocdescsRepository==null){AsocdescsRepository = new AsocdescsRepository();}return AsocdescsRepository;
+   }
+   public AsientosContablessRepository getAsientosContablessRepository() {
+       if(AsientosContablessRepository==null){AsientosContablessRepository = new AsientosContablessRepository();}return AsientosContablessRepository;
+   }
+   public AnaqssRepository getAnaqssRepository() {
+       if(AnaqssRepository==null){AnaqssRepository = new AnaqssRepository();}return AnaqssRepository;
+   }
+   public AduanasRepository getAduanasRepository() {
+       if(AduanasRepository==null){AduanasRepository = new AduanasRepository();}return AduanasRepository;
+   }
+   public ActivossRepository getActivossRepository() {
+       if(ActivossRepository==null){ActivossRepository = new ActivossRepository();}return ActivossRepository;
+   }
+   public ActfijcatsRepository getActfijcatsRepository() {
+       if(ActfijcatsRepository==null){ActfijcatsRepository = new ActfijcatsRepository();}return ActfijcatsRepository;
+   }
+   public ActfijsRepository getActfijsRepository() {
+       if(ActfijsRepository==null){ActfijsRepository = new ActfijsRepository();}return ActfijsRepository;
+   }
+   public CortszxsRepository getCortszxsRepository() {
+       if(CortszxsRepository==null){CortszxsRepository = new CortszxsRepository();}return CortszxsRepository;
+   }
+   public CortessRepository getCortessRepository() {
+       if(CortessRepository==null){CortessRepository = new CortessRepository();}return CortessRepository;
+   }
+   public CorrselecsRepository getCorrselecsRepository() {
+       if(CorrselecsRepository==null){CorrselecsRepository = new CorrselecsRepository();}return CorrselecsRepository;
+   }
+   public CorreoTerminalsRepository getCorreoTerminalsRepository() {
+       if(CorreoTerminalsRepository==null){CorreoTerminalsRepository = new CorreoTerminalsRepository();}return CorreoTerminalsRepository;
+   }
+   public ControlexportarsRepository getControlexportarsRepository() {
+       if(ControlexportarsRepository==null){ControlexportarsRepository = new ControlexportarsRepository();}return ControlexportarsRepository;
+   }
+   public ContrassRepository getContrassRepository() {
+       if(ContrassRepository==null){ContrassRepository = new ContrassRepository();}return ContrassRepository;
+   }
+   public ConsecsRepository getConsecsRepository() {
+       if(ConsecsRepository==null){ConsecsRepository = new ConsecsRepository();}return ConsecsRepository;
+   }
+   public ConfgralsRepository getConfgralsRepository() {
+       if(ConfgralsRepository==null){ConfgralsRepository = new ConfgralsRepository();}return ConfgralsRepository;
+   }
+   public ConcepssRepository getConcepssRepository() {
+       if(ConcepssRepository==null){ConcepssRepository = new ConcepssRepository();}return ConcepssRepository;
+   }
+   public ConceppagsRepository getConceppagsRepository() {
+       if(ConceppagsRepository==null){ConceppagsRepository = new ConceppagsRepository();}return ConceppagsRepository;
+   }
+   public ConcepnotsRepository getConcepnotsRepository() {
+       if(ConcepnotsRepository==null){ConcepnotsRepository = new ConcepnotsRepository();}return ConcepnotsRepository;
+   }
+   public ComprsTmpsRepository getComprsTmpsRepository() {
+       if(ComprsTmpsRepository==null){ComprsTmpsRepository = new ComprsTmpsRepository();}return ComprsTmpsRepository;
+   }
+   public ComprssRepository getComprssRepository() {
+       if(ComprssRepository==null){ComprssRepository = new ComprssRepository();}return ComprssRepository;
+   }
+   public CompasRepository getCompasRepository() {
+       if(CompasRepository==null){CompasRepository = new CompasRepository();}return CompasRepository;
+   }
+   public ColossRepository getColossRepository() {
+       if(ColossRepository==null){ColossRepository = new ColossRepository();}return ColossRepository;
+   }
+   public CoinsRepository getCoinsRepository() {
+       if(CoinsRepository==null){CoinsRepository = new CoinsRepository();}return CoinsRepository;
+   }
+   public ClasprovsRepository getClasprovsRepository() {
+       if(ClasprovsRepository==null){ClasprovsRepository = new ClasprovsRepository();}return ClasprovsRepository;
+   }
+   public ClasprodsRepository getClasprodsRepository() {
+       if(ClasprodsRepository==null){ClasprodsRepository = new ClasprodsRepository();}return ClasprodsRepository;
+   }
+   public ClasjeraprovsRepository getClasjeraprovsRepository() {
+       if(ClasjeraprovsRepository==null){ClasjeraprovsRepository = new ClasjeraprovsRepository();}return ClasjeraprovsRepository;
+   }
+   public ClasjeraprodsRepository getClasjeraprodsRepository() {
+       if(ClasjeraprodsRepository==null){ClasjeraprodsRepository = new ClasjeraprodsRepository();}return ClasjeraprodsRepository;
+   }
+   public ClasjeraclisRepository getClasjeraclisRepository() {
+       if(ClasjeraclisRepository==null){ClasjeraclisRepository = new ClasjeraclisRepository();}return ClasjeraclisRepository;
+   }
+   public ClasificacionsRepository getClasificacionsRepository() {
+       if(ClasificacionsRepository==null){ClasificacionsRepository = new ClasificacionsRepository();}return ClasificacionsRepository;
+   }
+   public ClasempsRepository getClasempsRepository() {
+       if(ClasempsRepository==null){ClasempsRepository = new ClasempsRepository();}return ClasempsRepository;
+   }
+   public ChatsRepository getChatsRepository() {
+       if(ChatsRepository==null){ChatsRepository = new ChatsRepository();}return ChatsRepository;
+   }
+   public CUsoCFDIsRepository getCUsoCFDIsRepository() {
+       if(CUsoCFDIsRepository==null){CUsoCFDIsRepository = new CUsoCFDIsRepository();}return CUsoCFDIsRepository;
+   }
+   public GeneralConfigsRepository getGeneralConfigsRepository() {
+       if(GeneralConfigsRepository==null){GeneralConfigsRepository = new GeneralConfigsRepository();}return GeneralConfigsRepository;
+   }
+   public GaransRepository getGaransRepository() {
+       if(GaransRepository==null){GaransRepository = new GaransRepository();}return GaransRepository;
+   }
+   public FlujactsRepository getFlujactsRepository() {
+       if(FlujactsRepository==null){FlujactsRepository = new FlujactsRepository();}return FlujactsRepository;
+   }
+   public FlujsRepository getFlujsRepository() {
+       if(FlujsRepository==null){FlujsRepository = new FlujsRepository();}return FlujsRepository;
+   }
+   public FacturassRepository getFacturassRepository() {
+       if(FacturassRepository==null){FacturassRepository = new FacturassRepository();}return FacturassRepository;
+   }
+   public FabssRepository getFabssRepository() {
+       if(FabssRepository==null){FabssRepository = new FabssRepository();}return FabssRepository;
+   }
+   public ExistalmasRepository getExistalmasRepository() {
+       if(ExistalmasRepository==null){ExistalmasRepository = new ExistalmasRepository();}return ExistalmasRepository;
+   }
+   public EstadiscorsRepository getEstadiscorsRepository() {
+       if(EstadiscorsRepository==null){EstadiscorsRepository = new EstadiscorsRepository();}return EstadiscorsRepository;
+   }
+   public ERPermisossRepository getERPermisossRepository() {
+       if(ERPermisossRepository==null){ERPermisossRepository = new ERPermisossRepository();}return ERPermisossRepository;
+   }
+   public ERMmovimientosInventariosRepository getERMmovimientosInventariosRepository() {
+       if(ERMmovimientosInventariosRepository==null){ERMmovimientosInventariosRepository = new ERMmovimientosInventariosRepository();}return ERMmovimientosInventariosRepository;
+   }
+   public EREjerciciossRepository getEREjerciciossRepository() {
+       if(EREjerciciossRepository==null){EREjerciciossRepository = new EREjerciciossRepository();}return EREjerciciossRepository;
+   }
+   public DomentclisRepository getDomentclisRepository() {
+       if(DomentclisRepository==null){DomentclisRepository = new DomentclisRepository();}return DomentclisRepository;
+   }
+   public DocumentosPagosRepository getDocumentosPagosRepository() {
+       if(DocumentosPagosRepository==null){DocumentosPagosRepository = new DocumentosPagosRepository();}return DocumentosPagosRepository;
+   }
+   public DocumentosOrigensRepository getDocumentosOrigensRepository() {
+       if(DocumentosOrigensRepository==null){DocumentosOrigensRepository = new DocumentosOrigensRepository();}return DocumentosOrigensRepository;
+   }
+   public DocumentosContabilizadossRepository getDocumentosContabilizadossRepository() {
+       if(DocumentosContabilizadossRepository==null){DocumentosContabilizadossRepository = new DocumentosContabilizadossRepository();}return DocumentosContabilizadossRepository;
+   }
+   public DocumentOriginsRepository getDocumentOriginsRepository() {
+       if(DocumentOriginsRepository==null){DocumentOriginsRepository = new DocumentOriginsRepository();}return DocumentOriginsRepository;
+   }
+   public DeliverAddressCustomersRepository getDeliverAddressCustomersRepository() {
+       if(DeliverAddressCustomersRepository==null){DeliverAddressCustomersRepository = new DeliverAddressCustomersRepository();}return DeliverAddressCustomersRepository;
+   }
+   public DatoscpsRepository getDatoscpsRepository() {
+       if(DatoscpsRepository==null){DatoscpsRepository = new DatoscpsRepository();}return DatoscpsRepository;
+   }
+   public CxpsRepository getCxpsRepository() {
+       if(CxpsRepository==null){CxpsRepository = new CxpsRepository();}return CxpsRepository;
+   }
+   public CxcsRepository getCxcsRepository() {
+       if(CxcsRepository==null){CxcsRepository = new CxcsRepository();}return CxcsRepository;
+   }
+   public CumplesRepository getCumplesRepository() {
+       if(CumplesRepository==null){CumplesRepository = new CumplesRepository();}return CumplesRepository;
+   }
+   public CuentasContablessRepository getCuentasContablessRepository() {
+       if(CuentasContablessRepository==null){CuentasContablessRepository = new CuentasContablessRepository();}return CuentasContablessRepository;
+   }
+   public CotssRepository getCotssRepository() {
+       if(CotssRepository==null){CotssRepository = new CotssRepository();}return CotssRepository;
+   }
+   public CostssRepository getCostssRepository() {
+       if(CostssRepository==null){CostssRepository = new CostssRepository();}return CostssRepository;
+   }
+   public PartcomprsTmpsRepository getPartcomprsTmpsRepository() {
+       if(PartcomprsTmpsRepository==null){PartcomprsTmpsRepository = new PartcomprsTmpsRepository();}return PartcomprsTmpsRepository;
+   }
+   public PartcomprssRepository getPartcomprssRepository() {
+       if(PartcomprssRepository==null){PartcomprssRepository = new PartcomprssRepository();}return PartcomprssRepository;
+   }
+   public OrdssRepository getOrdssRepository() {
+       if(OrdssRepository==null){OrdssRepository = new OrdssRepository();}return OrdssRepository;
+   }
+   public MsjssRepository getMsjssRepository() {
+       if(MsjssRepository==null){MsjssRepository = new MsjssRepository();}return MsjssRepository;
+   }
+   public MovimientosPagossRepository getMovimientosPagossRepository() {
+       if(MovimientosPagossRepository==null){MovimientosPagossRepository = new MovimientosPagossRepository();}return MovimientosPagossRepository;
+   }
+   public MovimientosAsientossRepository getMovimientosAsientossRepository() {
+       if(MovimientosAsientossRepository==null){MovimientosAsientossRepository = new MovimientosAsientossRepository();}return MovimientosAsientossRepository;
+   }
+   public MoninvensRepository getMoninvensRepository() {
+       if(MoninvensRepository==null){MoninvensRepository = new MoninvensRepository();}return MoninvensRepository;
+   }
+   public ModificaImpuestossRepository getModificaImpuestossRepository() {
+       if(ModificaImpuestossRepository==null){ModificaImpuestossRepository = new ModificaImpuestossRepository();}return ModificaImpuestossRepository;
+   }
+   public ModelprodsRepository getModelprodsRepository() {
+       if(ModelprodsRepository==null){ModelprodsRepository = new ModelprodsRepository();}return ModelprodsRepository;
+   }
+   public ModelsRepository getModelsRepository() {
+       if(ModelsRepository==null){ModelsRepository = new ModelsRepository();}return ModelsRepository;
+   }
+   public MetogoPagosRepository getMetogoPagosRepository() {
+       if(MetogoPagosRepository==null){MetogoPagosRepository = new MetogoPagosRepository();}return MetogoPagosRepository;
+   }
+   public MedssRepository getMedssRepository() {
+       if(MedssRepository==null){MedssRepository = new MedssRepository();}return MedssRepository;
+   }
+   public MeasuresRepository getMeasuresRepository() {
+       if(MeasuresRepository==null){MeasuresRepository = new MeasuresRepository();}return MeasuresRepository;
+   }
+   public MaxminconfsRepository getMaxminconfsRepository() {
+       if(MaxminconfsRepository==null){MaxminconfsRepository = new MaxminconfsRepository();}return MaxminconfsRepository;
+   }
+   public MarcssRepository getMarcssRepository() {
+       if(MarcssRepository==null){MarcssRepository = new MarcssRepository();}return MarcssRepository;
+   }
+   public MarcprodsRepository getMarcprodsRepository() {
+       if(MarcprodsRepository==null){MarcprodsRepository = new MarcprodsRepository();}return MarcprodsRepository;
+   }
+   public LugssRepository getLugssRepository() {
+       if(LugssRepository==null){LugssRepository = new LugssRepository();}return LugssRepository;
+   }
+   public LogsRepository getLogsRepository() {
+       if(LogsRepository==null){LogsRepository = new LogsRepository();}return LogsRepository;
+   }
+   public LinesRepository getLinesRepository() {
+       if(LinesRepository==null){LinesRepository = new LinesRepository();}return LinesRepository;
+   }
+   public LicensesRepository getLicensesRepository() {
+       if(LicensesRepository==null){LicensesRepository = new LicensesRepository();}return LicensesRepository;
+   }
+   public KitssRepository getKitssRepository() {
+       if(KitssRepository==null){KitssRepository = new KitssRepository();}return KitssRepository;
+   }
+   public IngresosEncabsRepository getIngresosEncabsRepository() {
+       if(IngresosEncabsRepository==null){IngresosEncabsRepository = new IngresosEncabsRepository();}return IngresosEncabsRepository;
+   }
+   public IngressRepository getIngressRepository() {
+       if(IngressRepository==null){IngressRepository = new IngressRepository();}return IngressRepository;
+   }
+   public ImpuesxpartidapedsRepository getImpuesxpartidapedsRepository() {
+       if(ImpuesxpartidapedsRepository==null){ImpuesxpartidapedsRepository = new ImpuesxpartidapedsRepository();}return ImpuesxpartidapedsRepository;
+   }
+   public ImpuesxpartidacotsRepository getImpuesxpartidacotsRepository() {
+       if(ImpuesxpartidacotsRepository==null){ImpuesxpartidacotsRepository = new ImpuesxpartidacotsRepository();}return ImpuesxpartidacotsRepository;
+   }
+   public ImpuestosXVentasRepository getImpuestosXVentasRepository() {
+       if(ImpuestosXVentasRepository==null){ImpuestosXVentasRepository = new ImpuestosXVentasRepository();}return ImpuestosXVentasRepository;
+   }
+   public ImpuestosXComprasRepository getImpuestosXComprasRepository() {
+       if(ImpuestosXComprasRepository==null){ImpuestosXComprasRepository = new ImpuestosXComprasRepository();}return ImpuestosXComprasRepository;
+   }
+   public ImpuestosVentasRepository getImpuestosVentasRepository() {
+       if(ImpuestosVentasRepository==null){ImpuestosVentasRepository = new ImpuestosVentasRepository();}return ImpuestosVentasRepository;
+   }
+   public ImpuesXProductsRepository getImpuesXProductsRepository() {
+       if(ImpuesXProductsRepository==null){ImpuesXProductsRepository = new ImpuesXProductsRepository();}return ImpuesXProductsRepository;
+   }
+   public HistAntiguedaddesaldosRepository getHistAntiguedaddesaldosRepository() {
+       if(HistAntiguedaddesaldosRepository==null){HistAntiguedaddesaldosRepository = new HistAntiguedaddesaldosRepository();}return HistAntiguedaddesaldosRepository;
+   }
+   public GralssRepository getGralssRepository() {
+       if(GralssRepository==null){GralssRepository = new GralssRepository();}return GralssRepository;
+   }
+   public GirosRepository getGirosRepository() {
+       if(GirosRepository==null){GirosRepository = new GirosRepository();}return GirosRepository;
+   }
+   public resp355834sRepository getresp355834sRepository() {
+       if(resp355834sRepository==null){resp355834sRepository = new resp355834sRepository();}return resp355834sRepository;
+   }
+   public ZonasRepository getZonasRepository() {
+       if(ZonasRepository==null){ZonasRepository = new ZonasRepository();}return ZonasRepository;
+   }
+   public WarehousesRepository getWarehousesRepository() {
+       if(WarehousesRepository==null){WarehousesRepository = new WarehousesRepository();}return WarehousesRepository;
+   }
+   public UsuarioseriesRepository getUsuarioseriesRepository() {
+       if(UsuarioseriesRepository==null){UsuarioseriesRepository = new UsuarioseriesRepository();}return UsuarioseriesRepository;
+   }
+   public UsoCFDIsRepository getUsoCFDIsRepository() {
+       if(UsoCFDIsRepository==null){UsoCFDIsRepository = new UsoCFDIsRepository();}return UsoCFDIsRepository;
+   }
+   public UserPermissionsRepository getUserPermissionsRepository() {
+       if(UserPermissionsRepository==null){UserPermissionsRepository = new UserPermissionsRepository();}return UserPermissionsRepository;
+   }
+   public UsersRepository getUsersRepository() {
+       if(UsersRepository==null){UsersRepository = new UsersRepository();}return UsersRepository;
+   }
+   public UnidsRepository getUnidsRepository() {
+       if(UnidsRepository==null){UnidsRepository = new UnidsRepository();}return UnidsRepository;
+   }
+   public UbiadsRepository getUbiadsRepository() {
+       if(UbiadsRepository==null){UbiadsRepository = new UbiadsRepository();}return UbiadsRepository;
+   }
+   public TraspassRepository getTraspassRepository() {
+       if(TraspassRepository==null){TraspassRepository = new TraspassRepository();}return TraspassRepository;
+   }
+   public TipscambsRepository getTipscambsRepository() {
+       if(TipscambsRepository==null){TipscambsRepository = new TipscambsRepository();}return TipscambsRepository;
+   }
+   public TipssRepository getTipssRepository() {
+       if(TipssRepository==null){TipssRepository = new TipssRepository();}return TipssRepository;
+   }
+   public TipactfijsRepository getTipactfijsRepository() {
+       if(TipactfijsRepository==null){TipactfijsRepository = new TipactfijsRepository();}return TipactfijsRepository;
+   }
+   public TerprodcompasRepository getTerprodcompasRepository() {
+       if(TerprodcompasRepository==null){TerprodcompasRepository = new TerprodcompasRepository();}return TerprodcompasRepository;
+   }
+   public TermarcamodelosRepository getTermarcamodelosRepository() {
+       if(TermarcamodelosRepository==null){TermarcamodelosRepository = new TermarcamodelosRepository();}return TermarcamodelosRepository;
+   }
+   public TaxsRepository getTaxsRepository() {
+       if(TaxsRepository==null){TaxsRepository = new TaxsRepository();}return TaxsRepository;
+   }
+   public TarssRepository getTarssRepository() {
+       if(TarssRepository==null){TarssRepository = new TarssRepository();}return TarssRepository;
+   }
+   public TallcolosRepository getTallcolosRepository() {
+       if(TallcolosRepository==null){TallcolosRepository = new TallcolosRepository();}return TallcolosRepository;
+   }
+   public TallsRepository getTallsRepository() {
+       if(TallsRepository==null){TallsRepository = new TallsRepository();}return TallsRepository;
+   }
+   public SuppliersRepository getSuppliersRepository() {
+       if(SuppliersRepository==null){SuppliersRepository = new SuppliersRepository();}return SuppliersRepository;
+   }
+   public SucursalsRepository getSucursalsRepository() {
+       if(SucursalsRepository==null){SucursalsRepository = new SucursalsRepository();}return SucursalsRepository;
+   }
+   public SubramossRepository getSubramossRepository() {
+       if(SubramossRepository==null){SubramossRepository = new SubramossRepository();}return SubramossRepository;
+   }
+   public ServerSessionsRepository getServerSessionsRepository() {
+       if(ServerSessionsRepository==null){ServerSessionsRepository = new ServerSessionsRepository();}return ServerSessionsRepository;
+   }
+   public SerieprodsRepository getSerieprodsRepository() {
+       if(SerieprodsRepository==null){SerieprodsRepository = new SerieprodsRepository();}return SerieprodsRepository;
+   }
+   public SeriesRepository getSeriesRepository() {
+       if(SeriesRepository==null){SeriesRepository = new SeriesRepository();}return SeriesRepository;
+   }
+   public SectoressRepository getSectoressRepository() {
+       if(SectoressRepository==null){SectoressRepository = new SectoressRepository();}return SectoressRepository;
+   }
+   public SalessRepository getSalessRepository() {
+       if(SalessRepository==null){SalessRepository = new SalessRepository();}return SalessRepository;
+   }
+   public RutssRepository getRutssRepository() {
+       if(RutssRepository==null){RutssRepository = new RutssRepository();}return RutssRepository;
+   }
+   public RubrsRepository getRubrsRepository() {
+       if(RubrsRepository==null){RubrsRepository = new RubrsRepository();}return RubrsRepository;
+   }
+   public ResponsablesRepository getResponsablesRepository() {
+       if(ResponsablesRepository==null){ResponsablesRepository = new ResponsablesRepository();}return ResponsablesRepository;
+   }
+   public ResplogsRepository getResplogsRepository() {
+       if(ResplogsRepository==null){ResplogsRepository = new ResplogsRepository();}return ResplogsRepository;
+   }
+   public RespsRepository getRespsRepository() {
+       if(RespsRepository==null){RespsRepository = new RespsRepository();}return RespsRepository;
+   }
+   public RegistrossRepository getRegistrossRepository() {
+       if(RegistrossRepository==null){RegistrossRepository = new RegistrossRepository();}return RegistrossRepository;
+   }
+   public RegistroemailsRepository getRegistroemailsRepository() {
+       if(RegistroemailsRepository==null){RegistroemailsRepository = new RegistroemailsRepository();}return RegistroemailsRepository;
+   }
+   public PushNotificationsRepository getPushNotificationsRepository() {
+       if(PushNotificationsRepository==null){PushNotificationsRepository = new PushNotificationsRepository();}return PushNotificationsRepository;
+   }
+   public ProductsRepository getProductsRepository() {
+       if(ProductsRepository==null){ProductsRepository = new ProductsRepository();}return ProductsRepository;
+   }
+   public ProdpartsRepository getProdpartsRepository() {
+       if(ProdpartsRepository==null){ProdpartsRepository = new ProdpartsRepository();}return ProdpartsRepository;
+   }
+   public PrevcomprssRepository getPrevcomprssRepository() {
+       if(PrevcomprssRepository==null){PrevcomprssRepository = new PrevcomprssRepository();}return PrevcomprssRepository;
+   }
+   public PetissRepository getPetissRepository() {
+       if(PetissRepository==null){PetissRepository = new PetissRepository();}return PetissRepository;
+   }
+   public PessRepository getPessRepository() {
+       if(PessRepository==null){PessRepository = new PessRepository();}return PessRepository;
+   }
+   public PerssRepository getPerssRepository() {
+       if(PerssRepository==null){PerssRepository = new PerssRepository();}return PerssRepository;
+   }
+   public PedidosPartssRepository getPedidosPartssRepository() {
+       if(PedidosPartssRepository==null){PedidosPartssRepository = new PedidosPartssRepository();}return PedidosPartssRepository;
+   }
+   public PedidossRepository getPedidossRepository() {
+       if(PedidossRepository==null){PedidossRepository = new PedidossRepository();}return PedidossRepository;
+   }
+   public PaymentFormsRepository getPaymentFormsRepository() {
+       if(PaymentFormsRepository==null){PaymentFormsRepository = new PaymentFormsRepository();}return PaymentFormsRepository;
+   }
+   public PaymentsRepository getPaymentsRepository() {
+       if(PaymentsRepository==null){PaymentsRepository = new PaymentsRepository();}return PaymentsRepository;
+   }
+   public PartvtasRepository getPartvtasRepository() {
+       if(PartvtasRepository==null){PartvtasRepository = new PartvtasRepository();}return PartvtasRepository;
+   }
+   public PartprevcomprsTmpsRepository getPartprevcomprsTmpsRepository() {
+       if(PartprevcomprsTmpsRepository==null){PartprevcomprsTmpsRepository = new PartprevcomprsTmpsRepository();}return PartprevcomprsTmpsRepository;
+   }
+   public PartprevcomprssRepository getPartprevcomprssRepository() {
+       if(PartprevcomprssRepository==null){PartprevcomprssRepository = new PartprevcomprssRepository();}return PartprevcomprssRepository;
+   }
+   public PartordssRepository getPartordssRepository() {
+       if(PartordssRepository==null){PartordssRepository = new PartordssRepository();}return PartordssRepository;
+   }
+   public PartflujactsRepository getPartflujactsRepository() {
+       if(PartflujactsRepository==null){PartflujactsRepository = new PartflujactsRepository();}return PartflujactsRepository;
+   }
+   public PartcotsRepository getPartcotsRepository() {
+       if(PartcotsRepository==null){PartcotsRepository = new PartcotsRepository();}return PartcotsRepository;
+   }
 }

@@ -212,7 +212,7 @@ public class HibernateUtil {
         this.Transaction.rollback();
     }
     
-    private List<Class> getAnnottatedClassesForLocal() throws Exception {
+    public List<Class> getAnnottatedClassesForLocal() throws Exception {
         
         final List<Class> classes = new ArrayList<>();
         classes.add(Company.class);
@@ -370,7 +370,7 @@ public class HibernateUtil {
         return classes;
     }
     
-    private List<Class> getAnnottatedClassesFordbempresas() throws Exception {
+    public List<Class> getAnnottatedClassesFordbempresas() throws Exception {
         
         final List<Class> classes = new ArrayList<>();
         classes.add(BasDats.class);

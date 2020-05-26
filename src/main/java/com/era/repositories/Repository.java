@@ -244,6 +244,13 @@ public class Repository {
         return Object;
     }
     
+    final public void deleteAll() throws Exception {
+        
+        LoggerUtility.getSingleton().logInfo(Repository.class, "Deleting all Objects of " + ClassEntity.getClass().getName());
+        this.deleteSQL("DELETE FROM " + ClassEntity.getName());        
+        LoggerUtility.getSingleton().logInfo(Repository.class, "Finished deleting all Objects ");                
+    }
+    
     final public Object delete(final Object Object) throws Exception {
 
         //Open database
@@ -279,7 +286,7 @@ public class Repository {
     }
     
     final public void deleteByCodigo(final String codigo) throws Exception{        
-        this.deleteSQL("DELETE FROM " + ClassEntity.getName() + " WHERE codigo = " + codigo);                
+        this.deleteSQL("DELETE FROM " + ClassEntity.getName() + " WHERE codigo = " + codigo);
     }
     
     final public void deleteByCode(final String code) throws Exception{
@@ -799,7 +806,7 @@ public class Repository {
         Log.setCod(cod);
         Log.setAccio(accio);
         
-        RepositoryFactory.getInstance().getLogRepository().save(Log);
+        //RepositoryFactory.getInstance().getLogsRepository().save(Log);
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Log saved");
     }

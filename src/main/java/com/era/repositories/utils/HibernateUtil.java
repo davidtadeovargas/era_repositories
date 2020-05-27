@@ -316,7 +316,6 @@ public class HibernateUtil {
         classes.add(HistAntiguedaddesaldo.class);
         classes.add(Grals.class);
         classes.add(Giro.class);
-        classes.add(resp355834.class);
         classes.add(Zona.class);
         classes.add(Warehouse.class);        
         classes.add(Usuarioserie.class);

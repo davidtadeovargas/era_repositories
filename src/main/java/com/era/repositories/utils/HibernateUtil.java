@@ -258,7 +258,6 @@ public class HibernateUtil {
         classes.add(Clasjeracli.class);
         classes.add(Clasificacion.class);
         classes.add(Clasemp.class);
-        classes.add(Chat.class);
         classes.add(CUsoCFDI.class);
         classes.add(GeneralConfig.class);
         classes.add(Garan.class);
@@ -279,8 +278,7 @@ public class HibernateUtil {
         classes.add(DeliverAddressCustomer.class);
         classes.add(Datoscp.class);
         classes.add(Cxp.class);
-        classes.add(Cxc.class);        
-        classes.add(Cumple.class);
+        classes.add(Cxc.class);
         classes.add(CuentasContables.class);        
         classes.add(Cots.class);
         classes.add(Costs.class);

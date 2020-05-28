@@ -23,7 +23,6 @@ public class RepositoryFactory {
    private CCoinsRepository CCoinsRepository;
    private CCountriesRepository CCountriesRepository;
    private CFDIRelacionadosPagosRepository CFDIRelacionadosPagosRepository;
-   private ChatsRepository ChatsRepository;
    private ClasempsRepository ClasempsRepository;
    private ClasificacionsRepository ClasificacionsRepository;
    private ClasjeraclisRepository ClasjeraclisRepository;
@@ -61,7 +60,6 @@ public class RepositoryFactory {
    private CTipoRelacionsRepository CTipoRelacionsRepository;
    private CuentasContablesRepository CuentasContablesRepository;
    private CuentasContablessRepository CuentasContablessRepository;
-   private CumplesRepository CumplesRepository;
    private CUsoCFDIsRepository CUsoCFDIsRepository;
    private CxcRepository CxcRepository;
    private CxcsRepository CxcsRepository;
@@ -246,9 +244,6 @@ public class RepositoryFactory {
    public CFDIRelacionadosPagosRepository getCFDIRelacionadosPagosRepository() {
        if(CFDIRelacionadosPagosRepository==null){CFDIRelacionadosPagosRepository = new CFDIRelacionadosPagosRepository();}return CFDIRelacionadosPagosRepository;
    }
-   public ChatsRepository getChatsRepository() {
-       if(ChatsRepository==null){ChatsRepository = new ChatsRepository();}return ChatsRepository;
-   }
    public ClasempsRepository getClasempsRepository() {
        if(ClasempsRepository==null){ClasempsRepository = new ClasempsRepository();}return ClasempsRepository;
    }
@@ -359,9 +354,6 @@ public class RepositoryFactory {
    }
    public CuentasContablessRepository getCuentasContablessRepository() {
        if(CuentasContablessRepository==null){CuentasContablessRepository = new CuentasContablessRepository();}return CuentasContablessRepository;
-   }
-   public CumplesRepository getCumplesRepository() {
-       if(CumplesRepository==null){CumplesRepository = new CumplesRepository();}return CumplesRepository;
    }
    public CUsoCFDIsRepository getCUsoCFDIsRepository() {
        if(CUsoCFDIsRepository==null){CUsoCFDIsRepository = new CUsoCFDIsRepository();}return CUsoCFDIsRepository;

@@ -8,6 +8,7 @@ package com.era.repositories;
 import com.era.repositories.utils.HibernateUtil;
 import com.era.logger.LoggerUtility;
 import com.era.models.Serie;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -351,5 +352,20 @@ public class SerieRepository extends Repository {
     
     final public Serie getSerieOrders() throws Exception {
         return getSerieByType("PEDIDOS");
+    }
+    
+    @Override
+    final public List<Serie> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Serie> items = (List<Serie>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

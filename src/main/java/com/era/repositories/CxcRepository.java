@@ -7,6 +7,7 @@ package com.era.repositories;
 
 import com.era.models.Cxc;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -87,5 +88,20 @@ public class CxcRepository extends Repository {
         final Cxc Cxc = (Cxc) this.getByID(id);        
         Cxc.setEstado("CA");        
         this.update(Cxc);
+    }
+    
+    @Override
+    final public List<Cxc> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Cxc> items = (List<Cxc>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

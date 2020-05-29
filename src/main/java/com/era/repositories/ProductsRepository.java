@@ -3,6 +3,7 @@ package com.era.repositories;
 import com.era.logger.LoggerUtility;
 import com.era.models.Product;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -213,5 +214,20 @@ public class ProductsRepository extends Repository {
     
     final public void updateAllProductsSolOrNotSolMaxmin(final int askMaxMin) throws Exception{
         this.updateSQL("UPDATE Product SET askMaxMin = " + askMaxMin);
+    }
+    
+    @Override
+    final public List<Product> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Product> items = (List<Product>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

@@ -73,12 +73,14 @@ import org.hibernate.classic.Session;
  *
  * @author PC
  */
-public class Repository {
+public abstract class Repository {
     
     protected final Class ClassEntity;
     
     
     
+    
+    public abstract List<?> getByLikeEncabezados(final String search) throws Exception;
     
     protected Repository(final Class ClassEntity){
         

@@ -7,6 +7,7 @@ package com.era.repositories;
 
 import com.era.models.Pedidos;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
 
@@ -39,5 +40,20 @@ public class PedidosRepository extends Repository {
         
         //Return the result model
         return pedidos;
+    }
+    
+    @Override
+    final public List<Pedidos> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Pedidos> items = (List<Pedidos>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

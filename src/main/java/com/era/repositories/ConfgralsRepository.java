@@ -214,4 +214,9 @@ public class ConfgralsRepository extends Repository {
         HibernateUtil.getSingleton().getSession().getTransaction().commit();
         HibernateUtil.getSingleton().closeSession();
     }
+    
+    @Override
+    final public List<Confgral> getByLikeEncabezados(final String search) throws Exception{
+        return null;        
+    }
 }

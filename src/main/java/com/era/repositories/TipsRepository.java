@@ -7,6 +7,8 @@ package com.era.repositories;
 
 import com.era.models.Tips;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.Query;
 
 /**
@@ -52,5 +54,20 @@ public class TipsRepository extends Repository {
     
     final public Tips getRemType() throws Exception {
         return getBytType("REM");
+    }
+    
+    @Override
+    final public List<Tips> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Tips> items = (List<Tips>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

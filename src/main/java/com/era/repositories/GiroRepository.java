@@ -6,7 +6,10 @@
 package com.era.repositories;
 
 import com.era.models.Giro;
+import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.Query;
 
 /**
@@ -36,5 +39,20 @@ public class GiroRepository extends Repository {
         
         //Return the result model
         return Giro;
+    }
+    
+    @Override
+    final public List<Giro> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Giro> items = (List<Giro>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

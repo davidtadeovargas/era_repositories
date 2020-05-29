@@ -5,6 +5,8 @@ import com.era.models.License;
 import com.era.repositories.utils.HibernateUtil;
 import com.era.utilities.UtilitiesFactory;
 import com.era.utilities.exceptions.EncryptionException;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.Query;
 
 public class LicensesRepository extends Repository {
@@ -155,5 +157,20 @@ public class LicensesRepository extends Repository {
         HibernateUtil.getSingleton().closeSession();
         
         return License;
+    }
+    
+    @Override
+    final public List<License> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<License> items = (List<License>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

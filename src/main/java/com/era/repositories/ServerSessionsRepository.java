@@ -2,6 +2,8 @@ package com.era.repositories;
 
 import com.era.models.ServerSession;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.Query;
 
 public class ServerSessionsRepository extends Repository {
@@ -35,5 +37,20 @@ public class ServerSessionsRepository extends Repository {
         
         //Return the response model
         return ServerSession;
+    }
+    
+    @Override
+    final public List<ServerSession> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<ServerSession> items = (List<ServerSession>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

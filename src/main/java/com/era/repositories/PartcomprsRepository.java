@@ -7,6 +7,7 @@ package com.era.repositories;
 
 import com.era.models.Partcomprs;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
 
@@ -36,5 +37,20 @@ public class PartcomprsRepository extends Repository {
         
         //Return the result model
         return parts;
+    }
+    
+    @Override
+    final public List<Partcomprs> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Partcomprs> items = (List<Partcomprs>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

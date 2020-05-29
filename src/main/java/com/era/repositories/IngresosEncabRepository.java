@@ -6,7 +6,9 @@
 package com.era.repositories;
 
 import com.era.models.IngresosEncab;
+import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
 
@@ -39,4 +41,20 @@ public class IngresosEncabRepository extends Repository {
         //Return the result model
         return list.size()>0?list.get(0):null;
     }
+    
+    @Override
+    final public List<IngresosEncab> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<IngresosEncab> items = (List<IngresosEncab>) this.getAllLike(likes, search);
+        
+        return items;
+    }
+    
 }

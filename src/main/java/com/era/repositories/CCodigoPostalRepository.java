@@ -7,6 +7,7 @@ package com.era.repositories;
 
 import com.era.models.CCodigopostal;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
 
@@ -78,5 +79,20 @@ public class CCodigoPostalRepository extends Repository {
         
         //Return the result model
         return records;
+    }
+    
+    @Override
+    final public List<CCodigopostal> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<CCodigopostal> items = (List<CCodigopostal>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

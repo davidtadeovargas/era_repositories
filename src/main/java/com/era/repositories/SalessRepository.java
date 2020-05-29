@@ -3,6 +3,7 @@ package com.era.repositories;
 import com.era.models.Sales;
 import com.era.models.Tips;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.hibernate.Query;
@@ -166,5 +167,20 @@ public class SalessRepository extends Repository {
     
     final public void confirmaVentaOrigen(final int venta_origen) throws Exception{
         this.update("UPDATE Sales SET estatus = 'CO', venta_origen = 0, factu = 0 WHERE venta_origen = " + venta_origen);
+    }
+    
+    @Override
+    final public List<Sales> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Sales> items = (List<Sales>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

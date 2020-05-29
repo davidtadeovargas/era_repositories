@@ -6,7 +6,9 @@
 package com.era.repositories;
 
 import com.era.models.Ingres;
+import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
 
@@ -38,5 +40,20 @@ public class IngresRepository extends Repository {
         
         //Return the result model
         return list;
+    }
+    
+    @Override
+    final public List<Ingres> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Ingres> items = (List<Ingres>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

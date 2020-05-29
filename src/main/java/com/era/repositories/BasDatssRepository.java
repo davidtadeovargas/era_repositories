@@ -3,6 +3,8 @@ package com.era.repositories;
 import com.era.logger.LoggerUtility;
 import com.era.models.BasDats;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.Query;
 
 public class BasDatssRepository extends Repository {
@@ -66,5 +68,20 @@ public class BasDatssRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: BasDats deleted");
         
         return BasDats;
+    }
+    
+    @Override
+    final public List<BasDats> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<BasDats> items = (List<BasDats>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

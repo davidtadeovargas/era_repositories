@@ -2,6 +2,8 @@ package com.era.repositories;
 
 import com.era.models.Log;
 import com.era.utilities.UtilitiesFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LogsRepository extends Repository {
 
@@ -69,5 +71,20 @@ public class LogsRepository extends Repository {
         this.save(Log);
         
         return Log;
+    }
+    
+    @Override
+    final public List<Log> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Log> items = (List<Log>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

@@ -38,6 +38,18 @@ public class UsersRepository extends Repository {
         super.update(User);                
     }
     
+    final public void updatePrinters(   final String code, 
+                                        final String ticketPrinter, 
+                                        final String invoicePrinter,
+                                        final boolean m52,
+                                        final boolean cort) throws Exception {
+               
+        final User User = (User)this.getByCod(code);
+        User.setInvoicePrinter(ticketPrinter);
+        User.setTicketPrinter(invoicePrinter);
+        this.update(User);
+    }
+    
     final public boolean isSalesPointUser(final String code) throws Exception {
         
         //Open database
@@ -167,6 +179,7 @@ public class UsersRepository extends Repository {
         return users;
     }
     
+    @Override
     final public List<User> getByLikeEncabezados(final String search) throws Exception{
         
         final List<String> likes = new ArrayList<>();

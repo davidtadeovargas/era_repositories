@@ -7,6 +7,8 @@ package com.era.repositories;
 
 import com.era.models.Lotped;
 import com.era.repositories.utils.HibernateUtil;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.Query;
 
 /**
@@ -35,5 +37,20 @@ public class LotpedRepository extends Repository {
         
         //Return the result model
         return Lotped;
+    }
+    
+    @Override
+    final public List<Lotped> getByLikeEncabezados(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");
+        likes.add("nom");
+        likes.add("pass");
+        likes.add("falt");
+        likes.add("fmod");
+        
+        final List<Lotped> items = (List<Lotped>) this.getAllLike(likes, search);
+        
+        return items;
     }
 }

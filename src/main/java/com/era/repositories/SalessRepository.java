@@ -85,7 +85,7 @@ public class SalessRepository extends Repository {
         String hql = "FROM Sales where tipdoc = :tipdoc";
         final Session Session = HibernateUtil.getSingleton().getSession();
         Query query = Session.createQuery(hql);
-        query.setParameter("tipdoc", Tips.getCod());
+        query.setParameter("tipdoc", Tips.getCode());
         List<Sales> Sales = query.list();
         
         //Close database

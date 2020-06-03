@@ -14,7 +14,7 @@ public class LogsRepository extends Repository {
    final public Log addCustomerLog(final String companyCode) throws Exception {
         
         Log Log = new Log();
-        Log.setCod(companyCode);
+        Log.setCode(companyCode);
         Log.setType("CUSTOMER");
         Log.setAccio("ADD");
         Log.setDescrip("USER CREATED");        
@@ -27,7 +27,7 @@ public class LogsRepository extends Repository {
     final public Log updateCustomerLog(final String companyCode) throws Exception {
         
         Log Log = new Log();
-        Log.setCod(companyCode);
+        Log.setCode(companyCode);
         Log.setType("CUSTOMER");
         Log.setAccio("UPDATE");
         Log.setDescrip("USER CREATED");        
@@ -48,7 +48,7 @@ public class LogsRepository extends Repository {
         final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getCode();
         
         Log Log = new Log();
-        Log.setCod(user);
+        Log.setCode(user);
         Log.setType("USER");
         Log.setAccio("LOGGED");
         Log.setDescrip("USER LOGGED TO SYSTEM");        
@@ -63,7 +63,7 @@ public class LogsRepository extends Repository {
         final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getCode();
         
         Log Log = new Log();
-        Log.setCod(user);
+        Log.setCode(user);
         Log.setType("USER");
         Log.setAccio("LOGGEDOUT");
         Log.setDescrip("USER LOGGED TO SYSTEM");        

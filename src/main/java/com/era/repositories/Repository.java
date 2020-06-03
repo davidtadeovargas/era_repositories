@@ -10,15 +10,8 @@ import com.era.models.Aduana;
 import com.era.models.Anaqs;
 import com.era.models.Banco;
 import com.era.models.BasDats;
-import com.era.models.Clasemp;
 import com.era.models.Clasificacion;
-import com.era.models.Clasjeracli;
-import com.era.models.Clasjeraprod;
-import com.era.models.Clasjeraprov;
-import com.era.models.Clasprod;
-import com.era.models.Clasprov;
 import com.era.models.Coin;
-import com.era.models.Colos;
 import com.era.models.Compa;
 import com.era.models.ServerSession;
 import com.era.models.Company;
@@ -50,11 +43,9 @@ import com.era.models.Sectores;
 import com.era.models.Subramos;
 import com.era.models.Sucursal;
 import com.era.models.Supplier;
-import com.era.models.Tall;
 import com.era.models.Tax;
 import com.era.models.Tipactfij;
 import com.era.models.Tips;
-import com.era.models.Ubiad;
 import com.era.models.Unid;
 import com.era.models.User;
 import com.era.models.Warehouse;
@@ -608,7 +599,7 @@ public abstract class Repository {
             }
             else if(Object instanceof Marcs){
                 Marcs Marcs = (Marcs)Object;
-                cod = Marcs.getCod();
+                cod = Marcs.getCode();
             }
             else if(Object instanceof Lugs){
                 Lugs Lugs = (Lugs)Object;
@@ -620,7 +611,7 @@ public abstract class Repository {
             }
             else if(Object instanceof Kits){
                 Kits Kits = (Kits)Object;
-                cod = Kits.getCodkit();
+                cod = Kits.getCode();
             }
             else if(Object instanceof ImpuesXProduct){
                 ImpuesXProduct ImpuesXProduct = (ImpuesXProduct)Object;
@@ -662,42 +653,14 @@ public abstract class Repository {
                 Compa Compa = (Compa)Object;
                 cod = Compa.getCompa();
             }
-            else if(Object instanceof Colos){
-                Colos Colos = (Colos)Object;
-                cod = Colos.getCod();
-            }
             else if(Object instanceof Coin){
                 Coin Coin = (Coin)Object;
                 cod = Coin.getC_moneda();
-            }
-            else if(Object instanceof Clasprov){
-                Clasprov Clasprov = (Clasprov)Object;
-                cod = Clasprov.getCod();
-            }
-            else if(Object instanceof Clasprod){
-                Clasprod Clasprod = (Clasprod)Object;
-                cod = Clasprod.getCod();
-            }
-            else if(Object instanceof Clasjeraprov){
-                Clasjeraprov Clasjeraprov = (Clasjeraprov)Object;
-                cod = Clasjeraprov.getClas();
-            }
-            else if(Object instanceof Clasjeraprod){
-                Clasjeraprod Clasjeraprod = (Clasjeraprod)Object;
-                cod = Clasjeraprod.getClas();
-            }
-            else if(Object instanceof Clasjeracli){
-                Clasjeracli Clasjeracli = (Clasjeracli)Object;
-                cod = Clasjeracli.getClas();
             }
             else if(Object instanceof Clasificacion){
                 Clasificacion Clasificacion = (Clasificacion)Object;
                 cod = Clasificacion.getCod();
             }
-            else if(Object instanceof Clasemp){
-                Clasemp Clasemp = (Clasemp)Object;
-                cod = Clasemp.getCod();
-            }            
             else if(Object instanceof Banco){
                 Banco Banco = (Banco)Object;
                 cod = Banco.getCuentabanco();
@@ -726,25 +689,17 @@ public abstract class Repository {
                 Unid Unid = (Unid)Object;
                 cod = Unid.getCode();
             }
-            else if(Object instanceof Ubiad){
-                Ubiad Ubiad = (Ubiad)Object;
-                cod = Ubiad.getCod();
-            }
             else if(Object instanceof Tips){
                 Tips Tips = (Tips)Object;
-                cod = Tips.getCod();
+                cod = Tips.getCode();
             }
             else if(Object instanceof Tipactfij){
                 Tipactfij Tipactfij = (Tipactfij)Object;
-                cod = Tipactfij.getTip();
+                cod = Tipactfij.getCode();
             }
             else if(Object instanceof Tax){
                 Tax Tax = (Tax)Object;
                 cod = Tax.getCode();
-            }
-            else if(Object instanceof Tall){
-                Tall Tall = (Tall)Object;
-                cod = Tall.getCod();
             }
             else if(Object instanceof Supplier){
                 Supplier Supplier = (Supplier)Object;
@@ -752,15 +707,15 @@ public abstract class Repository {
             }
             else if(Object instanceof Sucursal){
                 Sucursal Sucursal = (Sucursal)Object;
-                cod = Sucursal.getCod();
+                cod = Sucursal.getCode();
             }
             else if(Object instanceof Subramos){
                 Subramos Subramos = (Subramos)Object;
-                cod = Subramos.getCodigo();
+                cod = Subramos.getCode();
             }
             else if(Object instanceof Sectores){
                 Sectores Sectores = (Sectores)Object;
-                cod = Sectores.getCodigo();
+                cod = Sectores.getCode();
             }
             else if(Object instanceof Sales){
                 Sales Sales = (Sales)Object;
@@ -768,19 +723,19 @@ public abstract class Repository {
             }
             else if(Object instanceof Rubr){
                 Rubr Rubr = (Rubr)Object;
-                cod = Rubr.getCod();
+                cod = Rubr.getCode();
             }
             else if(Object instanceof Responsable){
                 Responsable Responsable = (Responsable)Object;
-                cod = Responsable.getCod();
+                cod = Responsable.getCode();
             }
             else if(Object instanceof Product){
                 Product Product = (Product)Object;
-                cod = Product.getCodeProduct();
+                cod = Product.getCode();
             }
             else if(Object instanceof Pes){
                 Pes Pes = (Pes)Object;
-                cod = Pes.getCod();
+                cod = Pes.getCode();
             }
             else if(Object instanceof Pedidos){
                 Pedidos Pedidos = (Pedidos)Object;
@@ -800,12 +755,12 @@ public abstract class Repository {
             }
             else if(Object instanceof Meds){
                 Meds Meds = (Meds)Object;
-                cod = Meds.getCod();
+                cod = Meds.getCode();
             }
         }
         
         final Log Log = new Log();
-        Log.setCod(cod);
+        Log.setCode(cod);
         Log.setAccio(accio);
         
         //RepositoryFactory.getInstance().getLogsRepository().save(Log);

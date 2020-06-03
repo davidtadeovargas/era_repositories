@@ -23,15 +23,8 @@ public class RepositoryFactory {
    private CCoinsRepository CCoinsRepository;
    private CCountriesRepository CCountriesRepository;
    private CFDIRelacionadosPagosRepository CFDIRelacionadosPagosRepository;
-   private ClasempsRepository ClasempsRepository;
    private ClasificacionsRepository ClasificacionsRepository;
-   private ClasjeraclisRepository ClasjeraclisRepository;
-   private ClasjeraprodsRepository ClasjeraprodsRepository;
-   private ClasjeraprovsRepository ClasjeraprovsRepository;
-   private ClasprodsRepository ClasprodsRepository;
-   private ClasprovsRepository ClasprovsRepository;
    private CoinsRepository CoinsRepository;
-   private ColossRepository ColossRepository;
    private CompanysRepository CompanysRepository;
    private CompasRepository CompasRepository;
    private ComprsRepository ComprsRepository;
@@ -43,7 +36,6 @@ public class RepositoryFactory {
    private ConfgralRepository ConfgralRepository;
    private ConfgralsRepository ConfgralsRepository;
    private ConsecsRepository ConsecsRepository;
-   private ContrassRepository ContrassRepository;
    private ControlexportarsRepository ControlexportarsRepository;
    private CorreoTerminalsRepository CorreoTerminalsRepository;
    private CorrselecRepository CorrselecRepository;
@@ -66,20 +58,15 @@ public class RepositoryFactory {
    private CxpRepository CxpRepository;
    private CxpsRepository CxpsRepository;
    private DatoscpsRepository DatoscpsRepository;
-   private DeliverAddressCustomerRepository DeliverAddressCustomerRepository;
-   private DeliverAddressCustomersRepository DeliverAddressCustomersRepository;
    private DocumentOriginRepository DocumentOriginRepository;
    private DocumentOriginsRepository DocumentOriginsRepository;
    private DocumentosContabilizadossRepository DocumentosContabilizadossRepository;
    private DocumentosOrigensRepository DocumentosOrigensRepository;
    private DocumentosPagosRepository DocumentosPagosRepository;
-   private DomentcliRepository DomentcliRepository;
-   private DomentclisRepository DomentclisRepository;
    private EREjerciciossRepository EREjerciciossRepository;
    private ERMmovimientosInventariosRepository ERMmovimientosInventariosRepository;
    private ERPermisosRepository ERPermisosRepository;
    private ERPermisossRepository ERPermisossRepository;
-   private EstadiscorsRepository EstadiscorsRepository;
    private ExistalmasRepository ExistalmasRepository;
    private FabssRepository FabssRepository;
    private FacturassRepository FacturassRepository;
@@ -89,7 +76,6 @@ public class RepositoryFactory {
    private GeneralConfigsRepository GeneralConfigsRepository;
    private GiroRepository GiroRepository;
    private GirosRepository GirosRepository;
-   private GralssRepository GralssRepository;
    private HistAntiguedaddesaldosRepository HistAntiguedaddesaldosRepository;
    private ImpuestosVentasRepository ImpuestosVentasRepository;
    private ImpuestosXComprasRepository ImpuestosXComprasRepository;
@@ -120,7 +106,6 @@ public class RepositoryFactory {
    private MoninvensRepository MoninvensRepository;
    private MovimientosAsientossRepository MovimientosAsientossRepository;
    private MovimientosPagossRepository MovimientosPagossRepository;
-   private MsjssRepository MsjssRepository;
    private OrdssRepository OrdssRepository;
    private PartcomprsRepository PartcomprsRepository;
    private PartcomprssRepository PartcomprssRepository;
@@ -139,18 +124,14 @@ public class RepositoryFactory {
    private PedidossRepository PedidossRepository;
    private PerssRepository PerssRepository;
    private PessRepository PessRepository;
-   private PetissRepository PetissRepository;
    private PrevcomprssRepository PrevcomprssRepository;
    private ProdpartsRepository ProdpartsRepository;
    private ProductsRepository ProductsRepository;
    private PushNotificationsRepository PushNotificationsRepository;
    private RegistroemailsRepository RegistroemailsRepository;
-   private RegistrossRepository RegistrossRepository;
    private ResplogsRepository ResplogsRepository;
    private ResponsablesRepository ResponsablesRepository;
-   private RespsRepository RespsRepository;
    private RubrsRepository RubrsRepository;
-   private RutssRepository RutssRepository;
    private SalessRepository SalessRepository;
    private SectoressRepository SectoressRepository;
    private SerieprodsRepository SerieprodsRepository;
@@ -161,8 +142,6 @@ public class RepositoryFactory {
    private SubramossRepository SubramossRepository;
    private SucursalsRepository SucursalsRepository;
    private SuppliersRepository SuppliersRepository;
-   private TallcolosRepository TallcolosRepository;
-   private TallsRepository TallsRepository;
    private TarssRepository TarssRepository;
    private TaxesRepository TaxesRepository;
    private TaxsRepository TaxsRepository;
@@ -173,7 +152,6 @@ public class RepositoryFactory {
    private TipsRepository TipsRepository;
    private TipssRepository TipssRepository;
    private TraspassRepository TraspassRepository;
-   private UbiadsRepository UbiadsRepository;
    private UnidsRepository UnidsRepository;
    private UserPermissionsRepository UserPermissionsRepository;
    private UsersRepository UsersRepository;
@@ -244,32 +222,11 @@ public class RepositoryFactory {
    public CFDIRelacionadosPagosRepository getCFDIRelacionadosPagosRepository() {
        if(CFDIRelacionadosPagosRepository==null){CFDIRelacionadosPagosRepository = new CFDIRelacionadosPagosRepository();}return CFDIRelacionadosPagosRepository;
    }
-   public ClasempsRepository getClasempsRepository() {
-       if(ClasempsRepository==null){ClasempsRepository = new ClasempsRepository();}return ClasempsRepository;
-   }
    public ClasificacionsRepository getClasificacionsRepository() {
        if(ClasificacionsRepository==null){ClasificacionsRepository = new ClasificacionsRepository();}return ClasificacionsRepository;
    }
-   public ClasjeraclisRepository getClasjeraclisRepository() {
-       if(ClasjeraclisRepository==null){ClasjeraclisRepository = new ClasjeraclisRepository();}return ClasjeraclisRepository;
-   }
-   public ClasjeraprodsRepository getClasjeraprodsRepository() {
-       if(ClasjeraprodsRepository==null){ClasjeraprodsRepository = new ClasjeraprodsRepository();}return ClasjeraprodsRepository;
-   }
-   public ClasjeraprovsRepository getClasjeraprovsRepository() {
-       if(ClasjeraprovsRepository==null){ClasjeraprovsRepository = new ClasjeraprovsRepository();}return ClasjeraprovsRepository;
-   }
-   public ClasprodsRepository getClasprodsRepository() {
-       if(ClasprodsRepository==null){ClasprodsRepository = new ClasprodsRepository();}return ClasprodsRepository;
-   }
-   public ClasprovsRepository getClasprovsRepository() {
-       if(ClasprovsRepository==null){ClasprovsRepository = new ClasprovsRepository();}return ClasprovsRepository;
-   }
    public CoinsRepository getCoinsRepository() {
        if(CoinsRepository==null){CoinsRepository = new CoinsRepository();}return CoinsRepository;
-   }
-   public ColossRepository getColossRepository() {
-       if(ColossRepository==null){ColossRepository = new ColossRepository();}return ColossRepository;
    }
    public CompanysRepository getCompanysRepository() {
        if(CompanysRepository==null){CompanysRepository = new CompanysRepository();}return CompanysRepository;
@@ -303,9 +260,6 @@ public class RepositoryFactory {
    }
    public ConsecsRepository getConsecsRepository() {
        if(ConsecsRepository==null){ConsecsRepository = new ConsecsRepository();}return ConsecsRepository;
-   }
-   public ContrassRepository getContrassRepository() {
-       if(ContrassRepository==null){ContrassRepository = new ContrassRepository();}return ContrassRepository;
    }
    public ControlexportarsRepository getControlexportarsRepository() {
        if(ControlexportarsRepository==null){ControlexportarsRepository = new ControlexportarsRepository();}return ControlexportarsRepository;
@@ -373,12 +327,6 @@ public class RepositoryFactory {
    public DatoscpsRepository getDatoscpsRepository() {
        if(DatoscpsRepository==null){DatoscpsRepository = new DatoscpsRepository();}return DatoscpsRepository;
    }
-   public DeliverAddressCustomerRepository getDeliverAddressCustomerRepository() {
-       if(DeliverAddressCustomerRepository==null){DeliverAddressCustomerRepository = new DeliverAddressCustomerRepository();}return DeliverAddressCustomerRepository;
-   }
-   public DeliverAddressCustomersRepository getDeliverAddressCustomersRepository() {
-       if(DeliverAddressCustomersRepository==null){DeliverAddressCustomersRepository = new DeliverAddressCustomersRepository();}return DeliverAddressCustomersRepository;
-   }
    public DocumentOriginRepository getDocumentOriginRepository() {
        if(DocumentOriginRepository==null){DocumentOriginRepository = new DocumentOriginRepository();}return DocumentOriginRepository;
    }
@@ -394,12 +342,6 @@ public class RepositoryFactory {
    public DocumentosPagosRepository getDocumentosPagosRepository() {
        if(DocumentosPagosRepository==null){DocumentosPagosRepository = new DocumentosPagosRepository();}return DocumentosPagosRepository;
    }
-   public DomentcliRepository getDomentcliRepository() {
-       if(DomentcliRepository==null){DomentcliRepository = new DomentcliRepository();}return DomentcliRepository;
-   }
-   public DomentclisRepository getDomentclisRepository() {
-       if(DomentclisRepository==null){DomentclisRepository = new DomentclisRepository();}return DomentclisRepository;
-   }
    public EREjerciciossRepository getEREjerciciossRepository() {
        if(EREjerciciossRepository==null){EREjerciciossRepository = new EREjerciciossRepository();}return EREjerciciossRepository;
    }
@@ -411,9 +353,6 @@ public class RepositoryFactory {
    }
    public ERPermisossRepository getERPermisossRepository() {
        if(ERPermisossRepository==null){ERPermisossRepository = new ERPermisossRepository();}return ERPermisossRepository;
-   }
-   public EstadiscorsRepository getEstadiscorsRepository() {
-       if(EstadiscorsRepository==null){EstadiscorsRepository = new EstadiscorsRepository();}return EstadiscorsRepository;
    }
    public ExistalmasRepository getExistalmasRepository() {
        if(ExistalmasRepository==null){ExistalmasRepository = new ExistalmasRepository();}return ExistalmasRepository;
@@ -441,9 +380,6 @@ public class RepositoryFactory {
    }
    public GirosRepository getGirosRepository() {
        if(GirosRepository==null){GirosRepository = new GirosRepository();}return GirosRepository;
-   }
-   public GralssRepository getGralssRepository() {
-       if(GralssRepository==null){GralssRepository = new GralssRepository();}return GralssRepository;
    }
    public HistAntiguedaddesaldosRepository getHistAntiguedaddesaldosRepository() {
        if(HistAntiguedaddesaldosRepository==null){HistAntiguedaddesaldosRepository = new HistAntiguedaddesaldosRepository();}return HistAntiguedaddesaldosRepository;
@@ -535,9 +471,6 @@ public class RepositoryFactory {
    public MovimientosPagossRepository getMovimientosPagossRepository() {
        if(MovimientosPagossRepository==null){MovimientosPagossRepository = new MovimientosPagossRepository();}return MovimientosPagossRepository;
    }
-   public MsjssRepository getMsjssRepository() {
-       if(MsjssRepository==null){MsjssRepository = new MsjssRepository();}return MsjssRepository;
-   }
    public OrdssRepository getOrdssRepository() {
        if(OrdssRepository==null){OrdssRepository = new OrdssRepository();}return OrdssRepository;
    }
@@ -592,9 +525,6 @@ public class RepositoryFactory {
    public PessRepository getPessRepository() {
        if(PessRepository==null){PessRepository = new PessRepository();}return PessRepository;
    }
-   public PetissRepository getPetissRepository() {
-       if(PetissRepository==null){PetissRepository = new PetissRepository();}return PetissRepository;
-   }
    public PrevcomprssRepository getPrevcomprssRepository() {
        if(PrevcomprssRepository==null){PrevcomprssRepository = new PrevcomprssRepository();}return PrevcomprssRepository;
    }
@@ -610,23 +540,14 @@ public class RepositoryFactory {
    public RegistroemailsRepository getRegistroemailsRepository() {
        if(RegistroemailsRepository==null){RegistroemailsRepository = new RegistroemailsRepository();}return RegistroemailsRepository;
    }
-   public RegistrossRepository getRegistrossRepository() {
-       if(RegistrossRepository==null){RegistrossRepository = new RegistrossRepository();}return RegistrossRepository;
-   }
    public ResplogsRepository getResplogsRepository() {
        if(ResplogsRepository==null){ResplogsRepository = new ResplogsRepository();}return ResplogsRepository;
    }
    public ResponsablesRepository getResponsablesRepository() {
        if(ResponsablesRepository==null){ResponsablesRepository = new ResponsablesRepository();}return ResponsablesRepository;
    }
-   public RespsRepository getRespsRepository() {
-       if(RespsRepository==null){RespsRepository = new RespsRepository();}return RespsRepository;
-   }
    public RubrsRepository getRubrsRepository() {
        if(RubrsRepository==null){RubrsRepository = new RubrsRepository();}return RubrsRepository;
-   }
-   public RutssRepository getRutssRepository() {
-       if(RutssRepository==null){RutssRepository = new RutssRepository();}return RutssRepository;
    }
    public SalessRepository getSalessRepository() {
        if(SalessRepository==null){SalessRepository = new SalessRepository();}return SalessRepository;
@@ -658,12 +579,6 @@ public class RepositoryFactory {
    public SuppliersRepository getSuppliersRepository() {
        if(SuppliersRepository==null){SuppliersRepository = new SuppliersRepository();}return SuppliersRepository;
    }
-   public TallcolosRepository getTallcolosRepository() {
-       if(TallcolosRepository==null){TallcolosRepository = new TallcolosRepository();}return TallcolosRepository;
-   }
-   public TallsRepository getTallsRepository() {
-       if(TallsRepository==null){TallsRepository = new TallsRepository();}return TallsRepository;
-   }
    public TarssRepository getTarssRepository() {
        if(TarssRepository==null){TarssRepository = new TarssRepository();}return TarssRepository;
    }
@@ -693,9 +608,6 @@ public class RepositoryFactory {
    }
    public TraspassRepository getTraspassRepository() {
        if(TraspassRepository==null){TraspassRepository = new TraspassRepository();}return TraspassRepository;
-   }
-   public UbiadsRepository getUbiadsRepository() {
-       if(UbiadsRepository==null){UbiadsRepository = new UbiadsRepository();}return UbiadsRepository;
    }
    public UnidsRepository getUnidsRepository() {
        if(UnidsRepository==null){UnidsRepository = new UnidsRepository();}return UnidsRepository;

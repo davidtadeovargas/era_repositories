@@ -91,6 +91,23 @@ public class CompanysRepository extends Repository {
         return Company;
     }
     
+    final public Company rfcExists(final String RFC) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Company where rfc = :RFC";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("RFC", RFC);        
+        Company Company = query.list().size() > 0 ? (Company)query.list().get(0):null;
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession();
+        
+        //Return the result model
+        return Company;
+    }
+    
     final public void deleteByCodemp(final String codemp) throws Exception{
         
         //Open database

@@ -29,9 +29,6 @@ public class CompanysRepository extends Repository {
             
             //Add log
             RepositoryFactory.getInstance().getLogsRepository().addCustomerLog(Company.getCompanyCode());
-            
-            //Update the customer consecs
-            RepositoryFactory.getInstance().getConsecsRepository().updateConsecCustomer(Company.getSer());
         }
         
         return Company.getId();
@@ -119,15 +116,12 @@ public class CompanysRepository extends Repository {
         likes.add("col");
         likes.add("cp");
         likes.add("ciu");
-        likes.add("pais");
+        likes.add("pai");
         likes.add("estad");
         likes.add("rfc");
         likes.add("co1");
         likes.add("co2");
-        likes.add("co3");
         likes.add("pagweb1");
-        likes.add("pagweb2");
-        likes.add("pagweb2");
         likes.add("observ");
         
         final List<Company> customers = (List<Company>) this.getAllLike(likes, search);

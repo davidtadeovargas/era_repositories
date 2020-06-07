@@ -25,8 +25,7 @@ public class IngresRepository extends Repository {
     final public List<Ingres> geAllByNoserAndNoRefer(final String norefer,final String noser) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM Ingres WHERE norefer = :norefer AND noser = :noser";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -34,9 +33,8 @@ public class IngresRepository extends Repository {
         query.setParameter("noser", noser);
         List<Ingres> list = query.list();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database      
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return list;

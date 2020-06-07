@@ -65,15 +65,28 @@ public class LicensesRepository extends Repository {
         
         Query query = HibernateUtil.getSingleton().getSession().createQuery("from License");
         License License = query.list().size() > 0 ? (License) query.list().get(0):null;
+        final License License_ = new License();
         if(License!=null){
             
             //Decrypt variables
             try{
 
+                License_.setUser(License.getUser());
+                License_.setChannel(License.getChannel());
+                License_.setPassword(License.getPassword());
+                License_.setServerDate(License.getServerDate());
+                License_.setRemainingDays(License.getRemainingDays());
+                License_.setUsers(License.getUsers());
+                License_.setEstac(License.getEstac());
+                License_.setSucu(License.getSucu());
+                License_.setNocaj(License.getNocaj());
+                License_.setFalt(License.getFalt());
+                License_.setFmod(License.getFmod());
+                
                 //Decrypt variables
-                License.setUser(UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(License.getUser()));
-                License.setPassword(UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(License.getPassword()));
-                License.setServerDate(UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(License.getServerDate()));
+                License_.setUser(UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(License.getUser()));
+                License_.setPassword(UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(License.getPassword()));
+                License_.setServerDate(UtilitiesFactory.getSingleton().getSecurityUtil().decryptString(License.getServerDate()));
 
             }catch(Exception e){
                 LoggerUtility.getSingleton().logError(LicensesRepository.class, e);
@@ -82,12 +95,12 @@ public class LicensesRepository extends Repository {
         }            
         
         //Close database       
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         LoggerUtility.getSingleton().logInfo(LicensesRepository.class, "Hibernate: Returning license: " + License);
         
         //Return the response model
-        return License;
+        return License_;
     }
     
     
@@ -154,7 +167,7 @@ public class LicensesRepository extends Repository {
         }            
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         return License;
     }

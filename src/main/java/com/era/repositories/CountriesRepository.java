@@ -32,7 +32,7 @@ public class CountriesRepository extends Repository {
         CCountry Country = query.list().size() > 0 ? (CCountry)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Country;

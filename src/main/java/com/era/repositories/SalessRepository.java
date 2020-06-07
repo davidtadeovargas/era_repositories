@@ -27,7 +27,7 @@ public class SalessRepository extends Repository {
         Iterator count = query.iterate();
         
         //Close database
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return (int) count.next();
@@ -48,7 +48,7 @@ public class SalessRepository extends Repository {
         
         //Close database
         HibernateUtil.getSingleton().commitTransacton();
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Sales;
@@ -68,7 +68,7 @@ public class SalessRepository extends Repository {
         
         //Close database
         HibernateUtil.getSingleton().commitTransacton();
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Sales;
@@ -90,7 +90,7 @@ public class SalessRepository extends Repository {
         
         //Close database
         HibernateUtil.getSingleton().commitTransacton();
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Sales;
@@ -110,7 +110,7 @@ public class SalessRepository extends Repository {
         
         //Close database
         HibernateUtil.getSingleton().commitTransacton();
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Sales;
@@ -130,7 +130,7 @@ public class SalessRepository extends Repository {
         
         //Close database
         HibernateUtil.getSingleton().commitTransacton();
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Sales;

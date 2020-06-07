@@ -42,7 +42,7 @@ public class ExistalmasRepository extends Repository {
         Existalma Existalma = query.list().size() > 0 ? (Existalma)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Existalma;

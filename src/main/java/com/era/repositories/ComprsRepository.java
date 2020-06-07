@@ -34,7 +34,7 @@ public class ComprsRepository extends Repository {
         final int count_ = (int) count.next();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return count_;
@@ -53,7 +53,7 @@ public class ComprsRepository extends Repository {
         Comprs Comprs = query.list().size() > 0 ? (Comprs)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Comprs;
@@ -90,7 +90,7 @@ public class ComprsRepository extends Repository {
         List<Comprs> Comprs = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Comprs;

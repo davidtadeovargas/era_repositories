@@ -33,7 +33,7 @@ public class ERPermisosRepository extends Repository {
         ERPermisos ERPermisos = query.list().size() > 0 ? (ERPermisos)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return ERPermisos;

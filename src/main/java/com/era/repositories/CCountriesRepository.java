@@ -29,17 +29,15 @@ public class CCountriesRepository extends Repository {
     final public CCountry getCountryByCode(final String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM CCountry where code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("code", code);
         CCountry CCountry = query.list().size() > 0 ? (CCountry)query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return CCountry;

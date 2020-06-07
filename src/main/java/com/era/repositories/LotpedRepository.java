@@ -33,7 +33,7 @@ public class LotpedRepository extends Repository {
         Lotped Lotped = query.list().size() > 0 ? (Lotped)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Lotped;

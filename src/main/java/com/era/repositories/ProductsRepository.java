@@ -68,7 +68,7 @@ public class ProductsRepository extends Repository {
         }            
         
         //Close database
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         return Product;
     }
@@ -76,8 +76,7 @@ public class ProductsRepository extends Repository {
     final public void deleteProductWithTaxes(final String prod) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
                 
         SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Product WHERE prod = :prod");
         SQLQuery.setParameter("prod", prod);
@@ -87,9 +86,8 @@ public class ProductsRepository extends Repository {
         SQLQuery.setParameter("prod", prod);
         SQLQuery.executeUpdate();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
     }
     
     final public List<Product> getAllOrderdByProdAsc() throws Exception {
@@ -102,7 +100,7 @@ public class ProductsRepository extends Repository {
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return prods;
@@ -118,7 +116,7 @@ public class ProductsRepository extends Repository {
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return prods;
@@ -134,7 +132,7 @@ public class ProductsRepository extends Repository {
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return prods;
@@ -150,7 +148,7 @@ public class ProductsRepository extends Repository {
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return prods;
@@ -166,7 +164,7 @@ public class ProductsRepository extends Repository {
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return prods;
@@ -183,7 +181,7 @@ public class ProductsRepository extends Repository {
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return prods;

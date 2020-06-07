@@ -35,7 +35,7 @@ public class ImpuesXProductRepository extends Repository {
         
         //Close database
         HibernateUtil.getSingleton().commitTransacton();
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return list;

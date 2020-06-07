@@ -33,7 +33,7 @@ public class PartcomprsRepository extends Repository {
         List<Partcomprs> parts = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return parts;

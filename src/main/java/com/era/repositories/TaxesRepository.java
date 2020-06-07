@@ -27,15 +27,13 @@ public class TaxesRepository extends Repository {
         
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         String hql = "FROM Tax WHERE codimpue = :codimpue";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<Tax> list = query.list();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return list.size()>0?list.get(0):null;
@@ -44,17 +42,15 @@ public class TaxesRepository extends Repository {
     final public void deleteByCodimpue(final String codimpue) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         //Save
         final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Tax WHERE codimpue = :codimpue");
         SQLQuery.setParameter("codimpue", codimpue);
         SQLQuery.executeUpdate();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
     }
     
     final public List<Tax> getByLikeEncabezados(final String search) throws Exception{

@@ -92,7 +92,7 @@ public abstract class Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return records;
@@ -117,7 +117,7 @@ public abstract class Repository {
         }
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         return val;
     }
@@ -133,7 +133,7 @@ public abstract class Repository {
                 
         LoggerUtility.getSingleton().logInfo(Repository.class, "Finished getting by id");
         
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the response model
         return Object;
@@ -142,8 +142,7 @@ public abstract class Repository {
     final public List<?> getAll() throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Geting all objects from " + ClassEntity.getName());
         
@@ -153,9 +152,8 @@ public abstract class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Finished geting all objects ");
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return list;
@@ -164,8 +162,7 @@ public abstract class Repository {
     final public List<?> getAllLike(final List<String> likes, final String search) throws Exception{
     
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
              
         //Get results
         String cad;
@@ -191,9 +188,8 @@ public abstract class Repository {
         }
         List<?> list = query.list();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return list;
@@ -202,17 +198,15 @@ public abstract class Repository {
     final public Object getByNoRefer(final String norefer) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM " + ClassEntity.getName() + " WHERE norefer = :norefer";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);    
         query.setParameter("norefer", norefer);
         Object Object = query.list().size()>0?query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Object;
@@ -247,8 +241,7 @@ public abstract class Repository {
     final public Object delete(final Object Object) throws Exception {
 
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Deleting Object " + Object.getClass().getName());
         
@@ -261,9 +254,8 @@ public abstract class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Finished deleting Object ");
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         return Object;
     }
@@ -297,17 +289,15 @@ public abstract class Repository {
     final public Object getByCode(final String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM " + ClassEntity.getName() + " where code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("code", code);
         Object Object = query.list().size() > 0 ? query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Object;
@@ -317,17 +307,15 @@ public abstract class Repository {
     final public Object getByCod(final String cod) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM " + ClassEntity.getName() + " where cod = :cod";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("cod", cod);
         Object Object = query.list().size() > 0 ? query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Object;
@@ -336,17 +324,15 @@ public abstract class Repository {
     final public Object getByDescription(final String description) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM " + ClassEntity.getName() + " where description = :description";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("description", description);
         Object Object = query.list().size() > 0 ? query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Object;
@@ -355,16 +341,14 @@ public abstract class Repository {
     final public List<?> getAllByNameFilter(final String filter) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         Query query = HibernateUtil.getSingleton().getSession().createQuery("from " + ClassEntity.getName() + " where name like '%:filter%'");
         query.setParameter("filter", filter);
         List<?> list = query.list();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return list;
@@ -373,16 +357,14 @@ public abstract class Repository {
     final public List<?> getAllByCodeFilter(final String filter) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         Query query = HibernateUtil.getSingleton().getSession().createQuery("from " + ClassEntity.getName() + " where code like '%:filter%'");
         query.setParameter("filter", filter);
         List<?> list = query.list();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return list;
@@ -391,16 +373,14 @@ public abstract class Repository {
     final public List<?> getAllByDescriptionFilter(final String filter) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         Query query = HibernateUtil.getSingleton().getSession().createQuery("from " + ClassEntity.getName() + " where description like '%:filter%'");
         query.setParameter("filter", filter);
         List<?> list = query.list();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return list;
@@ -409,17 +389,15 @@ public abstract class Repository {
     final public Object getByName(final String name) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM " + ClassEntity.getName() + " where name = :name";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("name", name);
         Object Object = query.list().size() > 0 ? query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Object;
@@ -468,10 +446,8 @@ public abstract class Repository {
         setField(Object, "falt", new Date());
         setField(Object, "fmod", new Date());
         
-        final Session Session = HibernateUtil.getSingleton().getSessionFactoryCurrent().openSession();
-        final Transaction Transaction = Session.beginTransaction();
-        Session.save(Object);
-        Transaction.commit();
+        final Session Session = HibernateUtil.getSingleton().getSessionFactoryCurrent().openSession();        
+        Session.save(Object);        
         Session.close();
     }
     
@@ -479,7 +455,6 @@ public abstract class Repository {
                 
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().begginTransaction();
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Saving object " + Object.getClass().getName());
         
@@ -494,7 +469,13 @@ public abstract class Repository {
         setField(Object, "fmod", new Date());
         
         //Save
-        HibernateUtil.getSingleton().getSession().save(Object);
+        HibernateUtil.getSingleton().getSession().save(Object);                
+        
+        if(Object instanceof Supplier){
+                        
+            final Supplier Supplier = (Supplier)Object;
+            RepositoryFactory.getInstance().getConsecsRepository().updateConsecSupplier(Supplier.getSerie());
+        }
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Finishing Saving object ");
         
@@ -502,9 +483,8 @@ public abstract class Repository {
             insertLog(Object,"save",null);
         }        
         
-        //Close database        
-        HibernateUtil.getSingleton().commitTransacton();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Object;
@@ -513,8 +493,7 @@ public abstract class Repository {
     final public void updateSQL(String sqlQuery) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating sql " + sqlQuery);                
                 
@@ -531,16 +510,14 @@ public abstract class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Finished updating sql ");
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
     }
     
     final public Object update(final Object Object) throws Exception{
-        
+    
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating object " + Object.getClass().getName());
         
@@ -561,10 +538,10 @@ public abstract class Repository {
         if(!(Object instanceof Log)){
             insertLog(Object,"update",null);
         }
-                
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+                        
+            
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Object;
@@ -763,7 +740,7 @@ public abstract class Repository {
         Log.setCode(cod);
         Log.setAccio(accio);
         
-        //RepositoryFactory.getInstance().getLogsRepository().save(Log);
+        RepositoryFactory.getInstance().getLogsRepository().save(Log);
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Log saved");
     }

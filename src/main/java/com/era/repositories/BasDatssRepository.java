@@ -26,7 +26,7 @@ public class BasDatssRepository extends Repository {
         BasDats BasDats = query.list().size() > 0 ? (BasDats)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: BasDats returned");
         
@@ -47,7 +47,7 @@ public class BasDatssRepository extends Repository {
         BasDats BasDats = query.list().size() > 0 ? (BasDats)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: BasDats returned");
         

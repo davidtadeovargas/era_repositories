@@ -21,11 +21,35 @@ public class ConsecsRepository extends Repository {
         
         return Consec;
     }
-    
+   
+   final public Consec updateConsecSupplier(final String serie) throws Exception {
+        
+        Consec Consec = this.getSupplierConsec(serie);
+        Consec.setConsec(Consec.getConsec() + 1);
+        
+        this.update(Consec);
+        
+        return Consec;
+    }
+   
+   final public Consec getConsecBySer(final String serie) throws Exception {
+        
+        Consec Consec = this.getCustomerConsec(serie);
+        Consec.setConsec(Consec.getConsec() + 1);
+        
+        this.update(Consec);
+        
+        return Consec;
+    }
+   
     final public List<Consec> getCustomersConsec() throws Exception {        
         return getByType("EMP");        
     }
         
+    final public List<Consec> getSuppliersConsec() throws Exception {        
+        return getByType("PROV");        
+    }
+    
     final public List<Consec> getSalesConsec() throws Exception {        
         return getByType("FAC");        
     }
@@ -50,32 +74,36 @@ public class ConsecsRepository extends Repository {
         return getByType("NOT");        
     }
     
-    private Consec getCustomerConsec(final String serie) throws Exception {
+    public Consec getCustomerConsec(final String serie) throws Exception {
         return getConsec(serie, "EMP");
     }
     
-    private Consec getSalesConsec(final String serie) throws Exception {        
+    public Consec getSalesConsec(final String serie) throws Exception {        
         return getConsec(serie, "FAC");
     }
     
-    private Consec getRemisionsConsec(final String serie) throws Exception {        
+    public Consec getRemisionsConsec(final String serie) throws Exception {        
         return getConsec(serie, "REM");
     }
     
-    private Consec getTicketsConsec(final String serie) throws Exception {        
+    public Consec getTicketsConsec(final String serie) throws Exception {        
         return getConsec(serie, "TIK");
     }
     
-    private Consec getCotsConsec(final String serie) throws Exception {        
+    public Consec getCotsConsec(final String serie) throws Exception {        
         return getConsec(serie, "COT");
     }
     
-    private Consec getComConsec(final String serie) throws Exception {        
+    public Consec getComConsec(final String serie) throws Exception {        
         return getConsec(serie, "COM");
     }
     
-    private Consec getCreditNotesConsec(final String serie) throws Exception {        
+    public Consec getCreditNotesConsec(final String serie) throws Exception {        
         return getConsec(serie, "NOT");
+    }
+    
+    public Consec getSupplierConsec(final String serie) throws Exception {        
+        return getConsec(serie, "PROV");
     }
     
     private Consec getConsec(final String serie, final String type) throws Exception {
@@ -90,7 +118,7 @@ public class ConsecsRepository extends Repository {
         Consec Consec = query.list().size() > 0 ? (Consec)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Consec;
@@ -107,7 +135,7 @@ public class ConsecsRepository extends Repository {
         final List<Consec> consecs = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return consecs;

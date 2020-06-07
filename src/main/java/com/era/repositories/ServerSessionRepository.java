@@ -42,7 +42,7 @@ public class ServerSessionRepository extends Repository {
         ServerSession ServerSession = query.list().size() > 0 ? (ServerSession) query.list().get(0):null;
         
         //Close database                
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the response model
         return ServerSession;

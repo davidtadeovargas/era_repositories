@@ -35,7 +35,7 @@ public class DocumentOriginRepository extends Repository {
         DocumentOrigin DocumentOrigin = query.list().size() > 0 ? (DocumentOrigin)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         LoggerUtility.getSingleton().logInfo(DocumentOriginRepository.class, "Hibernate: Returning document by type");
         

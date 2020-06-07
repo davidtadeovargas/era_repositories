@@ -34,7 +34,12 @@ public class HibernateUtil {
     private HibernateConfigModel HibernateConfigModelDbEmpresas;
     private HibernateConfigModel HibernateConfigModelLocal;
         
+    private Class ClassHasConnection;
+    
     private Session Session;
+    
+    
+    
     
     
     private HibernateUtil(){
@@ -359,8 +364,13 @@ public class HibernateUtil {
         return classes;
     }
     
-    public void closeSession() throws Exception {
-        this.Session.close();
+    public void closeSession(final Class ClassEntity) throws Exception {
+        
+        //Just the object that opens the connection can close it
+        if(this.ClassHasConnection.getName().compareTo(ClassEntity.getName())==0){
+            HibernateUtil.getSingleton().getSession().getTransaction().commit();
+            this.Session.close();
+        }
     }
 
     public void openSession(Class ClassEntity) throws Exception {
@@ -378,7 +388,14 @@ public class HibernateUtil {
             useDbLocal();
         }
         
-        this.Session = this.sessionFactoryCurrent.openSession();        
+        //All the objects share the same open connection
+        if(this.Session == null || !this.Session.isOpen()){
+            this.Session = this.sessionFactoryCurrent.openSession();
+            HibernateUtil.getSingleton().begginTransaction();
+            
+            //Save who oppended the connection
+            this.ClassHasConnection = ClassEntity;
+        }
     }
     
     public AnnotationConfiguration getLocalAnnotationConfiguration() throws Exception{

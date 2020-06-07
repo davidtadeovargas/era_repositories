@@ -26,17 +26,15 @@ public class CxpRepository extends Repository {
     final public Cxp getByNorefer(final String norefer) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM Cxp WHERE norefer = :norefer";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("norefer", norefer);
         List<Cxp> list = query.list();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return list.size()>0?list.get(0):null;
@@ -45,24 +43,21 @@ public class CxpRepository extends Repository {
     final public void deleteByConfg(final String norefer) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         //Save
         final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Cxp WHERE norefer = :norefer");
         SQLQuery.setParameter("norefer", norefer);
         SQLQuery.executeUpdate();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
     }
     
     final public double getPendientePago(final String prov) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         //Save
         final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("SELECT IFNULL((SUM(carg) - SUM(abon)),0) AS pendpag WHERE prov = :prov");
@@ -73,9 +68,8 @@ public class CxpRepository extends Repository {
             pendiente = Double.valueOf(Arrays.toString(rows.get(0)));
         }
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         return pendiente;
     }

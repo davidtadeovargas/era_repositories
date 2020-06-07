@@ -36,7 +36,7 @@ public class PedidosRepository extends Repository {
         List<Pedidos> pedidos = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return pedidos;

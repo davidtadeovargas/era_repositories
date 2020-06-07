@@ -31,7 +31,7 @@ public class SeriesRepository extends Repository {
         Serie Serie = (Serie)c.uniqueResult();
         
         //Close database                
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         LoggerUtility.getSingleton().logInfo(SeriesRepository.class, "Hibernate: Returning first serie NOTC " + Serie);
         
@@ -50,7 +50,7 @@ public class SeriesRepository extends Repository {
         List<Serie> Series = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the response model
         return Series;
@@ -262,7 +262,6 @@ public class SeriesRepository extends Repository {
                 
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
         
         String hql = "FROM Serie where serie = :serie";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -270,6 +269,8 @@ public class SeriesRepository extends Repository {
         Serie Serie = query.list().size() > 0 ? (Serie)query.list().get(0):null;
         
         LoggerUtility.getSingleton().logInfo(SeriesRepository.class, "Hibernate: Returning serie " + Serie);
+        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the response model
         return Serie;
@@ -280,8 +281,7 @@ public class SeriesRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(SeriesRepository.class, "Hibernate: Getting serie by type: " + type);
                 
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM Serie where type = :type";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -289,6 +289,8 @@ public class SeriesRepository extends Repository {
         Serie Serie = query.list().size() > 0 ? (Serie)query.list().get(0):null;
         
         LoggerUtility.getSingleton().logInfo(SeriesRepository.class, "Hibernate: Returning serie by type: " + type);
+        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the response model
         return Serie;

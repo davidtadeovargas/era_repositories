@@ -6,7 +6,6 @@
 package com.era.repositories;
 
 import com.era.models.Giro;
-import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +24,15 @@ public class GiroRepository extends Repository {
     final public Giro getByGiro(final String gir) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         String hql = "FROM Giro where gir = :gir";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("gir", gir);
         Giro Giro = query.list().size() > 0 ? (Giro)query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Giro;

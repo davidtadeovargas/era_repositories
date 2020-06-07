@@ -38,7 +38,7 @@ public class PartvtaRepository extends Repository {
         Iterator count = query.iterate();
         
         //Close database
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return (int) count.next();

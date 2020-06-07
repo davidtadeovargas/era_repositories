@@ -37,7 +37,7 @@ public class CCodigoPostalRepository extends Repository {
         CCodigopostal CCodigopostal = query.list().size() > 0 ? (CCodigopostal)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return CCodigopostal;
@@ -56,7 +56,7 @@ public class CCodigoPostalRepository extends Repository {
         final boolean result = query.list().size() > 0;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
                
         return result;
     }
@@ -75,7 +75,7 @@ public class CCodigoPostalRepository extends Repository {
         List<CCodigopostal> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return records;

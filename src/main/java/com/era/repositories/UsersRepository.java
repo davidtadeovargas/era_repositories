@@ -61,7 +61,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return User!=null?User.isUserOfsalesOfPoint():false;
@@ -78,7 +78,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return User!=null;
@@ -95,7 +95,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         if(User!=null){
             
@@ -122,7 +122,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         if(User!=null){
             RepositoryFactory.getInstance().getLogsRepository().userLoggedToSystem();
@@ -140,7 +140,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         if(User!=null){
             RepositoryFactory.getInstance().getLogsRepository().userLoggedOutToSystem();
@@ -157,7 +157,7 @@ public class UsersRepository extends Repository {
         List<User> users = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return users;
@@ -173,7 +173,7 @@ public class UsersRepository extends Repository {
         List<User> users = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return users;

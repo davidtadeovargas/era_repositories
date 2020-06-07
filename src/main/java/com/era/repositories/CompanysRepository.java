@@ -47,7 +47,7 @@ public class CompanysRepository extends Repository {
         Company Customer = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         LoggerUtility.getSingleton().logInfo(CompanysRepository.class, "Hibernate: Returning customer");
         
@@ -67,7 +67,7 @@ public class CompanysRepository extends Repository {
         Company Company = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Company;
@@ -85,7 +85,7 @@ public class CompanysRepository extends Repository {
         Company Company = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Company;
@@ -102,7 +102,7 @@ public class CompanysRepository extends Repository {
         Company Company = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Company;
@@ -111,17 +111,15 @@ public class CompanysRepository extends Repository {
     final public void deleteByCodemp(final String codemp) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        HibernateUtil.getSingleton().getSession().beginTransaction();
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
         
         //Save
         final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Company WHERE codemp = :codemp");
         SQLQuery.setParameter("codemp", codemp);
         SQLQuery.executeUpdate();
         
-        //Close database
-        HibernateUtil.getSingleton().getSession().getTransaction().commit();
-        HibernateUtil.getSingleton().closeSession();
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
     }
     
     final public List<Company> getByLikeEncabezados(final String search) throws Exception{

@@ -34,6 +34,26 @@ public class BasDatssRepository extends Repository {
         return BasDats;
     }
     
+   final public BasDats getDBTest() throws Exception{
+        
+        LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: Getting the db test");
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM BasDats where test = true";        
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
+        BasDats BasDats = query.list().size() > 0 ? (BasDats)query.list().get(0):null;
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: DB test returned");
+        
+        //Return the result model
+        return BasDats;
+    }
+   
     final public BasDats getByDBName(final String bd) throws Exception{
                         
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: Getting basdats by bd: " + bd);

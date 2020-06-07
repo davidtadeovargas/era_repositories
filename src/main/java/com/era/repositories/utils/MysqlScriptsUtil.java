@@ -157,7 +157,7 @@ public class MysqlScriptsUtil {
         String sCon = "jdbc:mysql://" + instance + ":" + port + "/sys?user=" + user + "&password=" + password + "&verifyServerCertificate=false&useSSL=false";
         try(Connection conn = DriverManager.getConnection(sCon)){
             
-            String query = "select * from information_schema.schemata where schema_name = 'dbempresas';";
+            String query = "select * from information_schema.schemata where schema_name = '" + database + "';";
             ResultSet rs = null;
             Statement st = conn.createStatement();
             rs = st.executeQuery(query);

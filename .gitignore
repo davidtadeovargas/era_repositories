@@ -10,3 +10,7 @@ target/classes/com/era/repositories/utils/MysqlScriptsUtil.class
 target/era_repositories-1.0-SNAPSHOT-jar-with-dependencies.jar
 target/era_repositories-1.0-SNAPSHOT.jar
 target/maven-archiver/pom.properties
+target/classes/com/era/repositories/utils/MysqlScriptsUtil.class
+target/era_repositories-1.0-SNAPSHOT-jar-with-dependencies.jar
+target/era_repositories-1.0-SNAPSHOT.jar
+target/maven-archiver/pom.properties

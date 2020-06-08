@@ -263,7 +263,7 @@ public class SeriesRepository extends Repository {
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
         
-        String hql = "FROM Serie where serie = :serie";
+        String hql = "FROM Serie where ser = :serie";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("serie", serie);
         Serie Serie = query.list().size() > 0 ? (Serie)query.list().get(0):null;

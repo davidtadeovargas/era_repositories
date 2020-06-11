@@ -6,7 +6,7 @@
 package com.era.repositories;
 
 import com.era.models.ImpuesXProduct;
-import com.era.models.User;
+import com.era.models.Tax;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +41,32 @@ public class ImpuesXProductRepository extends Repository {
         return list;
     }
     
+    final void deleteAllTaxesFromProduct(final String productCode) throws Exception {        
+        this.deleteSQL("DELETE FROM impues_x_product WHERE code = '" + productCode + "'");
+    }            
+    
+    final public void save(final String productCode, final List<Tax> taxes) throws Exception {
+        
+        //Loop over all the taxes
+        for(Tax Tax:taxes){
+          
+            //Checj if the record exists
+            final boolean exists = taxExistsInProduct(productCode, Tax.getCode());
+            
+            //If not exists            
+            if(!exists){
+                
+                //Create the model
+                final ImpuesXProduct ImpuesXProduct = new ImpuesXProduct();
+                ImpuesXProduct.setCode(productCode);
+                ImpuesXProduct.setImpue(Tax.getCode());
+                
+                //Save it
+                this.save(ImpuesXProduct);
+            }
+        }
+    }
+    
     @Override
     final public List<ImpuesXProduct> getByLikeEncabezados(final String search) throws Exception{
         
@@ -55,4 +81,41 @@ public class ImpuesXProductRepository extends Repository {
         
         return items;
     }
+    
+    final public List<Tax> getProductTaxes(final String productCode) throws Exception{
+        
+       //Get all the taxes of the product
+       final List<ImpuesXProduct> records = (List<ImpuesXProduct>) this.getAllByCode(productCode);
+       
+       //Crate the new result list
+       final List<Tax> taxes = new ArrayList<>();
+       for(ImpuesXProduct ImpuesXProduct: records){
+           final Tax Tax = RepositoryFactory.getInstance().getTaxesRepository().getByCodeImpue(ImpuesXProduct.getImpue());
+           taxes.add(Tax);
+       }
+       
+       return taxes;
+   }
+    
+    final public boolean taxExistsInProduct(final String productCode, final String taxCode) throws Exception{               
+        return getByProductAndTax(productCode, taxCode)!=null;
+   }
+    
+    final public ImpuesXProduct getByProductAndTax(final String productCode, final String taxCode) throws Exception{
+        
+       //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM ImpuesXProduct where code = :productCode AND impue = :taxCode";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("productCode", productCode);
+        query.setParameter("taxCode", taxCode);
+        ImpuesXProduct ImpuesXProduct = query.list().size() > 0 ? (ImpuesXProduct)query.list().get(0):null;
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return ImpuesXProduct;
+   }
 }

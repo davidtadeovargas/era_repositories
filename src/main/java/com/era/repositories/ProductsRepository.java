@@ -2,6 +2,7 @@ package com.era.repositories;
 
 import com.era.logger.LoggerUtility;
 import com.era.models.Product;
+import com.era.models.Tax;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class ProductsRepository extends Repository {
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
         
-        String hql = "FROM Product where codeProduct = :codeProduct";
+        String hql = "FROM Product where code = :codeProduct";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("codeProduct", codeProduct);
         Product Product = query.list().size() > 0 ? (Product) query.list().get(0):null;
@@ -54,6 +55,18 @@ public class ProductsRepository extends Repository {
         return Product;
     }
             
+    final public Product addOrUpdateProduct(final Product Product, final List<Tax> taxesProduct) throws Exception {                                
+        
+        //Add or update the product
+        final Product Product_ = addOrUpdateProduct(Product);
+        
+        //Save or update the taxes of the product
+        RepositoryFactory.getInstance().getImpuesXProductRepository().save(Product.getCode(), taxesProduct);        
+        
+        //Return the moel
+        return Product_;
+    }
+    
     final public Product deleteProductByCode(final String codeProduct) throws Exception {
 
         //Open database
@@ -67,6 +80,9 @@ public class ProductsRepository extends Repository {
             HibernateUtil.getSingleton().getSession().delete(Product);
         }            
         
+        //Delete all the taxes associated
+        RepositoryFactory.getInstance().getImpuesXProductRepository().deleteAllTaxesFromProduct(codeProduct);
+                    
         //Close database
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         
@@ -218,9 +234,8 @@ public class ProductsRepository extends Repository {
     final public List<Product> getByLikeEncabezados(final String search) throws Exception{
         
         final List<String> likes = new ArrayList<>();
-        likes.add("code");
-        likes.add("nom");
-        likes.add("pass");
+        likes.add("code");        
+        likes.add("description");
         likes.add("falt");
         likes.add("fmod");
         

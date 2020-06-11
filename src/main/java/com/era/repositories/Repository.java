@@ -57,7 +57,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.hibernate.Query;
-import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 
 /**
@@ -76,6 +75,11 @@ public abstract class Repository {
     protected Repository(final Class ClassEntity){
         
         this.ClassEntity = ClassEntity;
+    }
+    
+    public List<?> getAllByPage(final int pageNumber) throws Exception {
+        final List<?> records = this.getAllByPage(pageNumber,50);
+        return records;
     }
     
     public List<?> getAllByPage(final int pageNumber, int pageSize) throws Exception {
@@ -234,7 +238,7 @@ public abstract class Repository {
     final public void deleteAll() throws Exception {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Deleting all Objects of " + ClassEntity.getClass().getName());
-        this.deleteSQL("DELETE FROM " + ClassEntity.getName());        
+        this.deleteSQL("DELETE FROM " + ClassEntity.getName());
         LoggerUtility.getSingleton().logInfo(Repository.class, "Finished deleting all Objects ");                
     }
     
@@ -361,6 +365,22 @@ public abstract class Repository {
         
         Query query = HibernateUtil.getSingleton().getSession().createQuery("from " + ClassEntity.getName() + " where code like '%:filter%'");
         query.setParameter("filter", filter);
+        List<?> list = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return list;
+    }
+    
+    final public List<?> getAllByCode(final String code) throws Exception{
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        
+        Query query = HibernateUtil.getSingleton().getSession().createQuery("from " + ClassEntity.getName() + " where code = :code");
+        query.setParameter("code", code);
         List<?> list = query.list();
         
         //Close database        
@@ -580,7 +600,7 @@ public abstract class Repository {
             }
             else if(Object instanceof Lugs){
                 Lugs Lugs = (Lugs)Object;
-                cod = Lugs.getCod();
+                cod = Lugs.getCode();
             }
             else if(Object instanceof Line){
                 Line Line = (Line)Object;
@@ -592,7 +612,7 @@ public abstract class Repository {
             }
             else if(Object instanceof ImpuesXProduct){
                 ImpuesXProduct ImpuesXProduct = (ImpuesXProduct)Object;
-                cod = ImpuesXProduct.getProdu() + "-|-" + ImpuesXProduct.getImpue();
+                cod = ImpuesXProduct.getCode() + "-|-" + ImpuesXProduct.getImpue();
             }
             else if(Object instanceof Giro){
                 Giro Giro = (Giro)Object;
@@ -644,7 +664,7 @@ public abstract class Repository {
             }
             else if(Object instanceof Anaqs){
                 Anaqs Anaqs = (Anaqs)Object;
-                cod = Anaqs.getCod();
+                cod = Anaqs.getCode();
             }
             else if(Object instanceof Aduana){
                 Aduana Aduana = (Aduana)Object;

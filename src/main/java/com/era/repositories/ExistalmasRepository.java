@@ -3,7 +3,6 @@ package com.era.repositories;
 import java.util.List;
 import java.util.ArrayList;
 import com.era.models.Existalma;
-import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
 import org.hibernate.Query;
 
@@ -40,6 +39,46 @@ public class ExistalmasRepository extends Repository {
         query.setParameter("warehouseCode", warehouseCode);
         query.setParameter("productCode", productCode);
         Existalma Existalma = query.list().size() > 0 ? (Existalma)query.list().get(0):null;
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return Existalma;
+   }
+   
+   final public float getGeneralExistenceFromProduct(final String productCode) throws Exception {
+       
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Existalma where prod = :productCode";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
+        query.setParameter("productCode", productCode);
+        List<Existalma> almas = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Get the general existence
+        float existente = 0;
+        for(Existalma Existalma_:almas){
+            existente += Existalma_.getExist();
+        }                
+        
+        //Return the result model
+        return existente;
+   }
+   
+   final public List<Existalma> getAllWarehousesExistencesByProduct(final String productCode) throws Exception {
+       
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Existalma where prod = :productCode";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
+        query.setParameter("productCode", productCode);
+        List<Existalma> Existalma = query.list();
         
         //Close database        
         HibernateUtil.getSingleton().closeSession(ClassEntity);

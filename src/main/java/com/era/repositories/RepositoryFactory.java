@@ -82,8 +82,7 @@ public class RepositoryFactory {
    private ImpuestosXVentasRepository ImpuestosXVentasRepository;
    private ImpuesxpartidacotsRepository ImpuesxpartidacotsRepository;
    private ImpuesxpartidapedsRepository ImpuesxpartidapedsRepository;
-   private ImpuesXProductRepository ImpuesXProductRepository;
-   private ImpuesXProductsRepository ImpuesXProductsRepository;
+   private ImpuesXProductRepository ImpuesXProductRepository;   
    private IngresosEncabRepository IngresosEncabRepository;
    private IngresosEncabsRepository IngresosEncabsRepository;
    private IngresRepository IngresRepository;
@@ -401,9 +400,6 @@ public class RepositoryFactory {
    }
    public ImpuesXProductRepository getImpuesXProductRepository() {
        if(ImpuesXProductRepository==null){ImpuesXProductRepository = new ImpuesXProductRepository();}return ImpuesXProductRepository;
-   }
-   public ImpuesXProductsRepository getImpuesXProductsRepository() {
-       if(ImpuesXProductsRepository==null){ImpuesXProductsRepository = new ImpuesXProductsRepository();}return ImpuesXProductsRepository;
    }
    public IngresosEncabRepository getIngresosEncabRepository() {
        if(IngresosEncabRepository==null){IngresosEncabRepository = new IngresosEncabRepository();}return IngresosEncabRepository;

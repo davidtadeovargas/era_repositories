@@ -368,7 +368,9 @@ public class HibernateUtil {
         
         //Just the object that opens the connection can close it
         if(this.ClassHasConnection.getName().compareTo(ClassEntity.getName())==0){
-            HibernateUtil.getSingleton().getSession().getTransaction().commit();
+            if(HibernateUtil.getSingleton().getSession().getTransaction().isActive()){
+                HibernateUtil.getSingleton().getSession().getTransaction().commit();
+            }
             this.Session.close();
         }
     }

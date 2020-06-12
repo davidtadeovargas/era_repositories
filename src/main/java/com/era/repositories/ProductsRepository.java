@@ -1,6 +1,7 @@
 package com.era.repositories;
 
 import com.era.logger.LoggerUtility;
+import com.era.models.ImpuesXProduct;
 import com.era.models.Product;
 import com.era.models.Tax;
 import com.era.repositories.utils.HibernateUtil;
@@ -55,7 +56,7 @@ public class ProductsRepository extends Repository {
         return Product;
     }
             
-    final public Product addOrUpdateProduct(final Product Product, final List<Tax> taxesProduct) throws Exception {                                
+    final public Product addOrUpdateProduct(final Product Product, final List<ImpuesXProduct> taxesProduct) throws Exception {                                
         
         //Add or update the product
         final Product Product_ = addOrUpdateProduct(Product);

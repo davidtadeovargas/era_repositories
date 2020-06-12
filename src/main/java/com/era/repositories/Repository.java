@@ -290,7 +290,7 @@ public abstract class Repository {
         LoggerUtility.getSingleton().logInfo(Repository.class, "Deleting by code finished with result: " + result);
     }
     
-    final public Object getByCode(final String code) throws Exception {
+    public Object getByCode(final String code) throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);        

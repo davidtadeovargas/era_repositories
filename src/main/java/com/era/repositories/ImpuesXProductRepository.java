@@ -28,9 +28,9 @@ public class ImpuesXProductRepository extends Repository {
         HibernateUtil.getSingleton().openSession(ClassEntity);
         HibernateUtil.getSingleton().begginTransaction();        
         
-        String hql = "FROM ImpuesXProduct WHERE produ = :produ";
+        String hql = "FROM ImpuesXProduct WHERE code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
-        query.setParameter("produ", produ);
+        query.setParameter("code", produ);
         List<ImpuesXProduct> list = query.list();
         
         //Close database
@@ -45,21 +45,16 @@ public class ImpuesXProductRepository extends Repository {
         this.deleteSQL("DELETE FROM impues_x_product WHERE code = '" + productCode + "'");
     }            
     
-    final public void save(final String productCode, final List<Tax> taxes) throws Exception {
+    final public void save(final String productCode, final List<ImpuesXProduct> taxes) throws Exception {
         
         //Loop over all the taxes
-        for(Tax Tax:taxes){
+        for(ImpuesXProduct ImpuesXProduct:taxes){
           
             //Checj if the record exists
-            final boolean exists = taxExistsInProduct(productCode, Tax.getCode());
+            final boolean exists = taxExistsInProduct(productCode, ImpuesXProduct.getCode());
             
             //If not exists            
             if(!exists){
-                
-                //Create the model
-                final ImpuesXProduct ImpuesXProduct = new ImpuesXProduct();
-                ImpuesXProduct.setCode(productCode);
-                ImpuesXProduct.setImpue(Tax.getCode());
                 
                 //Save it
                 this.save(ImpuesXProduct);

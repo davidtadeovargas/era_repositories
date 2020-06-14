@@ -3,7 +3,6 @@ package com.era.repositories;
 import com.era.logger.LoggerUtility;
 import com.era.models.ImpuesXProduct;
 import com.era.models.Product;
-import com.era.models.Tax;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;

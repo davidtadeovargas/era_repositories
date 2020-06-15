@@ -2,6 +2,7 @@ package com.era.repositories;
 
 import com.era.logger.LoggerUtility;
 import com.era.models.ImpuesXProduct;
+import com.era.models.Kits;
 import com.era.models.Product;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class ProductsRepository extends Repository {
         return Product;
     }
             
-    final public Product addOrUpdateProduct(final Product Product, final List<ImpuesXProduct> taxesProduct) throws Exception {                                
+    final public Product addOrUpdateProduct(final Product Product, final List<ImpuesXProduct> taxesProduct, final List<Kits> kits) throws Exception {
         
         //Add or update the product
         final Product Product_ = addOrUpdateProduct(Product);
@@ -63,6 +64,9 @@ public class ProductsRepository extends Repository {
         //Save or update the taxes of the product
         RepositoryFactory.getInstance().getImpuesXProductRepository().save(Product.getCode(), taxesProduct);        
         
+        //Save the kits
+        RepositoryFactory.getInstance().getKitssRepository().saveComponentsToKit(kits);
+                
         //Return the moel
         return Product_;
     }
@@ -72,17 +76,24 @@ public class ProductsRepository extends Repository {
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
         
-        //Get the license
+        //Get the product
         final Product Product = this.getProductByCode(codeProduct);
         
-        //Delete the license
+        //Delete the product
         if(Product!=null){
             HibernateUtil.getSingleton().getSession().delete(Product);
         }            
         
         //Delete all the taxes associated
         RepositoryFactory.getInstance().getImpuesXProductRepository().deleteAllTaxesFromProduct(codeProduct);
-                    
+        
+        //Is kit?
+        if(Product.getCompound()){
+            
+            //Delete all the components associated
+            RepositoryFactory.getInstance().getKitssRepository().deleteAllComponentsFromKit(codeProduct);
+        }                
+        
         //Close database
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         

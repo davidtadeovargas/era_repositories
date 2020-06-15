@@ -371,7 +371,9 @@ public class HibernateUtil {
             if(HibernateUtil.getSingleton().getSession().getTransaction().isActive()){
                 HibernateUtil.getSingleton().getSession().getTransaction().commit();
             }
-            this.Session.close();
+            if(this.Session.isOpen()){
+                this.Session.close();
+            }            
         }
     }
 

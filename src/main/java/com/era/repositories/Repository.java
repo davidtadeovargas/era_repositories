@@ -66,7 +66,7 @@ import org.hibernate.classic.Session;
 public abstract class Repository {
     
     protected final Class ClassEntity;
-    
+    protected final int paginationSize = 50;
     
     
     
@@ -76,9 +76,14 @@ public abstract class Repository {
         
         this.ClassEntity = ClassEntity;
     }
+
+    public int getPaginationSize() {
+        return paginationSize;
+    }
+        
     
     public List<?> getAllByPage(final int pageNumber) throws Exception {
-        final List<?> records = this.getAllByPage(pageNumber,50);
+        final List<?> records = this.getAllByPage(pageNumber,paginationSize);
         return records;
     }
     
@@ -91,7 +96,7 @@ public abstract class Repository {
         
         String hql = "FROM " + ClassEntity.getName();
         Query query = Session.createQuery(hql);
-        query.setFirstResult(pageNumber - 1);
+        query.setFirstResult(pageNumber);
         query.setMaxResults(pageSize);
         List<?> records = query.list();
         

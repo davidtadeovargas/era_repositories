@@ -222,16 +222,8 @@ public class HibernateUtil {
     public List<Class> getAnnottatedClassesForLocal() throws Exception {
         
         final List<Class> classes = new ArrayList<>();
-        classes.add(Company.class);
-        classes.add(CTipoRelacion.class);
-        classes.add(CTipoComprobante.class);        
-        classes.add(CPaymentMethod.class);
-        classes.add(CPaymentForm.class);
+        classes.add(Company.class);        
         classes.add(CFDIRelacionadosPago.class);
-        classes.add(CCoin.class);
-        classes.add(CClaveprodserv.class);
-        classes.add(CClaveUnidad.class);
-        classes.add(CAduana.class);
         classes.add(BasDats.class);
         classes.add(Banco.class);
         classes.add(Auxiliar.class);
@@ -253,11 +245,10 @@ public class HibernateUtil {
         classes.add(Conceppag.class);
         classes.add(Concepnot.class);
         classes.add(ComprsTmp.class);
-        classes.add(Comprs.class);        
-        classes.add(Compa.class);        
+        classes.add(Comprs.class);
+        classes.add(Compa.class);
         classes.add(Coin.class);
-        classes.add(Clasificacion.class);
-        classes.add(CUsoCFDI.class);
+        classes.add(Clasificacion.class);        
         classes.add(GeneralConfig.class);
         classes.add(Garan.class);
         classes.add(Flujact.class);
@@ -363,6 +354,15 @@ public class HibernateUtil {
         classes.add(CCodigopostal.class);
         classes.add(CCountry.class);
         classes.add(CRegimenfiscal.class);
+        classes.add(CClaveprodserv.class);
+        classes.add(CClaveUnidad.class);
+        classes.add(CAduana.class);
+        classes.add(CPaymentMethod.class);
+        classes.add(CPaymentForm.class);
+        classes.add(CTipoRelacion.class);
+        classes.add(CTipoComprobante.class);
+        classes.add(CUsoCFDI.class);
+        classes.add(CCoin.class);
         return classes;
     }
     
@@ -402,12 +402,21 @@ public class HibernateUtil {
     public void openSession(Class ClassEntity) throws Exception {
         
         //Determine if open dbempresas or a local one
-        if( ClassEntity.getName().compareTo(CCountry.class.getName())==0 ||
+        if( ClassEntity.getName().compareTo(BasDats.class.getName())==0 ||
+            ClassEntity.getName().compareTo(License.class.getName())==0 ||
+            ClassEntity.getName().compareTo(ServerSession.class.getName())==0 ||
             ClassEntity.getName().compareTo(CCodigopostal.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CRegimenfiscal.class.getName())==0 || 
-            ClassEntity.getName().compareTo(BasDats.class.getName())==0 ||
-            ClassEntity.getName().compareTo(License.class.getName())==0 || 
-            ClassEntity.getName().compareTo(ServerSession.class.getName())==0){
+            ClassEntity.getName().compareTo(CCountry.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CRegimenfiscal.class.getName())==0 ||            
+            ClassEntity.getName().compareTo(CClaveprodserv.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CClaveUnidad.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CAduana.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CPaymentMethod.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CPaymentForm.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CTipoRelacion.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CTipoComprobante.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CUsoCFDI.class.getName())==0 ||
+            ClassEntity.getName().compareTo(CCoin.class.getName())==0){
             useDbEmpresas();
         }
         else{

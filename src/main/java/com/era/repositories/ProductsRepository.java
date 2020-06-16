@@ -42,13 +42,16 @@ public class ProductsRepository extends Repository {
                 
         if(Product_==null){
             LoggerUtility.getSingleton().logInfo(ProductsRepository.class, "Hibernate: Adding Product");
+            
+            //Save or update the product        
+            save(Product);
         }
         else{
             LoggerUtility.getSingleton().logInfo(ProductsRepository.class, "Hibernate: Updating Product");
+            
+            //Update the product        
+            update(Product);
         }
-        
-        //Save or update the product        
-        save(Product);
         
         LoggerUtility.getSingleton().logInfo(ProductsRepository.class, "Hibernate: Product created or updated");
         
@@ -58,6 +61,8 @@ public class ProductsRepository extends Repository {
             
     final public Product addOrUpdateProduct(final Product Product, final List<ImpuesXProduct> taxesProduct, final List<Kits> kits) throws Exception {
         
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
         //Add or update the product
         final Product Product_ = addOrUpdateProduct(Product);
         
@@ -65,8 +70,10 @@ public class ProductsRepository extends Repository {
         RepositoryFactory.getInstance().getImpuesXProductRepository().save(Product.getCode(), taxesProduct);        
         
         //Save the kits
-        RepositoryFactory.getInstance().getKitssRepository().saveComponentsToKit(kits);
+        RepositoryFactory.getInstance().getKitssRepository().saveComponentsToKit(Product_.getCode(), kits);
                 
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
         //Return the moel
         return Product_;
     }

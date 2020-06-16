@@ -34,6 +34,8 @@ public class HibernateUtil {
     private HibernateConfigModel HibernateConfigModelDbEmpresas;
     private HibernateConfigModel HibernateConfigModelLocal;
         
+    private boolean sessionInTransacction;
+    
     private Class ClassHasConnection;
     
     private Session Session;
@@ -202,7 +204,7 @@ public class HibernateUtil {
     }
     
     public void begginTransaction() throws Exception  {        
-        this. Transaction = this.Session.beginTransaction();
+        this.Transaction = this.Session.beginTransaction();
     }
     
     public void commitTransacton() throws Exception {
@@ -366,17 +368,37 @@ public class HibernateUtil {
     
     public void closeSession(final Class ClassEntity) throws Exception {
         
-        //Just the object that opens the connection can close it
-        if(this.ClassHasConnection.getName().compareTo(ClassEntity.getName())==0){
-            if(HibernateUtil.getSingleton().getSession().getTransaction().isActive()){
-                HibernateUtil.getSingleton().getSession().getTransaction().commit();
+        //If there is not a transaction in course
+        if(!sessionInTransacction){
+            
+            if(this.Transaction.isActive()){
+                this.Session.getTransaction().commit();
             }
             if(this.Session.isOpen()){
                 this.Session.close();
-            }            
+            }
         }
     }
 
+    public void closeSessionInTransaction(final Class ClassEntity) throws Exception {
+     
+        //Set that the transaction in course has finished
+        sessionInTransacction = false;
+        
+        //Open the database in transaction
+        closeSession(ClassEntity);
+    }
+    
+    public void openSessionInTransacction(Class ClassEntity) throws Exception {
+        
+        //Open the databsase in transaction
+        this.openSession(ClassEntity);
+        this.begginTransaction();
+        
+        //Set that there is a transaction in course
+        sessionInTransacction = true;
+    }
+    
     public void openSession(Class ClassEntity) throws Exception {
         
         //Determine if open dbempresas or a local one
@@ -392,11 +414,12 @@ public class HibernateUtil {
             useDbLocal();
         }
         
-        //All the objects share the same open connection
-        if(this.Session == null || !this.Session.isOpen()){
+        //If there is not a transaction in course
+        if(!sessionInTransacction){
+                        
             this.Session = this.sessionFactoryCurrent.openSession();
             HibernateUtil.getSingleton().begginTransaction();
-            
+
             //Save who oppended the connection
             this.ClassHasConnection = ClassEntity;
         }

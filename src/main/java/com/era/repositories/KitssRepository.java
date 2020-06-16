@@ -44,10 +44,13 @@ public class KitssRepository extends Repository {
         HibernateUtil.getSingleton().closeSession(ClassEntity);        
     }
     
-    public void saveComponentsToKit(final List<Kits> kits) throws Exception {
+    public void saveComponentsToKit(final String codeKit, final List<Kits> kits) throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        //Delete all components from the kit
+        deleteAllComponentsFromKit(codeKit);        
         
         if(kits!=null){
             for(Kits kit:kits){

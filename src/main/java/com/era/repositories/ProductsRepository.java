@@ -34,6 +34,34 @@ public class ProductsRepository extends Repository {
         return Product;
     }
     
+   final public void updateProductAsKit(final String codeProduct) throws Exception {
+                        
+        Product Product = (Product)this.getByCode(codeProduct);
+        
+        //Set the product as kit
+        if(Product!=null){
+            
+            Product.setCompound(true);
+
+            this.update(Product);
+        }
+    }
+   
+    final public List<Product> getAllKits() throws Exception {
+                        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Product where compound = true";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
+        List<Product> Products = query.list();                        
+        
+        //Close database
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the response model
+        return Products;
+    }
     
     final public Product addOrUpdateProduct(final Product Product) throws Exception {                                
         
@@ -100,6 +128,26 @@ public class ProductsRepository extends Repository {
             //Delete all the components associated
             RepositoryFactory.getInstance().getKitssRepository().deleteAllComponentsFromKit(codeProduct);
         }                
+        
+        //Close database
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        return Product;
+    }
+    
+    final public Product removeKit(final String codeProduct) throws Exception {
+
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        //Get the product
+        final Product Product = this.getProductByCode(codeProduct);
+        
+        //Remove the kit
+        Product.setCompound(false);
+        
+        //Update
+        HibernateUtil.getSingleton().getSession().update(Product);                    
         
         //Close database
         HibernateUtil.getSingleton().closeSession(ClassEntity);

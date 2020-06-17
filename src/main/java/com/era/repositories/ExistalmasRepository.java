@@ -1,10 +1,15 @@
 package com.era.repositories;
 
+import com.era.logger.LoggerUtility;
 import java.util.List;
 import java.util.ArrayList;
 import com.era.models.Existalma;
+import com.era.models.Product;
 import com.era.repositories.utils.HibernateUtil;
+import com.era.utilities.UtilitiesFactory;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 
 public class ExistalmasRepository extends Repository {
 
@@ -45,6 +50,25 @@ public class ExistalmasRepository extends Repository {
         
         //Return the result model
         return Existalma;
+   }
+   
+    //****PENDING TO FINISH THIS METHOD***
+   final public List<Product> getAllProductsBajMin() throws Exception {
+       
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        
+        final String sqlQuery = "SELECT * FROM existalma LEFT OUTER JOIN prods ON existalma.prod = prods.code WHERE existalma.exist < prods.";
+        
+        final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery(sqlQuery);
+        SQLQuery.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+        List data = SQLQuery.list();
+        
+        LoggerUtility.getSingleton().logInfo(Repository.class, "Finished updating sql ");
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);                
+        
+        return null;
    }
    
    final public float getGeneralExistenceFromProduct(final String productCode) throws Exception {

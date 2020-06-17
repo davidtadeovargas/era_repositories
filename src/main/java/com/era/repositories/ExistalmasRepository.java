@@ -1,15 +1,12 @@
 package com.era.repositories;
 
-import com.era.logger.LoggerUtility;
 import java.util.List;
 import java.util.ArrayList;
 import com.era.models.Existalma;
 import com.era.models.Product;
 import com.era.repositories.utils.HibernateUtil;
-import com.era.utilities.UtilitiesFactory;
-import org.hibernate.Criteria;
+import java.util.Iterator;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 
 public class ExistalmasRepository extends Repository {
 
@@ -51,24 +48,82 @@ public class ExistalmasRepository extends Repository {
         //Return the result model
         return Existalma;
    }
-   
-    //****PENDING TO FINISH THIS METHOD***
-   final public List<Product> getAllProductsBajMin() throws Exception {
        
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+   final public List<Product> getAllProductsBajMin() throws Exception {
+               
+        //Get all the products that sol max and min
+        List<Product> products = RepositoryFactory.getInstance().getProductsRepository().getAllProductsSolMaxMin();
         
-        final String sqlQuery = "SELECT * FROM existalma LEFT OUTER JOIN prods ON existalma.prod = prods.code WHERE existalma.exist < prods.";
+        //Get the general existence        
+        final List<Product> finalProducts = new ArrayList<>();
+        for(Product Product_:products){
+            
+            //Get the general existence 
+            final float generalExistence = this.getGeneralExistenceFromProduct(Product_.getCode());
+            
+            final int minimun = Product_.getMinimun();
+            
+            //If is under min add it to the result
+            if(generalExistence < minimun){
+                finalProducts.add(Product_);
+            }
+        }                
         
-        final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery(sqlQuery);
-        SQLQuery.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-        List data = SQLQuery.list();
+        //Return the result model
+        return finalProducts;
+   }
+   
+   final public List<Product> getAllProductsBajMinLikeFilter(final String filter) throws Exception {
+       
+        final List<Product> products = this.getAllProductsBajMin();
         
-        LoggerUtility.getSingleton().logInfo(Repository.class, "Finished updating sql ");
+        final List<Product> finalProducts = new ArrayList<>();
+        for(Product Product_:products){
+            if(Product_.getCode().startsWith(filter)){
+                finalProducts.add(Product_);
+            }
+        }
         
-        //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);                
+        return finalProducts;
+   }
+   
+   final public List<Product> getAllProductsUpMax() throws Exception {
+       
+        //Get all the products that sol max and min
+        List<Product> products = RepositoryFactory.getInstance().getProductsRepository().getAllProductsSolMaxMin();
         
-        return null;
+        //Get the general existence        
+        final List<Product> finalProducts = new ArrayList<>();
+        for(Product Product_:products){
+            
+            //Get the general existence 
+            final float generalExistence = this.getGeneralExistenceFromProduct(Product_.getCode());
+            
+            final int maximum = Product_.getMaximum();
+            
+            //If is under min add it to the result
+            if(generalExistence > maximum){
+                finalProducts.add(Product_);
+            }
+        }                
+        
+        //Return the result model
+        return finalProducts;
+   }
+   
+   
+   final public List<Product> getAllProductsUpMaxLikeFilter(final String filter) throws Exception {
+       
+        final List<Product> products = this.getAllProductsUpMax();
+        
+        final List<Product> finalProducts = new ArrayList<>();
+        for(Product Product_:products){
+            if(Product_.getCode().startsWith(filter)){
+                finalProducts.add(Product_);
+            }
+        }
+        
+        return finalProducts;
    }
    
    final public float getGeneralExistenceFromProduct(final String productCode) throws Exception {

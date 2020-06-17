@@ -90,15 +90,35 @@ public class ProductsRepository extends Repository {
     final public Product addOrUpdateProduct(final Product Product, final List<ImpuesXProduct> taxesProduct, final List<Kits> kits) throws Exception {
         
         HibernateUtil.getSingleton().openSession(ClassEntity);
+    
+        //Determine if previusly was a kit
+        final Product ProductKit = (Product)this.getByCode(Product.getCode());
+        boolean wasKit = false;
+        if(ProductKit.getCompound()){
+            wasKit = true;
+        }
         
         //Add or update the product
         final Product Product_ = addOrUpdateProduct(Product);
         
-        //Save or update the taxes of the product
-        RepositoryFactory.getInstance().getImpuesXProductRepository().save(Product.getCode(), taxesProduct);        
+        //If it is not a kit
+        if(!Product_.getCompound()){
+            
+            //If previusly was kit
+            if(wasKit){
+                
+                //Delete all components
+                RepositoryFactory.getInstance().getKitssRepository().deleteAllComponentsFromKit(Product_.getCode());
+            }
+        }
+        else{ //It is a kit
+            
+            //Save the kits
+            RepositoryFactory.getInstance().getKitssRepository().saveComponentsToKit(Product_.getCode(), kits);
+        }
         
-        //Save the kits
-        RepositoryFactory.getInstance().getKitssRepository().saveComponentsToKit(Product_.getCode(), kits);
+        //Save or update the taxes of the product
+        RepositoryFactory.getInstance().getImpuesXProductRepository().save(Product.getCode(), taxesProduct);
                 
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         
@@ -127,7 +147,7 @@ public class ProductsRepository extends Repository {
             
             //Delete all the components associated
             RepositoryFactory.getInstance().getKitssRepository().deleteAllComponentsFromKit(codeProduct);
-        }                
+        }
         
         //Close database
         HibernateUtil.getSingleton().closeSession(ClassEntity);
@@ -226,6 +246,22 @@ public class ProductsRepository extends Repository {
         HibernateUtil.getSingleton().openSession(ClassEntity);
         
         String hql = "FROM Product WHERE compound = 0 ORDER BY prod DESC";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        List<Product> prods = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return prods;
+    }
+    
+    final public List<Product> getAllProductsSolMaxMin() throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Product WHERE askMaxMin = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         List<Product> prods = query.list();
         

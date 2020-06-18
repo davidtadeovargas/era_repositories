@@ -476,7 +476,7 @@ public abstract class Repository {
         Session.close();
     }
     
-    final public Object save(final Object Object) throws Exception{
+    public Object save(final Object Object) throws Exception{
                 
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);

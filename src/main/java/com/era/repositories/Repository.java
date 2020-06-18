@@ -633,7 +633,7 @@ public abstract class Repository {
             }
             else if(Object instanceof Conceps){
                 Conceps Conceps = (Conceps)Object;
-                cod = Conceps.getConcep();
+                cod = Conceps.getCode();
             }
             else if(Object instanceof Conceppag){
                 Conceppag Conceppag = (Conceppag)Object;

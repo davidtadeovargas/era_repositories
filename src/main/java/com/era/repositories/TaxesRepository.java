@@ -21,7 +21,18 @@ public class TaxesRepository extends Repository {
     protected TaxesRepository(){
         super(Tax.class);
     }
-    
+
+    final public void saveOrUpdate(final Tax Tax) throws Exception{
+        
+        final Tax Tax_ = (Tax)this.getByCode(Tax.getCode());
+        if(Tax_!=null){
+            Tax_.setValue(Tax.getValue());
+            this.update(Tax_);
+        }
+        else{
+            this.save(Tax);
+        }
+    }
     
     final public Tax getByCodeImpue(final String codimpue) throws Exception{
         

@@ -14,8 +14,9 @@ public class TaxsRepository extends Repository {
    final public List<Tax> getByLikeEncabezados(final String search) throws Exception{
         
        final List<String> likes = new ArrayList<>();
-       likes.add("falt");
-       likes.add("fmod");
+       likes.add("code");
+       likes.add("value");
+       likes.add("xmlTax");
        
        final List<Tax> records = (List<Tax>) this.getAllLike(likes, search);
        

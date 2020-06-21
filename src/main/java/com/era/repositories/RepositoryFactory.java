@@ -83,10 +83,8 @@ public class RepositoryFactory {
    private ImpuesxpartidacotsRepository ImpuesxpartidacotsRepository;
    private ImpuesxpartidapedsRepository ImpuesxpartidapedsRepository;
    private ImpuesXProductRepository ImpuesXProductRepository;   
-   private IngresosEncabRepository IngresosEncabRepository;
-   private IngresosEncabsRepository IngresosEncabsRepository;
-   private IngresRepository IngresRepository;
-   private IngressRepository IngressRepository;
+   private IngresosEncabRepository IngresosEncabRepository;   
+   private IngresRepository IngresRepository;   
    private KitssRepository KitssRepository;
    private LicensesRepository LicensesRepository;
    private LinesRepository LinesRepository;
@@ -404,14 +402,8 @@ public class RepositoryFactory {
    public IngresosEncabRepository getIngresosEncabRepository() {
        if(IngresosEncabRepository==null){IngresosEncabRepository = new IngresosEncabRepository();}return IngresosEncabRepository;
    }
-   public IngresosEncabsRepository getIngresosEncabsRepository() {
-       if(IngresosEncabsRepository==null){IngresosEncabsRepository = new IngresosEncabsRepository();}return IngresosEncabsRepository;
-   }
    public IngresRepository getIngresRepository() {
        if(IngresRepository==null){IngresRepository = new IngresRepository();}return IngresRepository;
-   }
-   public IngressRepository getIngressRepository() {
-       if(IngressRepository==null){IngressRepository = new IngressRepository();}return IngressRepository;
    }
    public KitssRepository getKitssRepository() {
        if(KitssRepository==null){KitssRepository = new KitssRepository();}return KitssRepository;

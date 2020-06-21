@@ -18,28 +18,6 @@ public class ExistalmasRepository extends Repository {
 
     public void addExistenceToWarehouse(final String productCode, final String warehouseCode, final String unid, final float existence,ConcepssRepository.TYPES typeMoninven) throws Exception {
         
-        //Get the model
-        Existalma Existalma = this.getByWarehouseAndProduct(warehouseCode, productCode);
-        
-        //If not exists create the record        
-        if(Existalma==null){
-            Existalma = new Existalma();
-            Existalma.setProd(productCode);
-            Existalma.setAlma(warehouseCode);            
-            Existalma.setExist(0);
-            this.save(Existalma);
-        }
-        
-        //Previuos existence
-        final float previousExitence = Existalma.getExist();
-        
-        //Create new existence
-        final float newExistence = Existalma.getExist() + existence;
-        
-        //Update the model
-        Existalma.setExist(newExistence);
-        this.update(Existalma);
-        
         //Get the type of concep
         final Conceps Concep = RepositoryFactory.getInstance().getConcepssRepository().getByType(typeMoninven);
         
@@ -47,7 +25,6 @@ public class ExistalmasRepository extends Repository {
         final Moninven Moninven = new Moninven();
         Moninven.setProd(productCode);
         Moninven.setAlma(warehouseCode);
-        Moninven.setExistenciainicial(new BigDecimal(Float.toString(previousExitence)));
         Moninven.setEntsal(true);
         Moninven.setEmp("");
         Moninven.setNodoc("");
@@ -56,6 +33,8 @@ public class ExistalmasRepository extends Repository {
         Moninven.setUnid(unid);
         Moninven.setConcep(Concep.getCode());        
         Moninven.setCant(existence);
+        
+        //Save the movement
         RepositoryFactory.getInstance().getMoninvensRepository().save(Moninven);
     }
    

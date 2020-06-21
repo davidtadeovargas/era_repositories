@@ -1,6 +1,5 @@
 package com.era.repositories;
 
-import com.era.models.Moninven;
 import java.util.List;
 import java.util.ArrayList;
 import com.era.models.Traspas;

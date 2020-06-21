@@ -6,7 +6,6 @@
 package com.era.repositories;
 
 import com.era.models.Ingres;
-import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,23 @@ public class IngresRepository extends Repository {
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("norefer", norefer);
         query.setParameter("noser", noser);
+        List<Ingres> list = query.list();
+        
+        //Close database      
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return list;
+    }
+    
+    final public List<Ingres> geAllByIngresosEncabId(final int ingresosEncabId) throws Exception{
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        
+        String hql = "FROM Ingres WHERE idIngresCab = :ingresosEncabId";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("ingresosEncabId", ingresosEncabId);
         List<Ingres> list = query.list();
         
         //Close database      

@@ -5,9 +5,14 @@
  */
 package com.era.repositories;
 
+import com.era.datamodels.enums.MovinvenType;
+import com.era.models.Coin;
+import com.era.models.Ingres;
 import com.era.models.IngresosEncab;
-import com.era.models.User;
+import com.era.models.Moninven;
 import com.era.repositories.utils.HibernateUtil;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
@@ -20,6 +25,53 @@ public class IngresosEncabRepository extends Repository {
 
     public IngresosEncabRepository() {
         super(IngresosEncab.class);
+    }
+    
+    final public void saveIngres(final IngresosEncab IngresosEncab, final List<Ingres> items, final MovinvenType MovinvenType) throws Exception {
+        
+        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        
+        //Get the national tip cam
+        final Coin Coin = RepositoryFactory.getInstance().getCoinsRepository().getNationalCoin();
+        
+        //Save the header
+        this.save(IngresosEncab);
+        
+        //Save the items
+        for(Ingres Ingres:items){
+            
+            //Relation            
+            Ingres.setIdIngresCab(IngresosEncab.getId());
+            
+            //Set the concep
+            Ingres.setConcep(IngresosEncab.getConcep());
+            
+            //Set the national exchange value
+            Ingres.setTipcamnac(new BigDecimal(Coin.getValue(), MathContext.DECIMAL64));
+            
+            //Save             
+            this.save(Ingres);
+            
+            //Determine input or output
+            boolean entsal = MovinvenType == MovinvenType.ENTRADA;
+            
+            //Create the model
+            final Moninven Moninven = new Moninven();
+            Moninven.setConcep(IngresosEncab.getConcep());
+            Moninven.setProd(Ingres.getProd());
+            Moninven.setAlma(IngresosEncab.getAlma());
+            Moninven.setEntsal(entsal);
+            Moninven.setEmp("");
+            Moninven.setNodoc("");
+            Moninven.setNoser("");
+            Moninven.setUnid(Ingres.getUnid());
+            Moninven.setCant(Ingres.getCant());
+            
+            //Save the movement
+            RepositoryFactory.getInstance().getMoninvensRepository().addOrRemove(Moninven,MovinvenType);
+        }
+        
+        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
     }
     
     final public IngresosEncab getByNoserNorefer(final String noser, final String norefer) throws Exception{

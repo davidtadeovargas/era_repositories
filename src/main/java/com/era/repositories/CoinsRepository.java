@@ -72,14 +72,13 @@ public class CoinsRepository extends Repository {
         }
     }
     
-    final public Coin getNationalCoin(final String code) throws Exception {
+    final public Coin getNationalCoin() throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
         
-        String hql = "FROM Coin where code = :code AND national = true";
+        String hql = "FROM Coin where national = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
-        query.setParameter("code", code);
         Coin Coin = query.list().size() > 0 ? (Coin)query.list().get(0):null;
         
         //Close database        

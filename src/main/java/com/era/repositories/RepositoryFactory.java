@@ -140,8 +140,7 @@ public class RepositoryFactory {
    private SucursalsRepository SucursalsRepository;
    private SuppliersRepository SuppliersRepository;
    private TarssRepository TarssRepository;
-   private TaxesRepository TaxesRepository;
-   private TaxsRepository TaxsRepository;
+   private TaxesRepository TaxesRepository;   
    private TermarcamodelosRepository TermarcamodelosRepository;
    private TerprodcompasRepository TerprodcompasRepository;
    private TipactfijsRepository TipactfijsRepository;
@@ -572,9 +571,6 @@ public class RepositoryFactory {
    }
    public TaxesRepository getTaxesRepository() {
        if(TaxesRepository==null){TaxesRepository = new TaxesRepository();}return TaxesRepository;
-   }
-   public TaxsRepository getTaxsRepository() {
-       if(TaxsRepository==null){TaxsRepository = new TaxsRepository();}return TaxsRepository;
    }
    public TermarcamodelosRepository getTermarcamodelosRepository() {
        if(TermarcamodelosRepository==null){TermarcamodelosRepository = new TermarcamodelosRepository();}return TermarcamodelosRepository;

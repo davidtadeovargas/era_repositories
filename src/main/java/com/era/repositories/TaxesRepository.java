@@ -34,22 +34,6 @@ public class TaxesRepository extends Repository {
         }
     }
     
-    final public Tax getByCodeImpue(final String codimpue) throws Exception{
-        
-        //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-        
-        String hql = "FROM Tax WHERE codimpue = :codimpue";
-        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
-        List<Tax> list = query.list();
-        
-        //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
-        
-        //Return the result model
-        return list.size()>0?list.get(0):null;
-    }
-    
     final public void deleteByCodimpue(final String codimpue) throws Exception{
         
         //Open database

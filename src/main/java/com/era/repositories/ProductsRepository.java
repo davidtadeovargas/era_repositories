@@ -63,6 +63,22 @@ public class ProductsRepository extends Repository {
         return Products;
     }
     
+    final public List<Product> getAllForSale() throws Exception {
+                        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Product where isForSale = true";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
+        List<Product> Products = query.list();                        
+        
+        //Close database
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the response model
+        return Products;
+    }
+    
     final public Product addOrUpdateProduct(final Product Product) throws Exception {                                
         
         //Get the product
@@ -288,14 +304,14 @@ public class ProductsRepository extends Repository {
         return prods;
     }
     
-    final public List<Product> getAllByLine(final String lin) throws Exception {
+    final public List<Product> getAllByLine(final String codeLine) throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
         
-        String hql = "FROM Product WHERE lin = :lin";
+        String hql = "FROM Product WHERE codeLine = :codeLine";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
-        query.setParameter("lin", lin);
+        query.setParameter("codeLine", codeLine);
         List<Product> prods = query.list();
         
         //Close database        

@@ -33,7 +33,11 @@ public class CompanysRepository extends Repository {
         
         return Company.getId();
     }
-    
+   
+    final public Company getClienteMostrador() throws Exception {        
+        return this.getCustomerByCode("EMPMOS");
+    }
+   
     final public Company getCustomerByCode(final String companyCode) throws Exception {
         
         LoggerUtility.getSingleton().logInfo(CompanysRepository.class, "Hibernate: Getting customer by code " + companyCode);
@@ -122,6 +126,7 @@ public class CompanysRepository extends Repository {
         HibernateUtil.getSingleton().closeSession(ClassEntity);
     }
     
+   @Override
     final public List<Company> getByLikeEncabezados(final String search) throws Exception{
         
         final List<String> likes = new ArrayList<>();

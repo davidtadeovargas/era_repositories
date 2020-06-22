@@ -85,7 +85,7 @@ public class ImpuesXProductRepository extends Repository {
        //Crate the new result list
        final List<Tax> taxes = new ArrayList<>();
        for(ImpuesXProduct ImpuesXProduct: records){
-           final Tax Tax = RepositoryFactory.getInstance().getTaxesRepository().getByCodeImpue(ImpuesXProduct.getImpue());
+           final Tax Tax = (Tax)RepositoryFactory.getInstance().getTaxesRepository().getByCode(ImpuesXProduct.getImpue());
            taxes.add(Tax);
        }
        

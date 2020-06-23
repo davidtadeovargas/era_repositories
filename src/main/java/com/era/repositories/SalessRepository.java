@@ -1,5 +1,6 @@
 package com.era.repositories;
 
+import com.era.models.Partvta;
 import com.era.models.Sales;
 import com.era.models.Tips;
 import com.era.repositories.utils.HibernateUtil;
@@ -74,6 +75,22 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
+    final public void saveSale(final Sales Sale, final List<Partvta> parts) throws Exception {
+        
+        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        
+        //Save the new sale
+        final Sales Sale_ = (Sales)this.save(Sale);
+        
+        //Save the rows
+        for(Partvta Partvta: parts){
+            Partvta.setVta(Sale_.getId());
+            this.save(Partvta);
+        }
+        
+        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+    }
+    
     final public List<Sales> getAllNotsCred() throws Exception {
         
         final Tips Tips = RepositoryFactory.getInstance().getTipssRepository().getFacType();
@@ -136,7 +153,7 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
-    final public void actualizaVentaTimbrado(  final String transid,
+    final public void actualizaVentaTimbrado(   final String transid,
                                                 final String sell,
                                                 final String certsat,
                                                 final String lugexp,

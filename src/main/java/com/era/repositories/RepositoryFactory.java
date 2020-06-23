@@ -33,8 +33,7 @@ public class RepositoryFactory {
    private ConcepnotsRepository ConcepnotsRepository;
    private ConceppagsRepository ConceppagsRepository;
    private ConcepssRepository ConcepssRepository;
-   private ConfgralRepository ConfgralRepository;
-   private ConfgralsRepository ConfgralsRepository;
+   private ConfgralRepository ConfgralRepository; 
    private ConsecsRepository ConsecsRepository;
    private ControlexportarsRepository ControlexportarsRepository;
    private CorreoTerminalsRepository CorreoTerminalsRepository;
@@ -58,8 +57,7 @@ public class RepositoryFactory {
    private CxpRepository CxpRepository;
    private CxpsRepository CxpsRepository;
    private DatoscpsRepository DatoscpsRepository;
-   private DocumentOriginRepository DocumentOriginRepository;
-   private DocumentOriginsRepository DocumentOriginsRepository;
+   private DocumentOriginRepository DocumentOriginRepository;   
    private DocumentosContabilizadossRepository DocumentosContabilizadossRepository;
    private DocumentosOrigensRepository DocumentosOrigensRepository;
    private DocumentosPagosRepository DocumentosPagosRepository;
@@ -251,9 +249,6 @@ public class RepositoryFactory {
    public ConfgralRepository getConfgralRepository() {
        if(ConfgralRepository==null){ConfgralRepository = new ConfgralRepository();}return ConfgralRepository;
    }
-   public ConfgralsRepository getConfgralsRepository() {
-       if(ConfgralsRepository==null){ConfgralsRepository = new ConfgralsRepository();}return ConfgralsRepository;
-   }
    public ConsecsRepository getConsecsRepository() {
        if(ConsecsRepository==null){ConsecsRepository = new ConsecsRepository();}return ConsecsRepository;
    }
@@ -325,9 +320,6 @@ public class RepositoryFactory {
    }
    public DocumentOriginRepository getDocumentOriginRepository() {
        if(DocumentOriginRepository==null){DocumentOriginRepository = new DocumentOriginRepository();}return DocumentOriginRepository;
-   }
-   public DocumentOriginsRepository getDocumentOriginsRepository() {
-       if(DocumentOriginsRepository==null){DocumentOriginsRepository = new DocumentOriginsRepository();}return DocumentOriginsRepository;
    }
    public DocumentosContabilizadossRepository getDocumentosContabilizadossRepository() {
        if(DocumentosContabilizadossRepository==null){DocumentosContabilizadossRepository = new DocumentosContabilizadossRepository();}return DocumentosContabilizadossRepository;

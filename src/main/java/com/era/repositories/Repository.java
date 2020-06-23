@@ -522,7 +522,7 @@ public abstract class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Updating sql " + sqlQuery);                
                 
-        if(!sqlQuery.toLowerCase().startsWith("delete from")){
+        if(!sqlQuery.toLowerCase().startsWith("delete from") && !sqlQuery.toLowerCase().contains("where")){
             
             final String user = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getCode();
             final String sucursal = UtilitiesFactory.getSingleton().getSessionUtility().getUser().getSucu();
@@ -530,6 +530,8 @@ public abstract class Repository {
         
             sqlQuery = sqlQuery + ", estac = \"" + user + "\", sucu = \"" + sucursal + "\", nocaj = \"" + station + "\"";
         }        
+        
+        LoggerUtility.getSingleton().logInfo(Repository.class, "Running query sql " + sqlQuery);                
         
         HibernateUtil.getSingleton().getSession().createSQLQuery(sqlQuery).executeUpdate();
         

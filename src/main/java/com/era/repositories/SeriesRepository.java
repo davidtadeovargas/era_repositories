@@ -353,10 +353,8 @@ public class SeriesRepository extends Repository {
         
         final List<String> likes = new ArrayList<>();
         likes.add("code");
-        likes.add("nom");
-        likes.add("pass");
-        likes.add("falt");
-        likes.add("fmod");
+        likes.add("descrip");
+        likes.add("ser");
         
         final List<Serie> items = (List<Serie>) this.getAllLike(likes, search);
         

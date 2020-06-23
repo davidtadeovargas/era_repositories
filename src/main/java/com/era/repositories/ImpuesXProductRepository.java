@@ -7,6 +7,7 @@ package com.era.repositories;
 
 import com.era.models.ImpuesXProduct;
 import com.era.models.Tax;
+import com.era.repositories.exceptions.RecordExistsException;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,28 @@ public class ImpuesXProductRepository extends Repository {
                 //Save it
                 this.save(ImpuesXProduct);
             }
+        }
+    }
+    
+    final public ImpuesXProduct saveTaxForProduct(final String productCode, final String taxCode) throws Exception {
+        
+        //The record can not exists
+        ImpuesXProduct ImpuesXProduct = this.getByProductAndTax(productCode, taxCode);
+        if(ImpuesXProduct==null){
+         
+            //Create the model
+            ImpuesXProduct = new ImpuesXProduct();
+            ImpuesXProduct.setCode(productCode);
+            ImpuesXProduct.setImpue(taxCode);
+
+            //Save into database
+            this.save(ImpuesXProduct);
+
+            //Return the saved model
+            return ImpuesXProduct;
+        }
+        else{
+            return null;
         }
     }
     

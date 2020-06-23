@@ -190,7 +190,7 @@ public class ProductsRepository extends Repository {
         
         return Product;
     }
-    
+        
     final public void deleteProductWithTaxes(final String prod) throws Exception{
         
         //Open database
@@ -323,29 +323,25 @@ public class ProductsRepository extends Repository {
     
     
     final public void updateAllProductsSaleUnderCost() throws Exception{       
-        this.updateSQL("UPDATE Product SET bajcost = 1");
+        this.updateSQL("UPDATE prods SET bajcost = 1");
     }
     
     
     final public void updateAllProductsNotSaleUnderCost() throws Exception{
-        this.updateSQL("UPDATE Product SET bajcost = 0");
+        this.updateSQL("UPDATE prods SET bajcost = 0");
     }
     
     final public void updateAllProductsSaleOrNotUnderCost(final int bajcost) throws Exception{
-        this.updateSQL("UPDATE Product SET bajcost = " + bajcost);
+        this.updateSQL("UPDATE prods SET bajcost = " + bajcost);
     }
     
     
     final public void updateAllProductsSolmaxmin() throws Exception{
-        this.updateSQL("UPDATE Product SET askMaxMin = 1");
+        this.updateSQL("UPDATE prods SET solmaxmin = 1");
     }
     
     final public void updateAllProductsNotSolmaxmin() throws Exception{
-        this.updateSQL("UPDATE Product SET askMaxMin = 0");
-    }
-    
-    final public void updateAllProductsSolOrNotSolMaxmin(final int askMaxMin) throws Exception{
-        this.updateSQL("UPDATE Product SET askMaxMin = " + askMaxMin);
+        this.updateSQL("UPDATE prods SET solmaxmin = 0");
     }
     
     @Override

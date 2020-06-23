@@ -22,7 +22,7 @@ public class DocumentOriginRepository extends Repository {
         super(DocumentOrigin.class);
     }
     
-    private DocumentOrigin getDocumentByType(final String type) throws Exception {
+    public DocumentOrigin getDocumentByType(final String type) throws Exception {
                         
         LoggerUtility.getSingleton().logInfo(DocumentOriginRepository.class, "Hibernate: Getting document origin by type " + type);
         

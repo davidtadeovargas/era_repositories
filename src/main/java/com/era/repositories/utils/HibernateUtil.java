@@ -302,7 +302,6 @@ public class HibernateUtil {
         classes.add(Zona.class);
         classes.add(Warehouse.class);        
         classes.add(Usuarioserie.class);
-        classes.add(UsoCFDI.class);
         classes.add(UserPermission.class);
         classes.add(User.class);
         classes.add(Unid.class);        
@@ -333,8 +332,7 @@ public class HibernateUtil {
         classes.add(Pes.class);
         classes.add(Pers.class);
         classes.add(PedidosParts.class);
-        classes.add(Pedidos.class);
-        classes.add(PaymentForm.class);
+        classes.add(Pedidos.class);        
         classes.add(Payment.class);
         classes.add(Partvta.class);
         classes.add(PartprevcomprsTmp.class);
@@ -401,22 +399,16 @@ public class HibernateUtil {
     
     public void openSession(Class ClassEntity) throws Exception {
         
-        //Determine if open dbempresas or a local one
-        if( ClassEntity.getName().compareTo(BasDats.class.getName())==0 ||
-            ClassEntity.getName().compareTo(License.class.getName())==0 ||
-            ClassEntity.getName().compareTo(ServerSession.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CCodigopostal.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CCountry.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CRegimenfiscal.class.getName())==0 ||            
-            ClassEntity.getName().compareTo(CClaveprodserv.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CClaveUnidad.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CAduana.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CPaymentMethod.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CPaymentForm.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CTipoRelacion.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CTipoComprobante.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CUsoCFDI.class.getName())==0 ||
-            ClassEntity.getName().compareTo(CCoin.class.getName())==0){
+        boolean isDbEmpresaClass = false;
+        final List<Class> dbEmpresasClasses = getAnnottatedClassesFordbempresas();
+        for(Class clase:dbEmpresasClasses){
+            if(ClassEntity.getName().compareTo(clase.getName())==0){
+                isDbEmpresaClass = true;
+            }
+        }
+        
+        //Determine if open dbempresas or a local one        
+        if(isDbEmpresaClass){
             useDbEmpresas();
         }
         else{

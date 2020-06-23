@@ -110,8 +110,7 @@ public class RepositoryFactory {
    private PartordssRepository PartordssRepository;
    private PartprevcomprssRepository PartprevcomprssRepository;
    private PartprevcomprsTmpsRepository PartprevcomprsTmpsRepository;
-   private PartvtaRepository PartvtaRepository;
-   private PartvtasRepository PartvtasRepository;
+   private PartvtaRepository PartvtaRepository;   
    private PaymentFormsRepository PaymentFormsRepository;
    private PaymentsRepository PaymentsRepository;
    private PedidosPartssRepository PedidosPartssRepository;
@@ -148,8 +147,7 @@ public class RepositoryFactory {
    private TraspassRepository TraspassRepository;
    private UnidsRepository UnidsRepository;
    private UserPermissionsRepository UserPermissionsRepository;
-   private UsersRepository UsersRepository;
-   private UsoCFDIsRepository UsoCFDIsRepository;
+   private UsersRepository UsersRepository;   
    private UsuarioseriesRepository UsuarioseriesRepository;
    private WarehousesRepository WarehousesRepository;
    private ZonasRepository ZonasRepository;
@@ -480,9 +478,6 @@ public class RepositoryFactory {
    public PartvtaRepository getPartvtaRepository() {
        if(PartvtaRepository==null){PartvtaRepository = new PartvtaRepository();}return PartvtaRepository;
    }
-   public PartvtasRepository getPartvtasRepository() {
-       if(PartvtasRepository==null){PartvtasRepository = new PartvtasRepository();}return PartvtasRepository;
-   }
    public PaymentFormsRepository getPaymentFormsRepository() {
        if(PaymentFormsRepository==null){PaymentFormsRepository = new PaymentFormsRepository();}return PaymentFormsRepository;
    }
@@ -593,9 +588,6 @@ public class RepositoryFactory {
    }
    public UsersRepository getUsersRepository() {
        if(UsersRepository==null){UsersRepository = new UsersRepository();}return UsersRepository;
-   }
-   public UsoCFDIsRepository getUsoCFDIsRepository() {
-       if(UsoCFDIsRepository==null){UsoCFDIsRepository = new UsoCFDIsRepository();}return UsoCFDIsRepository;
    }
    public UsuarioseriesRepository getUsuarioseriesRepository() {
        if(UsuarioseriesRepository==null){UsuarioseriesRepository = new UsuarioseriesRepository();}return UsuarioseriesRepository;

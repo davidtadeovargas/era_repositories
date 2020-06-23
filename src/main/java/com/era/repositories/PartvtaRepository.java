@@ -6,6 +6,7 @@
 package com.era.repositories;
 
 import com.era.models.Partvta;
+import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,6 +28,23 @@ public class PartvtaRepository extends Repository {
     }
     
         
+    final public List<Partvta> getPartsVta(final int saleId) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Partvta where vta = :vta";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("vta", saleId);
+        List<Partvta> parts = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return parts;
+    }
+    
     final public int getPartidasXImpuesto(final String codimpue) throws Exception {
         
         //Open database

@@ -18,7 +18,7 @@ public class LogsRepository extends Repository {
         Log Log = new Log();
         Log.setCode(companyCode);
         Log.setType("CUSTOMER");
-        Log.setAccio("ADD");
+        Log.setAccio("save");
         Log.setDescrip("USER CREATED");
         
         this.save(Log);
@@ -82,18 +82,12 @@ public class LogsRepository extends Repository {
         Log Log = new Log();
         Log.setCode(companyCode);
         Log.setType("CUSTOMER");
-        Log.setAccio("UPDATE");
+        Log.setAccio("update");
         Log.setDescrip("USER CREATED");        
         
         this.save(Log);
         
         return Log;
-    }
-    
-    //This method do not save as normal others repositories methods
-    final public void save(Log Log) throws Exception {
-        this.saveInNewConnection(Log);
-        
     }
     
     final public Log userLoggedToSystem() throws Exception {

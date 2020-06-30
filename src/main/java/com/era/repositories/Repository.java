@@ -506,7 +506,7 @@ public abstract class Repository {
         
         if(!(Object instanceof Log)){
             insertLog(Object,"save",null);
-        }        
+        }
         
         //Close database
         HibernateUtil.getSingleton().closeSession(ClassEntity);

@@ -96,9 +96,9 @@ public class IngresosEncabRepository extends Repository {
     final public List<IngresosEncab> getByLikeEncabezados(final String search) throws Exception{
         
         final List<String> likes = new ArrayList<>();
-        likes.add("code");
-        likes.add("nom");
-        likes.add("pass");
+        likes.add("alma");
+        likes.add("concep");
+        likes.add("norefer");
         likes.add("falt");
         likes.add("fmod");
         

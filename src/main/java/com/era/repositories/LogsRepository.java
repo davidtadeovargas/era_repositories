@@ -1,9 +1,11 @@
 package com.era.repositories;
 
 import com.era.models.Log;
+import com.era.repositories.utils.HibernateUtil;
 import com.era.utilities.UtilitiesFactory;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.Query;
 
 public class LogsRepository extends Repository {
 
@@ -17,11 +19,62 @@ public class LogsRepository extends Repository {
         Log.setCode(companyCode);
         Log.setType("CUSTOMER");
         Log.setAccio("ADD");
-        Log.setDescrip("USER CREATED");        
+        Log.setDescrip("USER CREATED");
         
         this.save(Log);
         
         return Log;
+    }
+    
+    final public List<Log> getAllAccioSave() throws Exception {
+        return getAllByAction("save");        
+    }
+    final public List<Log> getAllAccioUpdate() throws Exception {
+        return getAllByAction("update");        
+    }
+    final public List<Log> getAllAccioAdd() throws Exception {
+        return getAllByAction("ADD");        
+    }
+    final public List<Log> getAllAccioLogged() throws Exception {
+        return getAllByAction("LOGGED");        
+    }
+    final public List<Log> getAllAccioLoggedout() throws Exception {
+        return getAllByAction("LOGGEDOUT");        
+    }
+   
+    final public List<Log> getAllByAction(final String accio) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Log WHERE accio = :accio";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("accio", accio);
+        List<Log> logs = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the results
+        return logs;
+    }
+   
+    final public List<Log> getAllLogins() throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Log WHERE accio = :accio OR accio = :accio2";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("accio", "LOGGED");
+        query.setParameter("accio2", "LOGGEDOUT");
+        List<Log> logs = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the results
+        return logs;
     }
     
     final public Log updateCustomerLog(final String companyCode) throws Exception {
@@ -78,13 +131,54 @@ public class LogsRepository extends Repository {
         
         final List<String> likes = new ArrayList<>();
         likes.add("code");
-        likes.add("nom");
-        likes.add("pass");
-        likes.add("falt");
-        likes.add("fmod");
+        likes.add("descrip");
+        likes.add("accio");
+        likes.add("falt");        
         
         final List<Log> items = (List<Log>) this.getAllLike(likes, search);
         
         return items;
+    }
+    
+    final public List<Log> getByLikeEncabezadosByAccio(final String search, final String accio) throws Exception{
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Log WHERE accio = :accio AND (code LIKE :code OR descrip LIKE :descrip)";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("accio", accio);
+        query.setParameter("code","%" + search + "%");
+        query.setParameter("descrip", "%" + search + "%");        
+        List<Log> logs = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the results
+        return logs;
+    }
+    
+    final public List<Log> getByLikeEncabezadosRegistrosCreados(final String search) throws Exception{
+        return getByLikeEncabezadosByAccio(search, "save");        
+    }
+    final public List<Log> getByLikeEncabezadosRegistrosActualizados(final String search) throws Exception{
+        return getByLikeEncabezadosByAccio(search, "update");
+    }
+    final public List<Log> getByLikeEncabezadosLoginUsuarios(final String search) throws Exception{
+        
+        final List<Log> loginUsuarios = getByLikeEncabezadosByAccio(search, "LOGGED");
+        final List<Log> loginoutUsuarios = getByLikeEncabezadosByAccio(search, "LOGGEDOUT");
+        final List<Log> finalLoginUsuarios = new ArrayList<>();
+        finalLoginUsuarios.addAll(loginUsuarios);
+        finalLoginUsuarios.addAll(loginoutUsuarios);
+        
+        return finalLoginUsuarios;
+    }
+    final public List<Log> getByLikeEncabezadosCierreSesion(final String search) throws Exception{
+        return getByLikeEncabezadosByAccio(search, "LOGGEDOUT");
+    }
+    final public List<Log> getByLikeEncabezadosInicioSesion(final String search) throws Exception{
+        return getByLikeEncabezadosByAccio(search, "LOGGED");
     }
 }

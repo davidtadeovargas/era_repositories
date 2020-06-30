@@ -289,8 +289,8 @@ public class HibernateUtil {
         classes.add(Line.class);
         classes.add(License.class);
         classes.add(Kits.class);
-        classes.add(IngresosEncab.class);
         classes.add(Ingres.class);
+        classes.add(IngresosEncab.class);        
         classes.add(Impuesxpartidaped.class);
         classes.add(Impuesxpartidacot.class);
         classes.add(ImpuestosXVenta.class);

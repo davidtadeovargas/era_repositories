@@ -88,8 +88,8 @@ public class ConfgralRepository extends Repository {
     
     
     
-    final public void activeVtasConfig(final String clasif) throws Exception{
-        activeConfig("vtas",clasif);
+    final public void activeVtasConfig(final String conf) throws Exception{
+        activeConfig("vtas",conf);
     }
     final public void disableVtasConfig(final String clasif) throws Exception{
         inverseConfig("vtas",clasif);
@@ -705,16 +705,16 @@ public class ConfgralRepository extends Repository {
         return list;
     }
     
-    final public void activeConfig(final String conf, final String clasif) throws Exception{
+    final public void activeConfig(final String clasif, final String conf) throws Exception{
         this.updateSQL("UPDATE confgral SET val = 1 WHERE conf = \"" + conf + "\" AND clasif = \"" + clasif + "\"");
     }
-    final public void inverseConfig(final String conf, final String clasif) throws Exception{
+    final public void inverseConfig(final String clasif, final String conf) throws Exception{
         this.updateSQL("UPDATE confgral SET val = if(val=1,0,1) WHERE conf = \"" + conf + "\" AND clasif = \"" + clasif + "\"");
     }
     final public void activeExtraConfig(final String clasif, final String conf, final String extra) throws Exception{
         this.updateSQL("UPDATE confgral SET extr = \"" + extra + "\" WHERE conf = \"" + conf + "\" AND clasif = \"" + clasif + "\"");
     }
-    final public void activeNumeConfig(final String conf, final String clasif, final double nume) throws Exception{
+    final public void activeNumeConfig(final String clasif, final String conf, final double nume) throws Exception{
         this.updateSQL("UPDATE confgral SET nume = " + nume + " WHERE conf = \"" + conf + "\" AND clasif = \"" + clasif + "\"");
     }
     

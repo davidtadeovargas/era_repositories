@@ -561,14 +561,13 @@ public abstract class Repository {
         HibernateUtil.getSingleton().getSession().update(Object);
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Finished updated");
+            
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         if(!(Object instanceof Log)){
             insertLog(Object,"update",null);
         }
-                        
-            
-        //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Object;

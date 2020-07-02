@@ -31,16 +31,25 @@ public class ConsecsRepository extends Repository {
         
         return Consec;
     }
-   
-   final public Consec getConsecBySer(final String serie) throws Exception {
+    
+   final public Consec updateConsec(final Consec Consec) throws Exception {
         
-        Consec Consec = this.getCustomerConsec(serie);
         Consec.setConsec(Consec.getConsec() + 1);
         
         this.update(Consec);
         
         return Consec;
     }
+   
+    final public Consec getConsecBySer(final String serie) throws Exception {
+
+         Consec Consec = this.getCustomerConsec(serie);
+         Consec.setConsec(Consec.getConsec() + 1);
+
+         this.update(Consec);
+
+         return Consec;
+     }
    
     final public List<Consec> getCustomersConsec() throws Exception {        
         return getByType("EMP");        

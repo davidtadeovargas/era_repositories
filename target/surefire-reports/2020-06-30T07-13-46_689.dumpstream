@@ -1,9 +1,0 @@
-# Created on 2020-06-30T07:13:46.696
-ERROR: transport error 202: connect failed: Connection refused
-
-# Created on 2020-06-30T07:13:46.702
-ERROR: JDWP Transport dt_socket failed to initialize, TRANSPORT_INIT(510)
-
-# Created on 2020-06-30T07:13:46.704
-JDWP exit error AGENT_ERROR_TRANSPORT_INIT(197): No transports initialized [debugInit.c:750]
-

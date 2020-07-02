@@ -105,12 +105,10 @@ public class ProductsRepository extends Repository {
             
     final public Product addOrUpdateProduct(final Product Product, final List<ImpuesXProduct> taxesProduct, final List<Kits> kits) throws Exception {
         
-        HibernateUtil.getSingleton().openSession(ClassEntity);
-    
         //Determine if previusly was a kit
         final Product ProductKit = (Product)this.getByCode(Product.getCode());
         boolean wasKit = false;
-        if(ProductKit.getCompound()){
+        if(ProductKit!=null && ProductKit.getCompound()){
             wasKit = true;
         }
         
@@ -136,8 +134,6 @@ public class ProductsRepository extends Repository {
         //Save or update the taxes of the product
         RepositoryFactory.getInstance().getImpuesXProductRepository().save(Product.getCode(), taxesProduct);
                 
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
-        
         //Return the moel
         return Product_;
     }

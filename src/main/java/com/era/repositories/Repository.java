@@ -494,7 +494,7 @@ public abstract class Repository {
         setField(Object, "fmod", new Date());
         
         //Save
-        HibernateUtil.getSingleton().getSession().save(Object);                
+        Object ObjectResult = HibernateUtil.getSingleton().getSession().save(Object);                
         
         if(Object instanceof Supplier){
                         
@@ -504,12 +504,12 @@ public abstract class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Finishing Saving object ");
         
+        //Close database
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
         if(!(Object instanceof Log)){
             insertLog(Object,"save",null);
         }
-        
-        //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
         return Object;

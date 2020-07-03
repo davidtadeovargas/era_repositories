@@ -98,6 +98,10 @@ public class ConcepssRepository extends Repository {
             case VENTA:
                 code = "VENTA";
                 break;
+                
+            case CANVENTA:
+                code = "CANVENTA";
+                break;
         }
         
         //Get the record
@@ -140,6 +144,7 @@ public class ConcepssRepository extends Repository {
         PRORTEO,
         DONACIONES,
         TRASPASO,
-        VENTA
+        VENTA,
+        CANVENTA
     }
 }

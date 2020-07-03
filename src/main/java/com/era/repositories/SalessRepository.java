@@ -114,6 +114,43 @@ public class SalessRepository extends Repository {
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
     }
     
+    final public void cancelSale(final int saleID, final String motiv) throws Exception {
+        
+        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        
+        //Get the sale
+        Sales Sale = (Sales)this.getByID(saleID);
+        
+        //Cancel it
+        Sale.setEstatus("CA");
+        Sale.setRazon(motiv);        
+        this.update(Sale);
+        
+        //Get all items of the sale
+        final List<Partvta> items = RepositoryFactory.getInstance().getPartvtaRepository().getPartsVta(saleID);
+        
+        //Loop all to affect inventories
+        for(Partvta Partvta:items){
+            
+            //If is kit affect inventory by components
+            if(Partvta.isEskit()){
+                
+                //Get all the componentes
+                final List<Kits> kits = RepositoryFactory.getInstance().getKitssRepository().getComponentsByKit(Partvta.getProd());
+                
+                //Affect invetory for each component of the kit
+                for(Kits Kit: kits){
+                    RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), ConcepssRepository.TYPES.CANVENTA);
+                }
+            }
+            else{ //Not kit affect inventory normally
+                RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), ConcepssRepository.TYPES.CANVENTA);
+            }
+        }
+        
+        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+    }
+    
     final public List<Sales> getAllNotsCred() throws Exception {
         
         final Tips Tips = RepositoryFactory.getInstance().getTipssRepository().getFacType();
@@ -130,6 +167,68 @@ public class SalessRepository extends Repository {
         
         //Close database
         HibernateUtil.getSingleton().commitTransacton();
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return Sales;
+    }
+    
+    final public List<Sales> getAllConfirmedSales() throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+                
+        String hql = "FROM Sales WHERE estatus = :estatus";
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
+        query.setParameter("estatus", "CO");
+        List<Sales> Sales = query.list();
+        
+        //Close database
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return Sales;
+    }
+    
+    final public List<Sales> getAllConfirmedSalesFromPointOfSales() throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+                
+        String hql = "FROM Sales WHERE estatus = :estatus AND salesPoint = :salesPoint";
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
+        query.setParameter("estatus", "CO");
+        query.setParameter("salesPoint", true);
+        List<Sales> Sales = query.list();
+        
+        //Close database
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return Sales;
+    }
+    
+    final public List<Sales> getAllCortXZSales() throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+                
+        String hql = "FROM Sales WHERE estatus = :estatus AND salesPoint = :salesPoint AND facturado = :facturado AND cut = :cut AND (documentType = :documentType1 OR documentType = :documentType2 OR documentType = :documentType3)";
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
+        query.setParameter("estatus", "CO");
+        query.setParameter("salesPoint", true);
+        query.setParameter("facturado", false);
+        query.setParameter("cut", "N");
+        query.setParameter("documentType1", "FAC");
+        query.setParameter("documentType2", "REM");
+        query.setParameter("documentType3", "TIK");
+        
+        List<Sales> Sales = query.list();
+        
+        //Close database
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
@@ -213,9 +312,11 @@ public class SalessRepository extends Repository {
     final public List<Sales> getByLikeEncabezados(final String search) throws Exception{
         
         final List<String> likes = new ArrayList<>();
-        likes.add("code");
-        likes.add("nom");
-        likes.add("pass");
+        likes.add("vta");
+        likes.add("norefer");
+        likes.add("salesMan");
+        likes.add("tipdoc");
+        likes.add("codemp");
         likes.add("falt");
         likes.add("fmod");
         

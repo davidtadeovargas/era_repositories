@@ -76,7 +76,7 @@ public class MysqlScriptsUtil {
         
         final FilesUtility FilesUtility = UtilitiesFactory.getSingleton().getFilesUtility();
         String connectionFile = "config.cnf";
-        final String appPath = UtilitiesFactory.getSingleton().getPathsUtility().getAppPath();
+        final String appPath = System.getProperty("user.dir");
         connectionFile = appPath + "\\" + connectionFile;        
         FilesUtility.createNewFile(connectionFile);
         final String text = "[mysql]\n" +
@@ -280,7 +280,7 @@ public class MysqlScriptsUtil {
         final FilesUtility FilesUtility = UtilitiesFactory.getSingleton().getFilesUtility();
                 
         String connectionFile = "config.cnf";
-        final String appPath = UtilitiesFactory.getSingleton().getPathsUtility().getAppPath();
+        final String appPath = System.getProperty("user.dir");
         connectionFile = appPath + "\\" + connectionFile;        
         FilesUtility.createNewFile(connectionFile);
         final String text = "[mysql]\n" +

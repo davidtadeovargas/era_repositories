@@ -1,6 +1,8 @@
 package com.era.repositories;
 
+import com.era.models.Kits;
 import com.era.models.Partvta;
+import com.era.models.Product;
 import com.era.models.Sales;
 import com.era.models.Tips;
 import com.era.repositories.utils.HibernateUtil;
@@ -85,6 +87,27 @@ public class SalessRepository extends Repository {
         //Save the rows
         for(Partvta Partvta: parts){
             Partvta.setVta(Sale_.getId());
+            
+            //If the product is kit
+            if(Partvta.isEskit()){
+                                
+                //Get all the components of the kit
+                final List<Kits> kits = RepositoryFactory.getInstance().getKitssRepository().getComponentsByKit(Partvta.getProd());
+                
+                //Affect invetory for each element of the kit
+                for(Kits Kit:kits){
+                    
+                    //Get the product
+                    final Product KitProduct = (Product)RepositoryFactory.getInstance().getProductsRepository().getByCode(Kit.getProd());
+                    
+                    //Affect inventory
+                    RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), KitProduct.getUnit(), Kit.getCant(), ConcepssRepository.TYPES.VENTA);
+                }
+            }
+            else{ //Not a kit so affect inventory normally
+                RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), ConcepssRepository.TYPES.VENTA);
+            }
+            
             this.save(Partvta);
         }
         

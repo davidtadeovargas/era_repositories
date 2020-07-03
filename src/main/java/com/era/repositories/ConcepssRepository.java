@@ -94,6 +94,10 @@ public class ConcepssRepository extends Repository {
             case TRASPASO:
                 code = "TRAS";
                 break;
+                
+            case VENTA:
+                code = "VENTA";
+                break;
         }
         
         //Get the record
@@ -135,6 +139,7 @@ public class ConcepssRepository extends Repository {
         MERMA_AGRANEL,
         PRORTEO,
         DONACIONES,
-        TRASPASO
+        TRASPASO,
+        VENTA
     }
 }

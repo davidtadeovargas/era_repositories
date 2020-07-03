@@ -41,7 +41,16 @@ public class ExistalmasRepository extends Repository {
     public void removeExistenceToWarehouse(final String productCode, final String warehouseCode, final String unid, final float existence,ConcepssRepository.TYPES typeMoninven) throws Exception {
         
         //Get the model
-        final Existalma Existalma = this.getByWarehouseAndProduct(warehouseCode, productCode);
+        Existalma Existalma = this.getByWarehouseAndProduct(warehouseCode, productCode);
+        
+        //If there is no previous record create it
+        if(Existalma==null){
+            Existalma = new Existalma();
+            Existalma.setAlma(warehouseCode);
+            Existalma.setProd(productCode);
+            Existalma.setExist((float)existence);
+            this.save(Existalma);
+        }
         
         //Previuos existence
         final float previousExitence = Existalma.getExist();

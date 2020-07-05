@@ -1,11 +1,13 @@
 package com.era.repositories;
 
+import com.era.models.Fluj;
 import com.era.models.Kits;
 import com.era.models.Partvta;
 import com.era.models.Product;
 import com.era.models.Sales;
 import com.era.models.Tips;
 import com.era.repositories.utils.HibernateUtil;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -77,7 +79,7 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
-    final public void saveSale(final Sales Sale, final List<Partvta> parts) throws Exception {
+    final public void saveSale(final Sales Sale, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
@@ -111,6 +113,42 @@ public class SalessRepository extends Repository {
             this.save(Partvta);
         }
         
+        //Save cash payment
+        if(totalCash.doubleValue()>0){
+            
+            Fluj Fluj = new Fluj();
+            Fluj.setImpo(totalCash);
+            Fluj.setVta(Sale_.getId());
+            Fluj.setTipdoc(Sale_.getDocumentType());        
+            Fluj.setMon(Sale_.getCoinCode());
+            Fluj.setNorefer(Sale_.getReferenceNumber());
+            RepositoryFactory.getInstance().getFlujsRepository().saveEnt(Fluj,FlujsRepository.TypePayment.CASH);
+        }
+        
+        //Save card debit payment
+        if(totalCardDebit.doubleValue()>0){
+            
+            Fluj Fluj = new Fluj();
+            Fluj.setImpo(totalCardDebit);
+            Fluj.setVta(Sale_.getId());
+            Fluj.setTipdoc(Sale_.getDocumentType());        
+            Fluj.setMon(Sale_.getCoinCode());
+            Fluj.setNorefer(Sale_.getReferenceNumber());
+            RepositoryFactory.getInstance().getFlujsRepository().saveEnt(Fluj,FlujsRepository.TypePayment.CARD_DEBIT);
+        }
+        
+        //Save card debit payment
+        if(totalCardCredit.doubleValue()>0){
+            
+            Fluj Fluj = new Fluj();
+            Fluj.setImpo(totalCardCredit);
+            Fluj.setVta(Sale_.getId());
+            Fluj.setTipdoc(Sale_.getDocumentType());        
+            Fluj.setMon(Sale_.getCoinCode());
+            Fluj.setNorefer(Sale_.getReferenceNumber());
+            RepositoryFactory.getInstance().getFlujsRepository().saveEnt(Fluj,FlujsRepository.TypePayment.CARD_CREDIT);
+        }
+
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
     }
     
@@ -191,12 +229,263 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
+    final public CortZXData getTotalsForCortXZ() throws Exception {
+        
+        //Get all the sales from the point of sale
+        final List<Sales> sales = this.getAllConfirmedSalesFromPointOfSales();
+        
+        final CortZXData CortZXData = new CortZXData();
+        CortZXData.setSubtotal(BigDecimal.ZERO);
+        CortZXData.setDisccount(BigDecimal.ZERO);
+        CortZXData.setTaxes(BigDecimal.ZERO);
+        CortZXData.setTotal(BigDecimal.ZERO);        
+        CortZXData.setTotalImportTickets(BigDecimal.TEN);
+        CortZXData.setTotalImportRems(BigDecimal.ZERO);
+        CortZXData.setTotalImportFactus(BigDecimal.ZERO);
+        CortZXData.setSales(sales);
+        CortZXData.setTotalImportDevs(BigDecimal.ZERO);
+        
+        int totalSalesDevs = 0;
+        int totalSales = 0;
+        int totalTickets = 0;
+        int totalFactus = 0;
+        int totalRems = 0;
+        
+        //Loop all the sales
+        for(Sales Sale:sales){
+            
+            final BigDecimal subtotal = Sale.getSubtotal();
+            final BigDecimal disccount = Sale.getTotalDisccount();
+            final BigDecimal taxes = Sale.getTotalRetention().add(Sale.getTotalTranslade());
+            final BigDecimal total = Sale.getTotal();
+            
+            CortZXData.setSubtotal(CortZXData.getSubtotal().add(subtotal));
+            CortZXData.setDisccount(CortZXData.getDisccount().add(disccount));
+            CortZXData.setTaxes(CortZXData.getTaxes().add(taxes));
+            CortZXData.setTotal(CortZXData.getTotal().add(total));
+            
+            if(Sale.isDev()){
+                ++totalSalesDevs;
+                CortZXData.setTotalImportDevs(CortZXData.getTotalImportDevs().add(total));                
+            }
+            
+            if(Sale.isTicket()){
+                ++totalTickets;
+                CortZXData.setTotalImportTickets(CortZXData.getTotalImportTickets().add(total));
+            }
+            else if(Sale.isFacturado()){
+                ++totalFactus;
+                CortZXData.setTotalImportFactus(CortZXData.getTotalImportFactus().add(total));
+            }
+            else {
+                ++totalRems;
+                CortZXData.setTotalImportRems(CortZXData.getTotalImportRems().add(total));
+            }
+            
+            ++totalSales;
+        }
+        
+        final BigDecimal totalCashPayment = RepositoryFactory.getInstance().getFlujsRepository().getTotalSalesPendingCortInCash();
+        final BigDecimal totalCardDebitPayment = RepositoryFactory.getInstance().getFlujsRepository().getTotalSalesPendingCortInCardDebit();
+        final BigDecimal totalCardCreditPayment = RepositoryFactory.getInstance().getFlujsRepository().getTotalSalesPendingCortInCardCredit();
+        final BigDecimal totalExistenceMoneyInCasher = RepositoryFactory.getInstance().getFlujsRepository().getTotalExistenceMoneyInCasher();
+                                        
+        CortZXData.setTotalCashPayment(totalCashPayment);
+        CortZXData.setTotalCardDebitPayment(totalCardDebitPayment);
+        CortZXData.setTotalCardCreditPayment(totalCardCreditPayment);
+        CortZXData.setTotalExistenceMoneyInCasher(totalExistenceMoneyInCasher);
+        
+        CortZXData.setTotalSalesDevs(totalSalesDevs);
+        CortZXData.setTotalSales(totalSales);
+        
+        CortZXData.setTotalTickets(totalTickets);
+        CortZXData.setTotalFactus(totalFactus);
+        CortZXData.setTotalRems(totalRems);
+        
+        //Return the totas
+        return CortZXData;
+    }
+    
+    public class CortZXData {
+        
+        private BigDecimal subtotal;
+        private BigDecimal disccount;
+        private BigDecimal taxes;
+        private BigDecimal total;
+        private BigDecimal totalImportDevs;
+        
+        private BigDecimal totalCashPayment;
+        private BigDecimal totalCardDebitPayment;
+        private BigDecimal totalCardCreditPayment;
+        private BigDecimal totalExistenceMoneyInCasher;        
+        
+        private BigDecimal totalImportTickets;
+        private BigDecimal totalImportFactus;
+        private BigDecimal totalImportRems;
+        
+        private int totalSalesDevs;
+        private int totalSales;
+        private int totalTickets;
+        private int totalFactus;
+        private int totalRems;
+
+        private List<Sales> sales;
+        
+        public BigDecimal getSubtotal() {
+            return subtotal;
+        }
+
+        public BigDecimal getTotalExistenceMoneyInCasher() {
+            return totalExistenceMoneyInCasher;
+        }
+
+        public void setTotalExistenceMoneyInCasher(BigDecimal totalExistenceMoneyInCasher) {
+            this.totalExistenceMoneyInCasher = totalExistenceMoneyInCasher;
+        }
+        
+        public BigDecimal getTotalCashPayment() {
+            return totalCashPayment;
+        }
+
+        public void setTotalCashPayment(BigDecimal totalCashPayment) {
+            this.totalCashPayment = totalCashPayment;
+        }
+
+        public BigDecimal getTotalCardDebitPayment() {
+            return totalCardDebitPayment;
+        }
+
+        public void setTotalCardDebitPayment(BigDecimal totalCardDebitPayment) {
+            this.totalCardDebitPayment = totalCardDebitPayment;
+        }
+
+        public BigDecimal getTotalCardCreditPayment() {
+            return totalCardCreditPayment;
+        }
+
+        public void setTotalCardCreditPayment(BigDecimal totalCardCreditPayment) {
+            this.totalCardCreditPayment = totalCardCreditPayment;
+        }
+        
+        public List<Sales> getSales() {
+            return sales;
+        }
+
+        public void setSales(List<Sales> sales) {
+            this.sales = sales;
+        }
+        
+        public BigDecimal getTotalImportTickets() {
+            return totalImportTickets;
+        }
+
+        public void setTotalImportTickets(BigDecimal totalImportTickets) {
+            this.totalImportTickets = totalImportTickets;
+        }
+
+        public BigDecimal getTotalImportDevs() {
+            return totalImportDevs;
+        }
+
+        public void setTotalImportDevs(BigDecimal totalImportDevs) {
+            this.totalImportDevs = totalImportDevs;
+        }
+        
+        public BigDecimal getTotalImportFactus() {
+            return totalImportFactus;
+        }
+
+        public void setTotalImportFactus(BigDecimal totalImportFactus) {
+            this.totalImportFactus = totalImportFactus;
+        }
+
+        public BigDecimal getTotalImportRems() {
+            return totalImportRems;
+        }
+
+        public void setTotalImportRems(BigDecimal totalImportRems) {
+            this.totalImportRems = totalImportRems;
+        }
+        
+        public int getTotalTickets() {
+            return totalTickets;
+        }
+
+        public void setTotalTickets(int totalTickets) {
+            this.totalTickets = totalTickets;
+        }
+
+        public int getTotalFactus() {
+            return totalFactus;
+        }
+
+        public void setTotalFactus(int totalFactus) {
+            this.totalFactus = totalFactus;
+        }
+
+        public int getTotalRems() {
+            return totalRems;
+        }
+
+        public void setTotalRems(int totalRems) {
+            this.totalRems = totalRems;
+        }
+        
+        public int getTotalSales() {
+            return totalSales;
+        }
+
+        public void setTotalSales(int totalSales) {
+            this.totalSales = totalSales;
+        }
+        
+        public int getTotalSalesDevs() {
+            return totalSalesDevs;
+        }
+
+        public void setTotalSalesDevs(int totalSalesDevs) {
+            this.totalSalesDevs = totalSalesDevs;
+        }
+        
+        public void setSubtotal(BigDecimal subtotal) {
+            this.subtotal = subtotal;
+        }
+
+        public BigDecimal getDisccount() {
+            return disccount;
+        }
+
+        public void setDisccount(BigDecimal disccount) {
+            this.disccount = disccount;
+        }
+
+        public BigDecimal getTaxes() {
+            return taxes;
+        }
+
+        public void setTaxes(BigDecimal taxes) {
+            this.taxes = taxes;
+        }
+
+        public BigDecimal getTotal() {
+            return total;
+        }
+
+        public void setTotal(BigDecimal total) {
+            this.total = total;
+        }
+    }
+    
+    final public void updateAllSalesAsCutS() throws Exception {
+        this.updateSQL("UPDATE vtas SET cort = 'S' WHERE cort = 'N'");
+    }
+    
     final public List<Sales> getAllConfirmedSalesFromPointOfSales() throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(this.ClassEntity);        
                 
-        String hql = "FROM Sales WHERE estatus = :estatus AND salesPoint = :salesPoint";
+        String hql = "FROM Sales WHERE estatus = :estatus AND salesPoint = :salesPoint AND cut = 'N'";
         final Session Session = HibernateUtil.getSingleton().getSession();
         Query query = Session.createQuery(hql);
         query.setParameter("estatus", "CO");

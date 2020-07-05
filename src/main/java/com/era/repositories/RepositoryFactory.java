@@ -30,6 +30,7 @@ public class RepositoryFactory {
    private ComprsRepository ComprsRepository;
    private ComprssRepository ComprssRepository;
    private ComprsTmpsRepository ComprsTmpsRepository;
+   private PaymentsSalesRepository PaymentsSalesRepository;
    private ConcepnotsRepository ConcepnotsRepository;
    private ConceppagsRepository ConceppagsRepository;
    private ConcepssRepository ConcepssRepository;
@@ -597,5 +598,9 @@ public class RepositoryFactory {
    }
    public ZonasRepository getZonasRepository() {
        if(ZonasRepository==null){ZonasRepository = new ZonasRepository();}return ZonasRepository;
+   }
+   
+   public PaymentsSalesRepository getPaymentsSalesRepository(){       
+       if(PaymentsSalesRepository==null){PaymentsSalesRepository = new PaymentsSalesRepository();}return PaymentsSalesRepository;
    }
 }

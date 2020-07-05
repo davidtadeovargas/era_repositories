@@ -237,6 +237,7 @@ public class HibernateUtil {
         classes.add(Cortszx.class);
         classes.add(Cortes.class);
         classes.add(Corrselec.class);
+        classes.add(PaymentsSale.class);        
         classes.add(CorreoTerminal.class);
         classes.add(Controlexportar.class);        
         classes.add(Consec.class);

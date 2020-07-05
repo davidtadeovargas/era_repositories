@@ -139,7 +139,7 @@ public class SalesGeneratorJUnitTest  {
                 Sales.setEstatus("CO");
                 Sales.setObservation("");
 
-                SalessRepository.saveSale(Sales, items);
+                SalessRepository.saveSale(Sales, items, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             }
             
             System.out.println("Finished inserting sales " + totalSales);

@@ -709,7 +709,7 @@ public class ConfgralRepository extends Repository {
         this.updateSQL("UPDATE confgral SET val = 1 WHERE conf = \"" + conf + "\" AND clasif = \"" + clasif + "\"");
     }
     final public void inverseConfig(final String clasif, final String conf) throws Exception{
-        this.updateSQL("UPDATE confgral SET val = if(val=1,0,1) WHERE conf = \"" + conf + "\" AND clasif = \"" + clasif + "\"");
+        this.updateSQL("UPDATE confgral SET val = 0 WHERE conf = \"" + conf + "\" AND clasif = \"" + clasif + "\"");
     }
     final public void activeExtraConfig(final String clasif, final String conf, final String extra) throws Exception{
         this.updateSQL("UPDATE confgral SET extr = \"" + extra + "\" WHERE conf = \"" + conf + "\" AND clasif = \"" + clasif + "\"");

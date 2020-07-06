@@ -494,18 +494,18 @@ public abstract class Repository {
         setField(Object, "fmod", new Date());
         
         //Save
-        Object ObjectResult = HibernateUtil.getSingleton().getSession().save(Object);                
+        Object ObjectResult = HibernateUtil.getSingleton().getSession().save(Object);
+        
+        LoggerUtility.getSingleton().logInfo(Repository.class, "Finishing Saving object ");
+        
+        //Close database
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         if(Object instanceof Supplier){
                         
             final Supplier Supplier = (Supplier)Object;
             RepositoryFactory.getInstance().getConsecsRepository().updateConsecSupplier(Supplier.getSerie());
         }
-        
-        LoggerUtility.getSingleton().logInfo(Repository.class, "Finishing Saving object ");
-        
-        //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         if(!(Object instanceof Log)){
             insertLog(Object,"save",null);

@@ -189,6 +189,43 @@ public class SalessRepository extends Repository {
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
     }
     
+    final public void returnSale(final int saleID, final String motiv) throws Exception {
+        
+        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        
+        //Get the sale
+        Sales Sale = (Sales)this.getByID(saleID);
+        
+        //Return it
+        Sale.setEstatus("DEV");
+        Sale.setRazon(motiv);        
+        this.update(Sale);
+        
+        //Get all items of the sale
+        final List<Partvta> items = RepositoryFactory.getInstance().getPartvtaRepository().getPartsVta(saleID);
+        
+        //Loop all to affect inventories
+        for(Partvta Partvta:items){
+            
+            //If is kit affect inventory by components
+            if(Partvta.isEskit()){
+                
+                //Get all the componentes
+                final List<Kits> kits = RepositoryFactory.getInstance().getKitssRepository().getComponentsByKit(Partvta.getProd());
+                
+                //Affect invetory for each component of the kit
+                for(Kits Kit: kits){
+                    RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), ConcepssRepository.TYPES.DEVVENTA);
+                }
+            }
+            else{ //Not kit affect inventory normally
+                RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), ConcepssRepository.TYPES.DEVVENTA);
+            }
+        }
+        
+        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+    }
+    
     final public List<Sales> getAllNotsCred() throws Exception {
         
         final Tips Tips = RepositoryFactory.getInstance().getTipssRepository().getFacType();

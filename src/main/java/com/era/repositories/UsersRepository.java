@@ -9,10 +9,32 @@ import org.hibernate.Query;
 
 public class UsersRepository extends Repository {
 
-   public UsersRepository() {
+    public UsersRepository() {
         super(User.class);
     }
    
+    final public boolean isValidAdminUser(final String user, final String password) throws Exception {
+    
+        //Get if the user exists
+        final boolean userExists = RepositoryFactory.getInstance().getUsersRepository().userExists(user);
+            
+        //If the user does not exists stop
+        if(!userExists){
+            return false;
+        }
+
+        //Get decrypted password
+        final String decryptedPassword = RepositoryFactory.getInstance().getUsersRepository().getDecryptedUserPassword(user);
+
+        //Passwords match ?
+        if(password.compareTo(decryptedPassword)!=0){
+            return false;
+        }
+        
+        //All is fine
+        return true;
+    }
+    
     final public void save(final User User) throws Exception {
         
         //Get the current default printer

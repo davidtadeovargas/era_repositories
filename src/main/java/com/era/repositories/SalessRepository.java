@@ -226,6 +226,59 @@ public class SalessRepository extends Repository {
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
     }
     
+    final public void returnPartialSale(final int saleID, final String motiv, final List<Partvta> items) throws Exception {
+        
+        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);                
+        
+        //Loop all to affect inventories
+        boolean allDevsComplete = true;
+        for(Partvta Partvta:items){
+            
+            //Get the total to devolution
+            final BigDecimal toDevs = Partvta.getToDevs();
+            final BigDecimal devs = Partvta.getDevs();
+            final BigDecimal totalDevs = devs.add(toDevs);
+            final BigDecimal cant = Partvta.getCant();
+            
+            //If is kit affect inventory by components
+            if(Partvta.isEskit()){
+                
+                //Get all the componentes
+                final List<Kits> kits = RepositoryFactory.getInstance().getKitssRepository().getComponentsByKit(Partvta.getProd());
+                
+                //Affect invetory for each component of the kit
+                for(int x = 0; x < toDevs.intValue(); x++){
+                    for(Kits Kit: kits){
+                        RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), ConcepssRepository.TYPES.DEVPVENTA);
+                    }
+                }
+            }
+            else{ //Not kit affect inventory normally
+                RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), toDevs.floatValue(), ConcepssRepository.TYPES.DEVPVENTA);
+            }
+            
+            if(totalDevs.compareTo(cant)!=0){
+                allDevsComplete = false;
+            }
+        }
+        
+        //Get the sale
+        Sales Sale = (Sales)this.getByID(saleID);
+                                
+        if(allDevsComplete){
+            Sale.setEstatus("DEV");
+        }
+        else{
+            Sale.setEstatus("PDEV");
+        }
+        
+        //Update the sale
+        Sale.setRazon(motiv);
+        this.update(Sale);
+        
+        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+    }
+    
     final public List<Sales> getAllNotsCred() throws Exception {
         
         final Tips Tips = RepositoryFactory.getInstance().getTipssRepository().getFacType();

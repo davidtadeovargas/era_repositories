@@ -21,24 +21,29 @@ public class CorrselecRepository extends Repository {
         super(Corrselec.class);
     }
     
+    @Override
     final public List<Corrselec> getByLikeEncabezados(final String search) throws Exception{
         
         final List<String> likes = new ArrayList<>();
-        likes.add("srvsmtpsal");        
+        likes.add("srvsmtpsal");
+        likes.add("portsmtp");
+        likes.add("usr");
+        likes.add("corralter");
+        likes.add("estacglo");
         
         final List<Corrselec> emails = (List<Corrselec>) this.getAllLike(likes, search);
         
         return emails;
     }
     
-    final public Corrselec getByEstac(final String estac) throws Exception {
+    final public Corrselec getByEstacGlob(final String estacglo) throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);        
         
-        String hql = "FROM Sales where estac = :estac";
+        String hql = "FROM Corrselec WHERE estacglo = :estacglo";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
-        query.setParameter("estac", estac);
+        query.setParameter("estacglo", estacglo);
         Corrselec Corrselec = query.list().size() > 0 ? (Corrselec)query.list().get(0):null;
         
         //Close database       

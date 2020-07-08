@@ -39,7 +39,6 @@ public class RepositoryFactory {
    private ControlexportarsRepository ControlexportarsRepository;
    private CorreoTerminalsRepository CorreoTerminalsRepository;
    private CorrselecRepository CorrselecRepository;
-   private CorrselecsRepository CorrselecsRepository;
    private CortessRepository CortessRepository;
    private CortszxsRepository CortszxsRepository;
    private CostssRepository CostssRepository;
@@ -259,9 +258,6 @@ public class RepositoryFactory {
    }
    public CorrselecRepository getCorrselecRepository() {
        if(CorrselecRepository==null){CorrselecRepository = new CorrselecRepository();}return CorrselecRepository;
-   }
-   public CorrselecsRepository getCorrselecsRepository() {
-       if(CorrselecsRepository==null){CorrselecsRepository = new CorrselecsRepository();}return CorrselecsRepository;
    }
    public CortessRepository getCortessRepository() {
        if(CortessRepository==null){CortessRepository = new CortessRepository();}return CortessRepository;

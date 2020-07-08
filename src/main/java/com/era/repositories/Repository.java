@@ -254,10 +254,6 @@ public abstract class Repository {
         
         LoggerUtility.getSingleton().logInfo(Repository.class, "Deleting Object " + Object.getClass().getName());
         
-        if(!(Object instanceof Log)){
-            insertLog(Object,"delete",null);
-        }
-        
         //Delete the license
         HibernateUtil.getSingleton().getSession().delete(Object);
         
@@ -265,6 +261,10 @@ public abstract class Repository {
         
         //Close database        
         HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        if(!(Object instanceof Log)){
+            insertLog(Object,"delete",null);
+        }
         
         return Object;
     }

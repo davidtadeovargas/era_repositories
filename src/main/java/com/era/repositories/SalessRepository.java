@@ -177,8 +177,10 @@ public class SalessRepository extends Repository {
                 final List<Kits> kits = RepositoryFactory.getInstance().getKitssRepository().getComponentsByKit(Partvta.getProd());
                 
                 //Affect invetory for each component of the kit
-                for(Kits Kit: kits){
-                    RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), ConcepssRepository.TYPES.CANVENTA);
+                for(int x = 0; x < Partvta.getCant().intValue(); x++){
+                    for(Kits Kit: kits){
+                        RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), ConcepssRepository.TYPES.CANVENTA);
+                    }
                 }
             }
             else{ //Not kit affect inventory normally
@@ -224,6 +226,10 @@ public class SalessRepository extends Repository {
         }
         
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+    }
+    
+    final public String getConfirmedSaleStatus(){
+        return "CO";
     }
     
     final public void returnPartialSale(final int saleID, final String motiv, final List<Partvta> items) throws Exception {

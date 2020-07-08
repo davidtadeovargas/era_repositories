@@ -4,7 +4,10 @@ import com.era.logger.LoggerUtility;
 import com.era.models.ImpuesXProduct;
 import com.era.models.Kits;
 import com.era.models.Product;
+import com.era.models.Tax;
 import com.era.repositories.utils.HibernateUtil;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
@@ -12,11 +15,11 @@ import org.hibernate.SQLQuery;
 
 public class ProductsRepository extends Repository {
 
-   public ProductsRepository() {
+    public ProductsRepository() {
         super(Product.class);
     }
    
-   final public Product getProductByCode(final String codeProduct) throws Exception {
+    final public Product getProductByCode(final String codeProduct) throws Exception {
                         
         LoggerUtility.getSingleton().logInfo(ProductsRepository.class, "Hibernate: Getting product by code " + codeProduct);
         
@@ -34,7 +37,145 @@ public class ProductsRepository extends Repository {
         return Product;
     }
     
-   final public void updateProductAsKit(final String codeProduct) throws Exception {
+    public BigDecimal getTotalTaxesOfProduct(final String productCode, final BigDecimal import_) throws Exception {
+        
+        //Get the taxes of the product
+        final List<ImpuesXProduct> taxesProduct = RepositoryFactory.getInstance().getImpuesXProductRepository().getAllByProd(productCode);
+
+        BigDecimal taxes = BigDecimal.ZERO;
+        
+        //Iterate over all the taxes to calculate to taxes total
+        for(ImpuesXProduct ImpuesXProduct: taxesProduct){
+            final String taxCode = ImpuesXProduct.getImpue();
+            final Tax Tax = (Tax)RepositoryFactory.getInstance().getTaxesRepository().getByCode(taxCode);
+            final double tax = Tax.getValue() / 100;
+            taxes = taxes.add(import_.multiply(new BigDecimal(tax, MathContext.DECIMAL64)));
+        }
+        
+        return taxes;
+    }
+    
+    final public boolean hasProductPriceInList(final String codeProduct, final int list) throws Exception {
+                        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Product WHERE code = :codeProduct";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("codeProduct", codeProduct);        
+        Product Product = query.list().size() > 0 ? (Product) query.list().get(0):null;
+                
+        boolean hasPrice = false;
+        switch(list){
+            
+            case 1:
+                hasPrice = Product.getPriceList1()>0;
+                break;
+                
+            case 2:
+                hasPrice = Product.getPriceList2()>0;
+                break;
+              
+            case 3:
+                hasPrice = Product.getPriceList3()>0;
+                break;
+                
+            case 4:
+                hasPrice = Product.getPriceList4()>0;
+                break;
+                
+            case 5:
+                hasPrice = Product.getPriceList5()>0;
+                break;
+                
+            case 6:
+                hasPrice = Product.getPriceList6()>0;
+                break;
+                
+            case 7:
+                hasPrice = Product.getPriceList7()>0;
+                break;
+                
+            case 8:
+                hasPrice = Product.getPriceList8()>0;
+                break;
+                
+            case 9:
+                hasPrice = Product.getPriceList9()>0;
+                break;
+                
+            case 10:
+                hasPrice = Product.getPriceList10()>0;
+                break;
+        }
+                
+        return hasPrice;
+    }
+    
+    final public BigDecimal getPriceList(final String codeProduct, final int list) throws Exception {
+                        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        String hql = "FROM Product WHERE code = :codeProduct";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("codeProduct", codeProduct);        
+        Product Product = query.list().size() > 0 ? (Product) query.list().get(0):null;
+                
+        BigDecimal price = BigDecimal.ZERO;
+        switch(list){
+            
+            case 1:
+                price = new BigDecimal(String.valueOf(Product.getPriceList1()));
+                break;
+                
+            case 2:
+                price = new BigDecimal(String.valueOf(Product.getPriceList2()));
+                break;
+              
+            case 3:
+                price = new BigDecimal(String.valueOf(Product.getPriceList3()));
+                break;
+                
+            case 4:
+                price = new BigDecimal(String.valueOf(Product.getPriceList4()));
+                break;
+                
+            case 5:
+                price = new BigDecimal(String.valueOf(Product.getPriceList5()));
+                break;
+                
+            case 6:
+                price = new BigDecimal(String.valueOf(Product.getPriceList6()));
+                break;
+                
+            case 7:
+                price = new BigDecimal(String.valueOf(Product.getPriceList7()));
+                break;
+                
+            case 8:
+                price = new BigDecimal(String.valueOf(Product.getPriceList8()));
+                break;
+                
+            case 9:
+                price = new BigDecimal(String.valueOf(Product.getPriceList9()));
+                break;
+                
+            case 10:
+                price = new BigDecimal(String.valueOf(Product.getPriceList10()));
+                break;
+        }
+                
+        return price;
+    }
+    
+    final public boolean existsLineInProduct(final String codeLine) throws Exception {
+                        
+        final List<Product> products = this.getAllByLine(codeLine);
+        return products.size()>0;
+    }        
+            
+    final public void updateProductAsKit(final String codeProduct) throws Exception {
                         
         Product Product = (Product)this.getByCode(codeProduct);
         

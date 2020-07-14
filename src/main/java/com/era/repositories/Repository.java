@@ -81,6 +81,11 @@ public abstract class Repository {
         return paginationSize;
     }
         
+    public Object getFirst() throws Exception {
+        
+        final List<?> alls = (List<MetogoPago>)this.getAll();        
+        return alls.size()>0?alls.get(0):null;
+    }
     
     public List<?> getAllByPage(final int pageNumber) throws Exception {
         final List<?> records = this.getAllByPage(pageNumber,paginationSize);

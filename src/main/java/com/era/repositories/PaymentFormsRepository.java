@@ -31,6 +31,10 @@ public class PaymentFormsRepository extends Repository {
     }
    
     
+    public CPaymentForm getByCash() throws Exception {
+        return (CPaymentForm)this.getByCode("01");
+    }
+    
     @Override
     final public List<CPaymentForm> getByLikeEncabezados(final String search) throws Exception{
 

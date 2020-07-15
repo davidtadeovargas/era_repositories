@@ -10,6 +10,10 @@ public class WarehousesRepository extends Repository {
         super(Warehouse.class);
     }   
     
+    public Warehouse getSalesWarehouse() throws Exception{
+        return (Warehouse)this.getByCode("VTAS");
+    }
+    
     @Override
     final public List<Warehouse> getByLikeEncabezados(final String search) throws Exception{
 

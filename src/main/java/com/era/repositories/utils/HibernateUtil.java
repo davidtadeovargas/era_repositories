@@ -278,8 +278,7 @@ public class HibernateUtil {
         classes.add(Moninven.class);
         classes.add(ModificaImpuestos.class);
         classes.add(Modelprod.class);
-        classes.add(Model.class);
-        classes.add(MetogoPago.class);
+        classes.add(Model.class);        
         classes.add(Meds.class);
         classes.add(Measure.class);
         classes.add(Maxminconf.class);
@@ -320,6 +319,7 @@ public class HibernateUtil {
         classes.add(ServerSession.class);
         classes.add(Serieprod.class);
         classes.add(Serie.class);
+        classes.add(Payment.class);
         classes.add(Sectores.class);
         classes.add(Sales.class);
         classes.add(Rubr.class);
@@ -333,8 +333,7 @@ public class HibernateUtil {
         classes.add(Pes.class);
         classes.add(Pers.class);
         classes.add(PedidosParts.class);
-        classes.add(Pedidos.class);        
-        classes.add(Payment.class);
+        classes.add(Pedidos.class);                
         classes.add(Partvta.class);
         classes.add(PartprevcomprsTmp.class);
         classes.add(Partprevcomprs.class);
@@ -356,6 +355,7 @@ public class HibernateUtil {
         classes.add(CClaveprodserv.class);
         classes.add(CClaveUnidad.class);
         classes.add(CAduana.class);
+        classes.add(MetogoPago.class);        
         classes.add(CPaymentMethod.class);
         classes.add(CPaymentForm.class);
         classes.add(CTipoRelacion.class);

@@ -160,6 +160,23 @@ public class ExistalmasRepository extends Repository {
          return Existalma;
     }
 
+    final public Existalma getByWarehouse(final String warehouseCode) throws Exception {
+
+         //Open database
+         HibernateUtil.getSingleton().openSession(ClassEntity);
+
+         String hql = "FROM Existalma where alma = :warehouseCode";
+         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+         query.setParameter("warehouseCode", warehouseCode);         
+         Existalma Existalma = query.list().size() > 0 ? (Existalma)query.list().get(0):null;
+
+         //Close database        
+         HibernateUtil.getSingleton().closeSession(ClassEntity);
+
+         //Return the result model
+         return Existalma;
+    }
+    
     final public List<Product> getAllProductsBajMin() throws Exception {
 
          //Get all the products that sol max and min

@@ -94,7 +94,7 @@ public class MysqlScriptsUtil {
         }       
         String dbEmpresasSQLPath = catalogFile;
         if(!new File(dbEmpresasSQLPath).exists()){
-            throw new DBEraSQLFileNotFoundException();
+            throw new DBEraSQLFileNotFoundException(dbEmpresasSQLPath);
         }                   
         String exec = mysqldumpExecutable + " --defaults-extra-file=\"" + connectionFile + "\" --max_allowed_packet=100M " + database + " --execute=\"source " + dbEmpresasSQLPath + "\"";
 

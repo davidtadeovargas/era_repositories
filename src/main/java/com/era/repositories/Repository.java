@@ -83,7 +83,7 @@ public abstract class Repository {
         
     public Object getFirst() throws Exception {
         
-        final List<?> alls = (List<MetogoPago>)this.getAll();        
+        final List<?> alls = (List<MetogoPago>)this.getAll();
         return alls.size()>0?alls.get(0):null;
     }
     

@@ -11,4 +11,7 @@ package com.era.repositories.exceptions;
  */
 public class DBEraSQLFileNotFoundException extends Exception {
     
+    public DBEraSQLFileNotFoundException(final String file){
+        super(file);
+    }
 }

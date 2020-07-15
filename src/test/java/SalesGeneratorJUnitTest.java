@@ -41,7 +41,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(OrderAnnotation.class)
 public class SalesGeneratorJUnitTest  {
     
-    @Test
+    /*@Test
     @Order(1)
     public void createRandomSalesTest() {
                 
@@ -151,7 +151,7 @@ public class SalesGeneratorJUnitTest  {
             
             Assertions.fail();
         }            
-    }
+    }*/
     
     /*@Test
     @Order(2)

@@ -67,7 +67,7 @@ public abstract class Repository {
     
     protected final Class ClassEntity;
     protected final int paginationSize = 50;
-    
+      
     
     
     public abstract List<?> getByLikeEncabezados(final String search) throws Exception;

@@ -1,5 +1,8 @@
 package com.era.repositories;
 
+import com.era.models.Coin;
+import com.era.models.Company;
+import com.era.models.Cxc;
 import com.era.models.Fluj;
 import com.era.models.Kits;
 import com.era.models.Partvta;
@@ -7,8 +10,10 @@ import com.era.models.Product;
 import com.era.models.Sales;
 import com.era.models.Tips;
 import com.era.repositories.utils.HibernateUtil;
+import com.era.utilities.UtilitiesFactory;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.hibernate.Query;
@@ -79,13 +84,69 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
-    final public void saveSale(final Sales Sale, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
+    final public void saveSale(final Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         //Save the new sale
         final Sales Sale_ = (Sales)this.save(Sale);
         
+        //If the customer will pay in credit verify that really can do it
+        if(Sale.isCredit()){
+            
+            //If the customer doesnt have credit stop
+            if(!Company.hasCredit()){
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_customer_with_no_available_credit");
+                return;
+            }
+                        
+            //Get positive sald of the customer
+            final BigDecimal favorSald = RepositoryFactory.getInstance().getCxcRepository().getSaldoFavorFromCustomer(Company.getCompanyCode());
+
+            //If the customer doesnt have money credit avaible
+            if(favorSald.compareTo(Company.getLimtcred())<0){            
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_customer_with_no_sald_for_credit");
+                return;
+            }
+            
+            //Get the date for payment
+            final Date Date_ = UtilitiesFactory.getSingleton().getDateTimeUtility().getDatePlusDays(Company.getDiacred());
+            
+            final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale_.getCoinCode());
+            
+            //Create the model
+            final Cxc Cxc = new Cxc();
+            Cxc.setNorefer(Sale_.getReferenceNumber());
+            Cxc.setNoser(Sale_.getNoser());
+            Cxc.setEmpre(Company.getCompanyCode());
+            Cxc.setFormpag(Sale_.getPaymentForm());
+            Cxc.setConceppag("");
+            Cxc.setSer("");
+            Cxc.setSubtot(Sale_.getSubtotal());
+            Cxc.setImpue(Sale_.getTax());
+            Cxc.setTot(Sale_.getTotal());
+            Cxc.setAbon(BigDecimal.ZERO);
+            Cxc.setCarg(Sale_.getTotal());
+            Cxc.setComen("");
+            Cxc.setConcep("");
+            Cxc.setFolbanc("");
+            Cxc.setFvenc(Date_);
+            Cxc.setFdoc(UtilitiesFactory.getSingleton().getDateTimeUtility().getCurrentDate());
+            Cxc.setFol(0);
+            Cxc.setCuentabanco("");
+            Cxc.setId_venta(Sale_.getId());
+            Cxc.setMonedaID(Coin.getId());
+            
+            //Insert in cxc
+            RepositoryFactory.getInstance().getCxcRepository().save(Cxc);
+        }
+        
+        //If the user wants to update the customer info
+        if(updateCustomerInfo){
+
+            RepositoryFactory.getInstance().getCompanysRepository().update(Company);
+        }
+
         //Save the rows
         for(Partvta Partvta: parts){
             Partvta.setVta(Sale_.getId());

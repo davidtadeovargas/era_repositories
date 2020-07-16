@@ -17,9 +17,9 @@ public class TipssRepository extends Repository {
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);       
         
-        String hql = "FROM Tips where cod = :type";
+        String hql = "FROM Tips where code = :type";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
-        query.setParameter("cod", type);
+        query.setParameter("type", type);
         Tips Tips = query.list().size() > 0 ? (Tips)query.list().get(0):null;
         
         //Close database        

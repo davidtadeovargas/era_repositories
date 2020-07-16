@@ -52,8 +52,7 @@ public class RepositoryFactory {
    private CuentasContablesRepository CuentasContablesRepository;
    private CuentasContablessRepository CuentasContablessRepository;
    private CUsoCFDIsRepository CUsoCFDIsRepository;
-   private CxcRepository CxcRepository;
-   private CxcsRepository CxcsRepository;
+   private CxcRepository CxcRepository;  
    private CxpRepository CxpRepository;
    private CxpsRepository CxpsRepository;
    private DatoscpsRepository DatoscpsRepository;
@@ -141,8 +140,7 @@ public class RepositoryFactory {
    private TermarcamodelosRepository TermarcamodelosRepository;
    private TerprodcompasRepository TerprodcompasRepository;
    private TipactfijsRepository TipactfijsRepository;
-   private TipscambsRepository TipscambsRepository;
-   private TipsRepository TipsRepository;
+   private TipscambsRepository TipscambsRepository;   
    private TipssRepository TipssRepository;
    private TraspassRepository TraspassRepository;
    private UnidsRepository UnidsRepository;
@@ -300,9 +298,6 @@ public class RepositoryFactory {
    }
    public CxcRepository getCxcRepository() {
        if(CxcRepository==null){CxcRepository = new CxcRepository();}return CxcRepository;
-   }
-   public CxcsRepository getCxcsRepository() {
-       if(CxcsRepository==null){CxcsRepository = new CxcsRepository();}return CxcsRepository;
    }
    public CxpRepository getCxpRepository() {
        if(CxpRepository==null){CxpRepository = new CxpRepository();}return CxpRepository;
@@ -567,9 +562,6 @@ public class RepositoryFactory {
    }
    public TipscambsRepository getTipscambsRepository() {
        if(TipscambsRepository==null){TipscambsRepository = new TipscambsRepository();}return TipscambsRepository;
-   }
-   public TipsRepository getTipsRepository() {
-       if(TipsRepository==null){TipsRepository = new TipsRepository();}return TipsRepository;
    }
    public TipssRepository getTipssRepository() {
        if(TipssRepository==null){TipssRepository = new TipssRepository();}return TipssRepository;

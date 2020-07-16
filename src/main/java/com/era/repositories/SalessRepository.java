@@ -3,6 +3,7 @@ package com.era.repositories;
 import com.era.models.Coin;
 import com.era.models.Company;
 import com.era.models.Cxc;
+import com.era.models.DocumentOrigin;
 import com.era.models.Fluj;
 import com.era.models.Kits;
 import com.era.models.Partvta;
@@ -25,7 +26,7 @@ public class SalessRepository extends Repository {
         super(Sales.class);
     }
    
-   final public int getTotalSalesFromCustomer(final String codemp) throws Exception {
+    final public int getTotalSalesFromCustomer(final String codemp) throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(this.ClassEntity);
@@ -42,7 +43,7 @@ public class SalessRepository extends Repository {
         //Return the result model
         return (int) count.next();
     }
-    
+   
     final public Sales getByNotCred(final String notcred) throws Exception {
         
         //Open database
@@ -346,9 +347,7 @@ public class SalessRepository extends Repository {
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
     }
     
-    final public List<Sales> getAllNotsCred() throws Exception {
-        
-        final Tips Tips = RepositoryFactory.getInstance().getTipssRepository().getFacType();
+    final public List<Sales> getAllByTipDoc(final String tipdoc, final boolean pagination, final int pageNumber) throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(this.ClassEntity);
@@ -357,7 +356,14 @@ public class SalessRepository extends Repository {
         String hql = "FROM Sales where tipdoc = :tipdoc";
         final Session Session = HibernateUtil.getSingleton().getSession();
         Query query = Session.createQuery(hql);
-        query.setParameter("tipdoc", Tips.getCode());
+        query.setParameter("tipdoc", tipdoc);
+        
+        //Use pagination?
+        if(pagination){
+            query.setFirstResult(pageNumber);
+            query.setMaxResults(this.paginationSize);
+        }
+        
         List<Sales> Sales = query.list();
         
         //Close database
@@ -366,6 +372,50 @@ public class SalessRepository extends Repository {
         
         //Return the result model
         return Sales;
+    }
+    
+    final public List<Sales> getAllNotsCred() throws Exception {
+        
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
+        return getAllByTipDoc(DocumentOrigin.getType(), false, 0);
+    }
+    final public List<Sales> getAllNotsCredWithPagination(final int pageNumber) throws Exception {
+        
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
+        return getAllByTipDoc(DocumentOrigin.getType(), true, pageNumber);
+    }
+    
+    final public List<Sales> getAllInvoices() throws Exception {
+        
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        return getAllByTipDoc(DocumentOrigin.getType(), false, 0);
+    }
+    final public List<Sales> getAllInvoicesWithPagination(final int pageNumber) throws Exception {
+        
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        return getAllByTipDoc(DocumentOrigin.getType(), true, pageNumber);
+    }
+    
+    final public List<Sales> getAllRems() throws Exception {
+        
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
+        return getAllByTipDoc(DocumentOrigin.getType(), false, 0);
+    }    
+    final public List<Sales> getAllRemsWithPagination(final int pageNumber) throws Exception {
+        
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
+        return getAllByTipDoc(DocumentOrigin.getType(),true, pageNumber);
+    }
+    
+    final public List<Sales> getAllTickets() throws Exception {
+        
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        return getAllByTipDoc(DocumentOrigin.getType(),false,0);
+    }
+    final public List<Sales> getAllTicketsWithPagination(final int pageNumber) throws Exception {
+        
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        return getAllByTipDoc(DocumentOrigin.getType(),true,pageNumber);
     }
     
     final public List<Sales> getAllConfirmedSales() throws Exception {

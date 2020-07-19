@@ -18,9 +18,9 @@ public class PaymentFormsRepository extends Repository {
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
         
-        String hql = "FROM CPaymentForm WHERE c_FormaPago = :code";
+        String hql = "FROM CPaymentForm WHERE c_FormaPago = :c_FormaPago";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
-        query.setParameter("code", code);
+        query.setParameter("c_FormaPago", code);
         CPaymentForm CPaymentForm = query.list().size() > 0 ? (CPaymentForm)query.list().get(0):null;
         
         //Close database        

@@ -54,8 +54,10 @@ import com.era.repositories.utils.HibernateUtil;
 import com.era.utilities.UtilitiesFactory;
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 
@@ -173,6 +175,58 @@ public abstract class Repository {
         return list;
     }
         
+    final public List<?> getAllLikeByCond(final List<String> likes, final String search, final String conditions, final HashMap<String,String> conditionsValues) throws Exception{
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);        
+             
+        //Get results
+        String cad;
+        if(likes.isEmpty()){
+            cad = "";
+        }
+        else{
+            
+            cad = "WHERE ";
+            
+            if(!conditions.isEmpty()){
+                cad = cad + conditions + " AND (";
+            }
+            
+            for(String like:likes){
+                cad += like + " LIKE:" + like + " OR ";
+            }            
+            if(cad.endsWith(" OR ")){
+                cad = cad.substring(0, cad.length() - " OR ".length());
+            }
+            
+            if(!conditions.isEmpty()){
+                cad = cad + ")";
+            }
+        }
+        
+        String hql = "FROM " + ClassEntity.getName() + " " + cad;
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        if(!cad.isEmpty()){
+            for(String like:likes){
+                query.setString(like,"%" + search + "%");
+            }
+        }
+        if(!conditions.isEmpty()){
+            for(Map.Entry<String, String> entry : conditionsValues.entrySet()) {
+                query.setString(entry.getKey(),entry.getValue());                
+            }
+        }
+        
+        List<?> list = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return list;
+    }
+    
     final public List<?> getAllLike(final List<String> likes, final String search) throws Exception{
     
         //Open database

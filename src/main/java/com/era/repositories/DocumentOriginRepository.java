@@ -43,6 +43,31 @@ public class DocumentOriginRepository extends Repository {
         return DocumentOrigin;
     }
         
+    public List<DocumentOrigin> getSalesModuleItems() throws Exception {
+        
+        //Get all the sales module documents
+        DocumentOrigin DocumentOriginInvoices = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        DocumentOrigin DocumentOriginRems = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
+        DocumentOrigin DocumentOriginNotc = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
+        DocumentOrigin DocumentOriginTicks = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        
+        //Emtpy model
+        final DocumentOrigin DocumentOrigin = new DocumentOrigin();
+        DocumentOrigin.setType("");
+        
+        final List<DocumentOrigin> documents  = new ArrayList<>();
+        documents.add(DocumentOrigin); //Add the empty model
+        documents.add(DocumentOriginInvoices);
+        documents.add(DocumentOriginRems);
+        documents.add(DocumentOriginNotc);
+        documents.add(DocumentOriginTicks);
+        
+        //Add them all to the list
+        documents.addAll(documents);
+        
+        return documents;
+    }
+    
     final public DocumentOrigin getDocumentOriginPREV() throws Exception {                        
         return getDocumentByType("PREV");
     }

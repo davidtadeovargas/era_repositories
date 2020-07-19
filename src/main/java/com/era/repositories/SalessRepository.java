@@ -1,7 +1,10 @@
 package com.era.repositories;
 
+import com.era.models.CPaymentForm;
 import com.era.models.Coin;
 import com.era.models.Company;
+import com.era.models.Confgral;
+import com.era.models.Consec;
 import com.era.models.Cxc;
 import com.era.models.DocumentOrigin;
 import com.era.models.Fluj;
@@ -9,14 +12,22 @@ import com.era.models.Kits;
 import com.era.models.Partvta;
 import com.era.models.Product;
 import com.era.models.Sales;
-import com.era.models.Tips;
+import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
 import com.era.utilities.UtilitiesFactory;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 
@@ -47,8 +58,7 @@ public class SalessRepository extends Repository {
     final public Sales getByNotCred(final String notcred) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);
-        HibernateUtil.getSingleton().begginTransaction();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
         
         
         String hql = "FROM Sales where notcred = :notcred";
@@ -57,8 +67,7 @@ public class SalessRepository extends Repository {
         query.setParameter("notcred", notcred);
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().commitTransacton();
+        //Close database        
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
@@ -68,8 +77,7 @@ public class SalessRepository extends Repository {
     final public Sales getByVentaRef(final String vtaRef) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);
-        HibernateUtil.getSingleton().begginTransaction();        
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);                
         
         String hql = "FROM Sales where vtaRef = :vtaRef";
         final Session Session = HibernateUtil.getSingleton().getSession();
@@ -77,8 +85,7 @@ public class SalessRepository extends Repository {
         query.setParameter("vtaRef", vtaRef);
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().commitTransacton();
+        //Close database       
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
@@ -152,24 +159,28 @@ public class SalessRepository extends Repository {
         for(Partvta Partvta: parts){
             Partvta.setVta(Sale_.getId());
             
-            //If the product is kit
-            if(Partvta.isEskit()){
-                                
-                //Get all the components of the kit
-                final List<Kits> kits = RepositoryFactory.getInstance().getKitssRepository().getComponentsByKit(Partvta.getProd());
-                
-                //Affect invetory for each element of the kit
-                for(Kits Kit:kits){
-                    
-                    //Get the product
-                    final Product KitProduct = (Product)RepositoryFactory.getInstance().getProductsRepository().getByCode(Kit.getProd());
-                    
-                    //Affect inventory
-                    RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), KitProduct.getUnit(), Kit.getCant(), ConcepssRepository.TYPES.VENTA);
+            //Inventory ?
+            if(Partvta.isInventory()){
+             
+                //If the product is kit
+                if(Partvta.isEskit()){
+
+                    //Get all the components of the kit
+                    final List<Kits> kits = RepositoryFactory.getInstance().getKitssRepository().getComponentsByKit(Partvta.getProd());
+
+                    //Affect invetory for each element of the kit
+                    for(Kits Kit:kits){
+
+                        //Get the product
+                        final Product KitProduct = (Product)RepositoryFactory.getInstance().getProductsRepository().getByCode(Kit.getProd());
+
+                        //Affect inventory
+                        RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), KitProduct.getUnit(), Kit.getCant(), ConcepssRepository.TYPES.VENTA);
+                    }
                 }
-            }
-            else{ //Not a kit so affect inventory normally
-                RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), ConcepssRepository.TYPES.VENTA);
+                else{ //Not a kit so affect inventory normally
+                    RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), ConcepssRepository.TYPES.VENTA);
+                }
             }
             
             this.save(Partvta);
@@ -350,8 +361,7 @@ public class SalessRepository extends Repository {
     final public List<Sales> getAllByTipDoc(final String tipdoc, final boolean pagination, final int pageNumber) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);
-        HibernateUtil.getSingleton().begginTransaction();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
                 
         String hql = "FROM Sales where tipdoc = :tipdoc";
         final Session Session = HibernateUtil.getSingleton().getSession();
@@ -366,8 +376,146 @@ public class SalessRepository extends Repository {
         
         List<Sales> Sales = query.list();
         
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return Sales;
+    }
+    
+    final public void ringTicketSales(final Company Company, final List<Sales> sales, final String observations, final String serie, final String paymentMethod) throws Exception {
+        
+        final CPaymentForm CPaymentForm = RepositoryFactory.getInstance().getPaymentFormsRepository().getByCash();
+        
+        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        
+        //Get national coin
+        final Coin Coin = RepositoryFactory.getInstance().getCoinsRepository().getNationalCoin();
+        
+        //Get the session user
+        final User User = UtilitiesFactory.getSingleton().getSessionUtility().getUser();
+        
+        //Get document type invoice
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        
+        //Get the consec for this serie
+        Consec Consec = (Consec)RepositoryFactory.getInstance().getConsecsRepository().getSalesConsec(DocumentOrigin.getType());
+        
+        final BigDecimal total_traslado = BigDecimal.ZERO;
+        final BigDecimal total_retencion = BigDecimal.ZERO;
+        
+        final Sales SaleNew = new Sales();        
+        SaleNew.setCompanyCode(Company.getCompanyCode());
+        SaleNew.setRazon(Company.getNom());        
+        SaleNew.setAccount("");
+        SaleNew.setReferenceNumber(String.valueOf(Consec.getConsec()));
+        SaleNew.setSerie(serie);
+        SaleNew.setNoser("");
+        SaleNew.setCoinCode(Coin.getCode());
+        SaleNew.setSalesMan(User.getCode());
+        SaleNew.setPaymentForm(CPaymentForm.getC_FormaPago());
+        SaleNew.setTypeExchange(new BigDecimal(Float.toString(Coin.getValue())));
+        SaleNew.setTotalTranslade(total_traslado);
+        SaleNew.setTotalRetention(total_retencion);
+        SaleNew.setDocumentType(DocumentOrigin.getType());
+        SaleNew.setPaymentMethod(paymentMethod);
+        SaleNew.setEmisionDate(UtilitiesFactory.getSingleton().getDateTimeUtility().getCurrentDate());
+        SaleNew.setDeliverDate(UtilitiesFactory.getSingleton().getDateTimeUtility().getCurrentDate());
+        SaleNew.setTicket(false);
+        SaleNew.setEstatus(new Sales().getConfirmedEstate());
+        SaleNew.setObservation(observations);
+        SaleNew.setSalesPoint(false);
+
+        BigDecimal total = BigDecimal.ZERO;
+        BigDecimal subtotal = BigDecimal.ZERO;
+        BigDecimal taxes = BigDecimal.ZERO;
+        
+        final BigDecimal BigDecimalTotalCash = BigDecimal.ZERO;
+        final BigDecimal BigDecimalCardDebit = BigDecimal.ZERO;
+        final BigDecimal BigDecimalCardCredit = BigDecimal.ZERO;
+        
+        //Contains all the items
+        final List<Partvta> items = new ArrayList<>();
+        
+        //Iterate all the sales
+        for(Sales Sale:sales){
+            
+            //If the sale is not a ticket
+            if(!Sale.isTicket()){
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_ring_but_it_is_not_ticket");
+            }
+            
+            //If the sale is already ringed
+            if(Sale.isFacturado()){
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_ring_but_it_is_already_ringed");
+            }
+            
+            //Set as ringed
+            Sale.setFacturado(true);
+            
+            //Update the sale
+            this.update(Sale);
+            
+            //Increment totals
+            subtotal = total.add(Sale.getSubtotal());
+            taxes = total.add(Sale.getTax());
+            total = total.add(Sale.getTotal());
+            
+            //Get all the items from the sale
+            final List<Partvta> items_ = RepositoryFactory.getInstance().getPartvtaRepository().getPartsVta(Sale.getId());
+            
+            //Not inventariable
+            for(Partvta Partvta:items_){
+                Partvta.setInventory(false);
+            }
+            
+            //Join to the global items
+            items.addAll(items_);
+        }
+        
+        //Set the totals
+        SaleNew.setSubtotal(subtotal);
+        SaleNew.setTax(taxes);
+        SaleNew.setTotal(total);                
+        
+        //Save the sale
+        RepositoryFactory.getInstance().getSalessRepository().saveSale(SaleNew, Company, false, items, BigDecimalTotalCash, BigDecimalCardDebit, BigDecimalCardCredit);
+        
         //Close database
-        HibernateUtil.getSingleton().commitTransacton();
+        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+    }
+    
+    final public List<Sales> getAllTicketsByDatesRange(final String companyCode, final Date from, final Date until) throws Exception {
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        return getAllByDatesRange(companyCode, DocumentOrigin.getType(), from, until);
+    }
+    
+    private List<Sales> getAllByDatesRange(final String companyCode, final String tipdoc, final Date from, final Date until) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+                
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+        Calendar c = Calendar.getInstance();
+        c.setTime(until); // Now use today date.
+        c.add(Calendar.DATE, 0);
+        Date fromDate = null, toDate = null;
+        String fromDateStr = formatter.format(from);
+        String toDateStr = formatter.format(c.getTime());
+        fromDate = formatter.parse(fromDateStr);
+        toDate = formatter.parse(toDateStr);
+        
+        String hql = "FROM Sales WHERE companyCode = :companyCode AND tipdoc = :tipdoc AND falt BETWEEN :from AND :until";
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
+        query.setParameter("tipdoc", tipdoc);
+        query.setParameter("from", fromDate);
+        query.setParameter("until", toDate);
+        query.setParameter("companyCode", companyCode);
+        
+        List<Sales> Sales = query.list();
+        
+        //Close database        
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
@@ -415,6 +563,11 @@ public class SalessRepository extends Repository {
     final public List<Sales> getAllTicketsWithPagination(final int pageNumber) throws Exception {
         
         final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        return getAllByTipDoc(DocumentOrigin.getType(),true,pageNumber);
+    }
+    final public List<Sales> getAllNotscWithPagination(final int pageNumber) throws Exception {
+        
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
         return getAllByTipDoc(DocumentOrigin.getType(),true,pageNumber);
     }
     
@@ -734,8 +887,7 @@ public class SalessRepository extends Repository {
     final public Sales getByVenta(final int vta) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);
-        HibernateUtil.getSingleton().begginTransaction();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
         
         String hql = "FROM Sales where vta = :vta";
         final Session Session = HibernateUtil.getSingleton().getSession();
@@ -743,8 +895,7 @@ public class SalessRepository extends Repository {
         query.setParameter("vta", vta);
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().commitTransacton();
+        //Close database        
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
@@ -754,8 +905,7 @@ public class SalessRepository extends Repository {
     final public Sales getLastSale() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);
-        HibernateUtil.getSingleton().begginTransaction();
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
         
         String hql = "FROM Sales ORDER BY vta DESC";
         final Session Session = HibernateUtil.getSingleton().getSession();
@@ -763,8 +913,7 @@ public class SalessRepository extends Repository {
         query.setMaxResults(1);
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
-        //Close database
-        HibernateUtil.getSingleton().commitTransacton();
+        //Close database        
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model
@@ -807,6 +956,15 @@ public class SalessRepository extends Repository {
     @Override
     final public List<Sales> getByLikeEncabezados(final String search) throws Exception{
         
+        final List<String> likes = getLikesFilters();
+        
+        final List<Sales> items = (List<Sales>) this.getAllLike(likes, search);
+        
+        return items;
+    }
+    
+    private List<String> getLikesFilters(){
+        
         final List<String> likes = new ArrayList<>();
         likes.add("vta");
         likes.add("norefer");
@@ -816,8 +974,41 @@ public class SalessRepository extends Repository {
         likes.add("falt");
         likes.add("fmod");
         
-        final List<Sales> items = (List<Sales>) this.getAllLike(likes, search);
+        return likes;
+    }
+    
+    private List<Sales> getByLikeEncabezadosByTipdoc(final String search, final String tipdoc) throws Exception{
+        
+        final List<String> likes = getLikesFilters();        
+        
+        final HashMap<String,String> conditions = new HashMap<>();
+        conditions.put("documentType", tipdoc);
+        
+        final List<Sales> items = (List<Sales>) this.getAllLikeByCond(likes, search,"documentType = :documentType",conditions);
         
         return items;
+    }
+    
+    final public List<Sales> getByLikeEncabezadosRems(final String search) throws Exception{
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
+        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+    }
+    
+    final public List<Sales> getByLikeEncabezadosNotc(final String search) throws Exception{
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
+        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+    }
+    
+    final public List<Sales> getByLikeEncabezadosInvoices(final String search) throws Exception{
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+    }
+    final public List<Sales> getByLikeEncabezadosNotsc(final String search) throws Exception{
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
+        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+    }
+    final public List<Sales> getByLikeEncabezadosTickets(final String search) throws Exception{
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
     }
 }

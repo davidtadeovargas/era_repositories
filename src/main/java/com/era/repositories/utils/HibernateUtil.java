@@ -405,6 +405,7 @@ public class HibernateUtil {
         for(Class clase:dbEmpresasClasses){
             if(ClassEntity.getName().compareTo(clase.getName())==0){
                 isDbEmpresaClass = true;
+                break;
             }
         }
         

@@ -3,7 +3,6 @@ package com.era.repositories;
 import com.era.models.CPaymentForm;
 import com.era.models.Coin;
 import com.era.models.Company;
-import com.era.models.Confgral;
 import com.era.models.Consec;
 import com.era.models.Cxc;
 import com.era.models.DocumentOrigin;
@@ -16,18 +15,13 @@ import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
 import com.era.utilities.UtilitiesFactory;
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 
@@ -92,12 +86,99 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
-    final public void saveSale(final Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
+    
+    
+    public boolean isTicketDocument(final Sales Sale) {
+        return Sale.getDocumentType().equals("TIK");
+    }
+    public boolean isInvoiceDocument(final Sales Sale) {
+        return Sale.getDocumentType().equals("FAC");
+    }
+    public boolean isRemDocument(final Sales Sale) {
+        return Sale.getDocumentType().equals("REM");
+    }
+    public boolean isNotcDocument(final Sales Sale) {
+        return Sale.getDocumentType().equals("NOTC");
+    }
+    public boolean isConfirmed(final Sales Sale) {
+        return Sale.getEstatus().equals("CO");
+    }
+    public String getConfirmedEstate() {
+        return "CO";
+    }
+    public String getCanceledEstate() {
+        return "CA";
+    }
+    public String getDevolutionEstate() {
+        return "DEV";
+    }
+    public String getPartialDevolutionEstate() {
+        return "DEVP";
+    }
+    public boolean isDev(final Sales Sale) {
+        return Sale.getEstatus().equals("DEV");
+    }
+    public boolean isParcialDev(final Sales Sale) {
+        return Sale.getEstatus().equals("PDEV");
+    }
+    public boolean isCanceled(final Sales Sale) {
+        return Sale.getEstatus().equals("CA");
+    }
+    
+    final public void saveSaleTicket(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
+        
+        //Set the document type
+        Sale.setDocumentType("TIK");
+        
+        //Continue with the sale generation
+        this.saveSale(Sale, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+    }
+    final public void saveSaleInvoice(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
+        
+        //Set the document type
+        Sale.setDocumentType("FAC");
+        
+        //Continue with the sale generation
+        this.saveSale(Sale, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+    }
+    final public void saveSaleRemision(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
+        
+        //Set the document type
+        Sale.setDocumentType("REM");
+        
+        //Continue with the sale generation
+        this.saveSale(Sale, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+    }
+    final public void saveSaleNotc(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
+        
+        //Set the document type
+        Sale.setDocumentType("NOTC");
+        
+        //Continue with the sale generation
+        this.saveSale(Sale, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+    }
+    
+    
+    
+    final public void saveSale(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         //Save the new sale
-        final Sales Sale_ = (Sales)this.save(Sale);
+        Sale = (Sales)this.save(Sale);
+        
+        //If the user will pay the sale in cash at the moment
+        if(totalCash.compareTo(BigDecimal.ZERO)>0){
+            Sale.setCredit(false);
+        }
+        else{
+            Sale.setCredit(true);
+        }
+        
+        //If is cliente mostrador
+        if(Company.isCashCustomer()){
+            Sale.setCredit(false);
+        }
         
         //If the customer will pay in credit verify that really can do it
         if(Sale.isCredit()){
@@ -120,21 +201,21 @@ public class SalessRepository extends Repository {
             //Get the date for payment
             final Date Date_ = UtilitiesFactory.getSingleton().getDateTimeUtility().getDatePlusDays(Company.getDiacred());
             
-            final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale_.getCoinCode());
+            final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale.getCoinCode());
             
             //Create the model
             final Cxc Cxc = new Cxc();
-            Cxc.setNorefer(Sale_.getReferenceNumber());
-            Cxc.setNoser(Sale_.getNoser());
+            Cxc.setNorefer(Sale.getReferenceNumber());
+            Cxc.setNoser(Sale.getNoser());
             Cxc.setEmpre(Company.getCompanyCode());
-            Cxc.setFormpag(Sale_.getPaymentForm());
+            Cxc.setFormpag(Sale.getPaymentForm());
             Cxc.setConceppag("");
             Cxc.setSer("");
-            Cxc.setSubtot(Sale_.getSubtotal());
-            Cxc.setImpue(Sale_.getTax());
-            Cxc.setTot(Sale_.getTotal());
+            Cxc.setSubtot(Sale.getSubtotal());
+            Cxc.setImpue(Sale.getTax());
+            Cxc.setTot(Sale.getTotal());
             Cxc.setAbon(BigDecimal.ZERO);
-            Cxc.setCarg(Sale_.getTotal());
+            Cxc.setCarg(Sale.getTotal());
             Cxc.setComen("");
             Cxc.setConcep("");
             Cxc.setFolbanc("");
@@ -142,25 +223,52 @@ public class SalessRepository extends Repository {
             Cxc.setFdoc(UtilitiesFactory.getSingleton().getDateTimeUtility().getCurrentDate());
             Cxc.setFol(0);
             Cxc.setCuentabanco("");
-            Cxc.setId_venta(Sale_.getId());
+            Cxc.setId_venta(Sale.getId());
             Cxc.setMonedaID(Coin.getId());
             
             //Insert in cxc
             RepositoryFactory.getInstance().getCxcRepository().save(Cxc);
         }
         
+        //Depends of the document type get the consec
+        Consec Consec;
+        if(this.isTicketDocument(Sale)){
+            Consec = (Consec)RepositoryFactory.getInstance().getConsecsRepository().getTicketsConsec(Sale.getSerie());
+        }
+        else if(this.isRemDocument(Sale)){
+            Consec = (Consec)RepositoryFactory.getInstance().getConsecsRepository().getRemisionsConsec(Sale.getSerie());
+        }
+        else if(this.isInvoiceDocument(Sale)){
+            Consec = (Consec)RepositoryFactory.getInstance().getConsecsRepository().getSalesConsec(Sale.getSerie());
+        }
+        else if(this.isNotcDocument(Sale)){
+            Consec = (Consec)RepositoryFactory.getInstance().getConsecsRepository().getCreditNotesConsec(Sale.getSerie());
+        }
+        else{
+            UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_exception_generic_type_of_sale_not_found");
+            return;
+        }
+        
+        //Set the consec on the sale
+        Sale.setReferenceNumber(String.valueOf(Consec.getConsec()));
+        
+        //Update the consec
+        RepositoryFactory.getInstance().getConsecsRepository().updateConsec(Consec);
+        
         //If the user wants to update the customer info
         if(updateCustomerInfo){
-
             RepositoryFactory.getInstance().getCompanysRepository().update(Company);
         }
 
         //Save the rows
         for(Partvta Partvta: parts){
-            Partvta.setVta(Sale_.getId());
+            Partvta.setVta(Sale.getId());
             
-            //Inventory ?
-            if(Partvta.isInventory()){
+            //Get the product
+            final Product Product_ = (Product)RepositoryFactory.getInstance().getProductsRepository().getByCode(Partvta.getProd());
+            
+            //Inventory or service ?
+            if(Partvta.isInventory() && !Product_.isService()){
              
                 //If the product is kit
                 if(Partvta.isEskit()){
@@ -191,10 +299,10 @@ public class SalessRepository extends Repository {
             
             Fluj Fluj = new Fluj();
             Fluj.setImpo(totalCash);
-            Fluj.setVta(Sale_.getId());
-            Fluj.setTipdoc(Sale_.getDocumentType());        
-            Fluj.setMon(Sale_.getCoinCode());
-            Fluj.setNorefer(Sale_.getReferenceNumber());
+            Fluj.setVta(Sale.getId());
+            Fluj.setTipdoc(Sale.getDocumentType());        
+            Fluj.setMon(Sale.getCoinCode());
+            Fluj.setNorefer(Sale.getReferenceNumber());
             RepositoryFactory.getInstance().getFlujsRepository().saveEnt(Fluj,FlujsRepository.TypePayment.CASH);
         }
         
@@ -203,10 +311,10 @@ public class SalessRepository extends Repository {
             
             Fluj Fluj = new Fluj();
             Fluj.setImpo(totalCardDebit);
-            Fluj.setVta(Sale_.getId());
-            Fluj.setTipdoc(Sale_.getDocumentType());        
-            Fluj.setMon(Sale_.getCoinCode());
-            Fluj.setNorefer(Sale_.getReferenceNumber());
+            Fluj.setVta(Sale.getId());
+            Fluj.setTipdoc(Sale.getDocumentType());        
+            Fluj.setMon(Sale.getCoinCode());
+            Fluj.setNorefer(Sale.getReferenceNumber());
             RepositoryFactory.getInstance().getFlujsRepository().saveEnt(Fluj,FlujsRepository.TypePayment.CARD_DEBIT);
         }
         
@@ -215,10 +323,10 @@ public class SalessRepository extends Repository {
             
             Fluj Fluj = new Fluj();
             Fluj.setImpo(totalCardCredit);
-            Fluj.setVta(Sale_.getId());
-            Fluj.setTipdoc(Sale_.getDocumentType());        
-            Fluj.setMon(Sale_.getCoinCode());
-            Fluj.setNorefer(Sale_.getReferenceNumber());
+            Fluj.setVta(Sale.getId());
+            Fluj.setTipdoc(Sale.getDocumentType());        
+            Fluj.setMon(Sale.getCoinCode());
+            Fluj.setNorefer(Sale.getReferenceNumber());
             RepositoryFactory.getInstance().getFlujsRepository().saveEnt(Fluj,FlujsRepository.TypePayment.CARD_CREDIT);
         }
 
@@ -395,12 +503,6 @@ public class SalessRepository extends Repository {
         //Get the session user
         final User User = UtilitiesFactory.getSingleton().getSessionUtility().getUser();
         
-        //Get document type invoice
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
-        
-        //Get the consec for this serie
-        Consec Consec = (Consec)RepositoryFactory.getInstance().getConsecsRepository().getSalesConsec(DocumentOrigin.getType());
-        
         final BigDecimal total_traslado = BigDecimal.ZERO;
         final BigDecimal total_retencion = BigDecimal.ZERO;
         
@@ -408,7 +510,6 @@ public class SalessRepository extends Repository {
         SaleNew.setCompanyCode(Company.getCompanyCode());
         SaleNew.setRazon(Company.getNom());        
         SaleNew.setAccount("");
-        SaleNew.setReferenceNumber(String.valueOf(Consec.getConsec()));
         SaleNew.setSerie(serie);
         SaleNew.setNoser("");
         SaleNew.setCoinCode(Coin.getCode());
@@ -417,12 +518,11 @@ public class SalessRepository extends Repository {
         SaleNew.setTypeExchange(new BigDecimal(Float.toString(Coin.getValue())));
         SaleNew.setTotalTranslade(total_traslado);
         SaleNew.setTotalRetention(total_retencion);
-        SaleNew.setDocumentType(DocumentOrigin.getType());
         SaleNew.setPaymentMethod(paymentMethod);
         SaleNew.setEmisionDate(UtilitiesFactory.getSingleton().getDateTimeUtility().getCurrentDate());
         SaleNew.setDeliverDate(UtilitiesFactory.getSingleton().getDateTimeUtility().getCurrentDate());
         SaleNew.setTicket(false);
-        SaleNew.setEstatus(new Sales().getConfirmedEstate());
+        SaleNew.setEstatus(this.getConfirmedEstate());
         SaleNew.setObservation(observations);
         SaleNew.setSalesPoint(false);
 
@@ -476,10 +576,10 @@ public class SalessRepository extends Repository {
         //Set the totals
         SaleNew.setSubtotal(subtotal);
         SaleNew.setTax(taxes);
-        SaleNew.setTotal(total);                
+        SaleNew.setTotal(total);
         
         //Save the sale
-        RepositoryFactory.getInstance().getSalessRepository().saveSale(SaleNew, Company, false, items, BigDecimalTotalCash, BigDecimalCardDebit, BigDecimalCardCredit);
+        this.saveSaleInvoice(SaleNew, Company, false, items, BigDecimalTotalCash, BigDecimalCardDebit, BigDecimalCardCredit);
         
         //Close database
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
@@ -487,10 +587,15 @@ public class SalessRepository extends Repository {
     
     final public List<Sales> getAllTicketsByDatesRange(final String companyCode, final Date from, final Date until) throws Exception {
         final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
-        return getAllByDatesRange(companyCode, DocumentOrigin.getType(), from, until);
+        return getAllByDatesRange(companyCode, DocumentOrigin.getType(), from, until, null);
     }
     
-    private List<Sales> getAllByDatesRange(final String companyCode, final String tipdoc, final Date from, final Date until) throws Exception {
+    final public List<Sales> getAllTicketsByDatesRangeOnlyNotFactured(final String companyCode, final Date from, final Date until) throws Exception {
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        return getAllByDatesRange(companyCode, DocumentOrigin.getType(), from, until, " AND facturado = false");
+    }
+    
+    private List<Sales> getAllByDatesRange(final String companyCode, final String tipdoc, final Date from, final Date until, final String extrCondition) throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(this.ClassEntity);        
@@ -506,6 +611,12 @@ public class SalessRepository extends Repository {
         toDate = formatter.parse(toDateStr);
         
         String hql = "FROM Sales WHERE companyCode = :companyCode AND tipdoc = :tipdoc AND falt BETWEEN :from AND :until";
+        
+        //If there is an extra condition ?
+        if(extrCondition!=null){
+            hql += extrCondition;
+        }
+        
         final Session Session = HibernateUtil.getSingleton().getSession();
         Query query = Session.createQuery(hql);
         query.setParameter("tipdoc", tipdoc);
@@ -624,7 +735,7 @@ public class SalessRepository extends Repository {
             CortZXData.setTaxes(CortZXData.getTaxes().add(taxes));
             CortZXData.setTotal(CortZXData.getTotal().add(total));
             
-            if(Sale.isDev()){
+            if(this.isDev(Sale)){
                 ++totalSalesDevs;
                 CortZXData.setTotalImportDevs(CortZXData.getTotalImportDevs().add(total));                
             }

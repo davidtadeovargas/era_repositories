@@ -5,6 +5,7 @@
  */
 package com.era.repositories;
 
+import com.era.models.Company;
 import com.era.models.Cxc;
 import com.era.repositories.utils.HibernateUtil;
 import java.math.BigDecimal;
@@ -88,10 +89,17 @@ public class CxcRepository extends Repository {
     
     final public BigDecimal getSaldoFavorFromCustomer(final String customerCode) throws Exception{
         
-        final BigDecimal positive = this.getTotalPositiveAmmountFromCustomer(customerCode);
         final BigDecimal negative = this.getTotalNegativeAmmountFromCustomer(customerCode);
+        final BigDecimal positive = this.getTotalPositiveAmmountFromCustomer(customerCode);        
         
-        return positive.subtract(negative);
+        final Company Company = RepositoryFactory.getInstance().getCompanysRepository().getCustomerByCode(customerCode);
+        final BigDecimal limitCred = Company.getLimtcred();
+        
+        final BigDecimal cxcPending = negative.subtract(positive);
+        
+        final BigDecimal totalFree = limitCred.subtract(cxcPending);
+        
+        return totalFree;
     }
     
     final public BigDecimal getSaldoContraFromCustomer(final String customerCode) throws Exception{

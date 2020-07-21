@@ -131,15 +131,15 @@ public class SalessRepository extends Repository {
         Sale.setDocumentType("TIK");
         
         //Continue with the sale generation
-        this.saveSale(Sale, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+        this.saveSale(Sale, false, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
     }
-    final public void saveSaleInvoice(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
+    final public Sales saveSaleInvoice(Sales Sale, final boolean ring, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         //Set the document type
         Sale.setDocumentType("FAC");
         
         //Continue with the sale generation
-        this.saveSale(Sale, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+        return this.saveSale(Sale, ring,Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
     }
     final public void saveSaleRemision(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
@@ -147,7 +147,7 @@ public class SalessRepository extends Repository {
         Sale.setDocumentType("REM");
         
         //Continue with the sale generation
-        this.saveSale(Sale, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+        this.saveSale(Sale, false, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
     }
     final public void saveSaleNotc(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
@@ -155,20 +155,43 @@ public class SalessRepository extends Repository {
         Sale.setDocumentType("NOTC");
         
         //Continue with the sale generation
-        this.saveSale(Sale, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+        this.saveSale(Sale, false, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
     }
     
     
     
-    final public void saveSale(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
+    final public Sales saveSale(Sales Sale, final boolean ring, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        
+        //If has to ring
+        if(ring){
+            
+            //If the sale is not an invoice
+            if(!this.isInvoiceDocument(Sale)){
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_document_has_to_be_invoice");
+                return null;
+            }
+            
+            //Is the customer is not mostrador
+            if(!Company.isCashCustomer()){
+                
+                //Validate that the customer has all correcte needed fiscal fields
+                if(Company.getCalle().isEmpty() || Company.getCol().isEmpty() || Company.getCP().isEmpty() || Company.getNoext().isEmpty() || Company.getRFC().isEmpty() || Company.getCiu().isEmpty() || Company.getEstad().isEmpty()){
+                    UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_missing_fiscal_info");
+                    return null;
+                }
+            }
+            
+            //Set as reinged
+            Sale.setInvoiced(true);
+        }
         
         //Save the new sale
         Sale = (Sales)this.save(Sale);
         
         //If the user will pay the sale in cash at the moment
-        if(totalCash.compareTo(BigDecimal.ZERO)>0){
+        if(totalCash.compareTo(BigDecimal.ZERO)>0 || totalCardDebit.compareTo(BigDecimal.ZERO)>0 || totalCardCredit.compareTo(BigDecimal.ZERO)>0){
             Sale.setCredit(false);
         }
         else{
@@ -186,16 +209,16 @@ public class SalessRepository extends Repository {
             //If the customer doesnt have credit stop
             if(!Company.hasCredit()){
                 UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_customer_with_no_available_credit");
-                return;
+                return null;
             }
                         
             //Get positive sald of the customer
             final BigDecimal favorSald = RepositoryFactory.getInstance().getCxcRepository().getSaldoFavorFromCustomer(Company.getCompanyCode());
 
             //If the customer doesnt have money credit avaible
-            if(favorSald.compareTo(Company.getLimtcred())<0){            
+            if(favorSald.compareTo(BigDecimal.ZERO)<=0){
                 UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_customer_with_no_sald_for_credit");
-                return;
+                return null;
             }
             
             //Get the date for payment
@@ -246,7 +269,7 @@ public class SalessRepository extends Repository {
         }
         else{
             UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_exception_generic_type_of_sale_not_found");
-            return;
+            return null;
         }
         
         //Set the consec on the sale
@@ -331,6 +354,8 @@ public class SalessRepository extends Repository {
         }
 
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        
+        return Sale;
     }
     
     final public void cancelSale(final int saleID, final String motiv) throws Exception {
@@ -491,6 +516,25 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
+    final public List<Sales> getAllTicketSales(final int vta) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+                
+        String hql = "FROM Sales WHERE originSale = :vta";
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
+        query.setParameter("vta", vta);
+        
+        List<Sales> Sales = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return Sales;
+    }
+    
     final public void ringTicketSales(final Company Company, final List<Sales> sales, final String observations, final String serie, final String paymentMethod) throws Exception {
         
         final CPaymentForm CPaymentForm = RepositoryFactory.getInstance().getPaymentFormsRepository().getByCash();
@@ -506,7 +550,7 @@ public class SalessRepository extends Repository {
         final BigDecimal total_traslado = BigDecimal.ZERO;
         final BigDecimal total_retencion = BigDecimal.ZERO;
         
-        final Sales SaleNew = new Sales();        
+        Sales SaleNew = new Sales();        
         SaleNew.setCompanyCode(Company.getCompanyCode());
         SaleNew.setRazon(Company.getNom());        
         SaleNew.setAccount("");
@@ -537,7 +581,7 @@ public class SalessRepository extends Repository {
         //Contains all the items
         final List<Partvta> items = new ArrayList<>();
         
-        //Iterate all the sales
+        //Get all the totals
         for(Sales Sale:sales){
             
             //If the sale is not a ticket
@@ -549,12 +593,6 @@ public class SalessRepository extends Repository {
             if(Sale.isFacturado()){
                 UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_ring_but_it_is_already_ringed");
             }
-            
-            //Set as ringed
-            Sale.setFacturado(true);
-            
-            //Update the sale
-            this.update(Sale);
             
             //Increment totals
             subtotal = total.add(Sale.getSubtotal());
@@ -579,7 +617,20 @@ public class SalessRepository extends Repository {
         SaleNew.setTotal(total);
         
         //Save the sale
-        this.saveSaleInvoice(SaleNew, Company, false, items, BigDecimalTotalCash, BigDecimalCardDebit, BigDecimalCardCredit);
+        SaleNew = this.saveSaleInvoice(SaleNew, true, Company, false, items, BigDecimalTotalCash, BigDecimalCardDebit, BigDecimalCardCredit);
+        
+        //Update all the sales
+        for(Sales Sale:sales){
+            
+            //Set as ringed
+            Sale.setFacturado(true);
+            
+            //Set the related sale
+            Sale.setOriginSale(SaleNew.getId());
+            
+            //Update the sale
+            this.update(Sale);
+        }
         
         //Close database
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
@@ -1031,15 +1082,15 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
-    final public void actualizaVentaTimbrado(   final String transid,
+    final public void actualizaVentaTimbrado(   final int vta,
+                                                final String transid,
                                                 final String sell,
                                                 final String certsat,
                                                 final String lugexp,
                                                 final String regfisc,
                                                 final String sellsat,
                                                 final String cadori,
-                                                final String folfisc,
-                                                final int vta) throws Exception {
+                                                final String folfisc) throws Exception {
         
         
 

@@ -62,9 +62,6 @@ public class DocumentOriginRepository extends Repository {
         documents.add(DocumentOriginNotc);
         documents.add(DocumentOriginTicks);
         
-        //Add them all to the list
-        documents.addAll(documents);
-        
         return documents;
     }
     

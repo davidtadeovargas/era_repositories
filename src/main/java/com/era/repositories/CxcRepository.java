@@ -8,8 +8,12 @@ package com.era.repositories;
 import com.era.models.Company;
 import com.era.models.Cxc;
 import com.era.repositories.utils.HibernateUtil;
+import com.era.repositories.utils.SatusDocuments;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -22,6 +26,86 @@ public class CxcRepository extends Repository {
 
     public CxcRepository() {
         super(Cxc.class);
+    }
+    
+    final public List<Cxc> getAllPaymentFromCustomerByStatus(final String customerCode, final List<String> statuses, final Date from, final Date until, final int vencidoDays) throws Exception{
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+        Calendar c = Calendar.getInstance();
+        c.setTime(until); // Now use today date.
+        c.add(Calendar.DATE, 0);
+        Date fromDate = null, toDate = null;
+        String fromDateStr;
+        String toDateStr;
+        
+        String hql;        
+        if(vencidoDays==-1){
+                        
+            fromDateStr = formatter.format(from);
+            toDateStr = formatter.format(c.getTime());
+            fromDate = formatter.parse(fromDateStr);
+            toDate = formatter.parse(toDateStr);
+
+            hql = "FROM Cxc WHERE empre = :customerCode AND falt BETWEEN :from AND :until";
+        }
+        else{                        
+            
+            //Today date
+            Calendar todayCalendar = Calendar.getInstance();
+            todayCalendar.setTime(new Date());
+            
+            //Today plus days
+            Calendar untilCalendar = Calendar.getInstance();
+            untilCalendar.setTime(new Date());
+            untilCalendar.add(Calendar.DATE, vencidoDays);
+            
+            fromDateStr = formatter.format(todayCalendar.getTime());
+            toDateStr = formatter.format(untilCalendar.getTime());
+            fromDate = formatter.parse(fromDateStr);
+            toDate = formatter.parse(toDateStr);
+        
+            hql = "FROM Cxc WHERE empre = :customerCode AND falt BETWEEN :from AND :until AND estado = :estado";
+        }
+        
+        if(vencidoDays==-1){
+            
+            if(statuses.size()>0){
+                hql = hql + " AND estado IN(";
+
+                for(String estatus:statuses){
+                    hql = hql + ":" + estatus + ",";
+                }
+
+                hql = hql.substring(0, hql.length() - 1);
+                hql = hql + ")";
+            }
+        }
+                
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
+        query.setParameter("customerCode", customerCode);
+        query.setParameter("from", fromDate);
+        query.setParameter("until", toDate);
+        
+        if(vencidoDays==-1){
+            
+            for(String estatus:statuses){
+                query.setParameter(estatus, estatus);
+            }
+        }
+        else{
+            query.setParameter("estado", SatusDocuments.getSingleton().getPendingEstate());
+        }
+                    
+        List<Cxc> list = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return list;
     }
     
     final public Cxc getByNorefer(final String norefer) throws Exception{

@@ -13,6 +13,7 @@ import com.era.models.Product;
 import com.era.models.Sales;
 import com.era.models.User;
 import com.era.repositories.utils.HibernateUtil;
+import com.era.repositories.utils.SatusDocuments;
 import com.era.utilities.UtilitiesFactory;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -88,47 +89,52 @@ public class SalessRepository extends Repository {
     
     
     
-    public boolean isTicketDocument(final Sales Sale) {
-        return Sale.getDocumentType().equals("TIK");
+    public boolean isTicketDocument(final Sales Sale) throws Exception {
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        return Sale.getDocumentType().equals(DocumentOrigin.getType());
     }
-    public boolean isInvoiceDocument(final Sales Sale) {
-        return Sale.getDocumentType().equals("FAC");
+    public boolean isInvoiceDocument(final Sales Sale) throws Exception {
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        return Sale.getDocumentType().equals(DocumentOrigin.getType());
     }
-    public boolean isRemDocument(final Sales Sale) {
-        return Sale.getDocumentType().equals("REM");
+    public boolean isRemDocument(final Sales Sale) throws Exception {
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
+        return Sale.getDocumentType().equals(DocumentOrigin.getType());
     }
-    public boolean isNotcDocument(final Sales Sale) {
-        return Sale.getDocumentType().equals("NOTC");
+    public boolean isNotcDocument(final Sales Sale) throws Exception {
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
+        return Sale.getDocumentType().equals(DocumentOrigin.getType());
     }
     public boolean isConfirmed(final Sales Sale) {
         return Sale.getEstatus().equals("CO");
     }
     public String getConfirmedEstate() {
-        return "CO";
+        return SatusDocuments.getSingleton().getConfirmedEstate();
     }
     public String getCanceledEstate() {
-        return "CA";
+        return SatusDocuments.getSingleton().getCanceledEstate();
     }
     public String getDevolutionEstate() {
-        return "DEV";
+        return SatusDocuments.getSingleton().getDevolutionEstate();
     }
     public String getPartialDevolutionEstate() {
-        return "DEVP";
+        return SatusDocuments.getSingleton().getPartialDevolutionEstate();
     }
     public boolean isDev(final Sales Sale) {
-        return Sale.getEstatus().equals("DEV");
+        return Sale.getEstatus().equals(SatusDocuments.getSingleton().getDevolutionEstate());
     }
     public boolean isParcialDev(final Sales Sale) {
-        return Sale.getEstatus().equals("PDEV");
+        return Sale.getEstatus().equals(SatusDocuments.getSingleton().getPartialDevolutionEstate());
     }
     public boolean isCanceled(final Sales Sale) {
-        return Sale.getEstatus().equals("CA");
+        return Sale.getEstatus().equals(SatusDocuments.getSingleton().getCanceledEstate());
     }
     
     final public void saveSaleTicket(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         //Set the document type
-        Sale.setDocumentType("TIK");
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        Sale.setDocumentType(DocumentOrigin.getType());
         
         //Continue with the sale generation
         this.saveSale(Sale, false, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
@@ -136,7 +142,8 @@ public class SalessRepository extends Repository {
     final public Sales saveSaleInvoice(Sales Sale, final boolean ring, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         //Set the document type
-        Sale.setDocumentType("FAC");
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        Sale.setDocumentType(DocumentOrigin.getType());
         
         //Continue with the sale generation
         return this.saveSale(Sale, ring,Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
@@ -144,7 +151,8 @@ public class SalessRepository extends Repository {
     final public void saveSaleRemision(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         //Set the document type
-        Sale.setDocumentType("REM");
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
+        Sale.setDocumentType(DocumentOrigin.getType());
         
         //Continue with the sale generation
         this.saveSale(Sale, false, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
@@ -152,7 +160,8 @@ public class SalessRepository extends Repository {
     final public void saveSaleNotc(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         //Set the document type
-        Sale.setDocumentType("NOTC");
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
+        Sale.setDocumentType(DocumentOrigin.getType());
         
         //Continue with the sale generation
         this.saveSale(Sale, false, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
@@ -183,8 +192,15 @@ public class SalessRepository extends Repository {
                 }
             }
             
+            //If the system is in test mode
+            final boolean systemInTest = RepositoryFactory.getInstance().getConfgralRepository().getSistemInTestMode().getVal()==1;
+            if(systemInTest){
+                                
+            }
+            
             //Set as reinged
             Sale.setInvoiced(true);
+                        
         }
         
         //Save the new sale
@@ -234,6 +250,7 @@ public class SalessRepository extends Repository {
             Cxc.setFormpag(Sale.getPaymentForm());
             Cxc.setConceppag("");
             Cxc.setSer("");
+            Cxc.setEstado(SatusDocuments.getSingleton().getPendingEstate());
             Cxc.setSubtot(Sale.getSubtotal());
             Cxc.setImpue(Sale.getTax());
             Cxc.setTot(Sale.getTotal());
@@ -1026,6 +1043,10 @@ public class SalessRepository extends Repository {
         //Open database
         HibernateUtil.getSingleton().openSession(this.ClassEntity);        
                 
+        final DocumentOrigin DocumentOriginFAC = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        final DocumentOrigin DocumentOriginTIK = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        final DocumentOrigin DocumentOriginREM = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
+                
         String hql = "FROM Sales WHERE estatus = :estatus AND salesPoint = :salesPoint AND facturado = :facturado AND cut = :cut AND (documentType = :documentType1 OR documentType = :documentType2 OR documentType = :documentType3)";
         final Session Session = HibernateUtil.getSingleton().getSession();
         Query query = Session.createQuery(hql);
@@ -1033,9 +1054,9 @@ public class SalessRepository extends Repository {
         query.setParameter("salesPoint", true);
         query.setParameter("facturado", false);
         query.setParameter("cut", "N");
-        query.setParameter("documentType1", "FAC");
-        query.setParameter("documentType2", "REM");
-        query.setParameter("documentType3", "TIK");
+        query.setParameter("documentType1", DocumentOriginFAC.getType());
+        query.setParameter("documentType2", DocumentOriginREM.getType());
+        query.setParameter("documentType3", DocumentOriginTIK.getType());
         
         List<Sales> Sales = query.list();
         

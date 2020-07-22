@@ -3,6 +3,8 @@ package com.era.repositories;
 import com.era.logger.LoggerUtility;
 import com.era.models.Company;
 import com.era.repositories.utils.HibernateUtil;
+import com.era.utilities.UtilitiesFactory;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
@@ -32,6 +34,28 @@ public class CompanysRepository extends Repository {
         }
         
         return Company.getId();
+    }
+   
+   public String getCustomerConditions(final Company Company) throws Exception {
+        
+        //If the user has credit
+        String conditions;        
+        if(Company.hasCredit()){
+            conditions = props.getProperty("customer_credit_at_days");                        
+            conditions = conditions.replace("%1",String.valueOf(Company.getDiacred()));
+            conditions = conditions.replace("%2",UtilitiesFactory.getSingleton().getNumbersUtility().toMoneyFormat(String.valueOf(Company.getLimtcred())));
+        }
+        else{                        
+            conditions = props.getProperty("pay_at_moment");
+        }                
+        
+        //Get positive sald of the customer
+        final BigDecimal favorSald = RepositoryFactory.getInstance().getCxcRepository().getSaldoFavorFromCustomer(Company.getCompanyCode());
+        
+        //Concatenate the sald
+        conditions = conditions.replace("%3",String.valueOf(favorSald));
+        
+        return conditions;
     }
    
     final public Company getClienteMostrador() throws Exception {        

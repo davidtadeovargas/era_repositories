@@ -51,6 +51,7 @@ import com.era.models.User;
 import com.era.models.Warehouse;
 import com.era.models.Zona;
 import com.era.repositories.utils.HibernateUtil;
+import com.era.utilities.DialogPropertiesUitlity;
 import com.era.utilities.UtilitiesFactory;
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -58,6 +59,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 
@@ -69,7 +71,7 @@ public abstract class Repository {
     
     protected final Class ClassEntity;
     protected final int paginationSize = 50;
-      
+    protected Properties props;
     
     
     public abstract List<?> getByLikeEncabezados(final String search) throws Exception;
@@ -77,6 +79,12 @@ public abstract class Repository {
     protected Repository(final Class ClassEntity){
         
         this.ClassEntity = ClassEntity;
+        
+        try {
+            props = DialogPropertiesUitlity.getSingleton().getProperties();
+        } catch (Exception ex) {
+            LoggerUtility.getSingleton().logError(this.getClass(), ex);
+        }
     }
 
     public int getPaginationSize() {

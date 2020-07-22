@@ -426,6 +426,9 @@ public class ConfgralRepository extends Repository {
     public Confgral getSuspendInInactvity() throws Exception{
         return getSistClasifByConf("dlogin");        
     }
+    public Confgral getSistemInTestMode() throws Exception{
+        return getSistClasifByConf("systemintest");        
+    }
     public void setDecimals(final double nume) throws Exception{
         activeSistNumeConfig("posdecimal",nume);
     }
@@ -433,6 +436,15 @@ public class ConfgralRepository extends Repository {
         return getSistClasifByConf("posdecimal");        
     }
     
+    
+    public void setSistemInTestMode(final boolean value) throws Exception{
+        if(value){
+            activeSistConfig("systemintest");
+        }
+        else{
+            disableSistConfig("systemintest");
+        }        
+    }
     
     
     

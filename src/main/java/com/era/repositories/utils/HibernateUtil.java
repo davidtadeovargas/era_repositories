@@ -360,8 +360,7 @@ public class HibernateUtil {
         classes.add(CPaymentForm.class);
         classes.add(CTipoRelacion.class);
         classes.add(CTipoComprobante.class);
-        classes.add(CUsoCFDI.class);
-        classes.add(CCoin.class);
+        classes.add(CUsoCFDI.class);        
         return classes;
     }
     

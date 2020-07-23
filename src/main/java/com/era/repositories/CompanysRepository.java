@@ -47,13 +47,13 @@ public class CompanysRepository extends Repository {
         }
         else{                        
             conditions = props.getProperty("pay_at_moment");
-        }                
-        
+        }
+                
         //Get positive sald of the customer
         final BigDecimal favorSald = RepositoryFactory.getInstance().getCxcRepository().getSaldoFavorFromCustomer(Company.getCompanyCode());
-        
+                
         //Concatenate the sald
-        conditions = conditions.replace("%3",String.valueOf(favorSald));
+        conditions = conditions.replace("%3",UtilitiesFactory.getSingleton().getNumbersUtility().toMoneyFormat(String.valueOf(favorSald)));
         
         return conditions;
     }

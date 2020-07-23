@@ -725,7 +725,7 @@ public abstract class Repository {
             }
             else if(Object instanceof Coin){
                 Coin Coin = (Coin)Object;
-                cod = Coin.getC_moneda();
+                cod = Coin.getCode();
             }
             else if(Object instanceof Clasificacion){
                 Clasificacion Clasificacion = (Clasificacion)Object;

@@ -20,7 +20,6 @@ public class RepositoryFactory {
    private CClaveprodservsRepository CClaveprodservsRepository;
    private CClaveUnidadsRepository CClaveUnidadsRepository;
    private CCodigoPostalRepository CCodigoPostalRepository;
-   private CCoinsRepository CCoinsRepository;
    private CCountriesRepository CCountriesRepository;
    private CFDIRelacionadosPagosRepository CFDIRelacionadosPagosRepository;
    private ClasificacionsRepository ClasificacionsRepository;
@@ -202,9 +201,6 @@ public class RepositoryFactory {
    }
    public CCodigoPostalRepository getCCodigoPostalRepository() {
        if(CCodigoPostalRepository==null){CCodigoPostalRepository = new CCodigoPostalRepository();}return CCodigoPostalRepository;
-   }
-   public CCoinsRepository getCCoinsRepository() {
-       if(CCoinsRepository==null){CCoinsRepository = new CCoinsRepository();}return CCoinsRepository;
    }
    public CCountriesRepository getCCountriesRepository() {
        if(CCountriesRepository==null){CCountriesRepository = new CCountriesRepository();}return CCountriesRepository;

@@ -508,6 +508,35 @@ public class SalessRepository extends Repository {
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
     }
     
+    final public List<Sales> getAllInvoicesNotRingedAndConfirmedWithPagination(final int pageNumber) throws Exception{
+        
+        //Get invoice type
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+                
+        String hql = "FROM Sales where tipdoc = :tipdoc AND estatus = :estatus AND facturado = :facturado AND invoiced = :invoiced";
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
+        query.setParameter("tipdoc", DocumentOrigin.getType());
+        query.setParameter("estatus", SatusDocuments.getSingleton().getConfirmedEstate());
+        query.setParameter("facturado", false);
+        query.setParameter("invoiced", false);
+        
+        //Pagination
+        query.setFirstResult(pageNumber);
+        query.setMaxResults(this.paginationSize);
+        
+        List<Sales> Sales = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return Sales;
+    }
+    
     final public List<Sales> getAllByTipDoc(final String tipdoc, final boolean pagination, final int pageNumber) throws Exception {
         
         //Open database
@@ -660,7 +689,7 @@ public class SalessRepository extends Repository {
     
     final public List<Sales> getAllTicketsByDatesRangeOnlyNotFactured(final String companyCode, final Date from, final Date until) throws Exception {
         final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
-        return getAllByDatesRange(companyCode, DocumentOrigin.getType(), from, until, " AND facturado = false");
+        return getAllByDatesRange(companyCode, DocumentOrigin.getType(), from, until, " AND facturado = false AND estatus = '" + SatusDocuments.getSingleton().getConfirmedEstate() + "'");
     }
     
     private List<Sales> getAllByDatesRange(final String companyCode, final String tipdoc, final Date from, final Date until, final String extrCondition) throws Exception {
@@ -1103,7 +1132,7 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
-    final public void actualizaVentaTimbrado(   final int vta,
+    final public Sales actualizaVentaTimbrado(  final int vta,
                                                 final String transid,
                                                 final String sell,
                                                 final String certsat,
@@ -1124,6 +1153,8 @@ public class SalessRepository extends Repository {
         Sales.setFiscalFolio(folfisc);
         
         this.update(Sales);
+        
+        return Sales;
     }
     
     
@@ -1193,5 +1224,30 @@ public class SalessRepository extends Repository {
     final public List<Sales> getByLikeEncabezadosTickets(final String search) throws Exception{
         final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
         return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+    }
+    
+    final public List<Sales> getByLikeEncabezadosInvoicesRingedAndConfirmed(final String search) throws Exception{
+        
+        //Get invoice type
+        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+                
+        String hql = "FROM Sales where tipdoc = :tipdoc AND estatus = :estatus AND facturado = :facturado AND invoiced = :invoiced";
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
+        query.setParameter("tipdoc", DocumentOrigin.getType());
+        query.setParameter("estatus", SatusDocuments.getSingleton().getConfirmedEstate());
+        query.setParameter("facturado", false);
+        query.setParameter("invoiced", false);
+        
+        List<Sales> Sales = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return Sales;
     }
 }

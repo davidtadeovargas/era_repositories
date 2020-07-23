@@ -60,7 +60,7 @@ public class CoinsRepository extends Repository {
         if(Coin_!=null){
             
             //Set model
-            Coin_.setC_moneda(Coin.getC_moneda());
+            Coin_.setCode(Coin.getCode());
             Coin_.setDescription(Coin.getDescription());
             Coin_.setValue(Coin.getValue());
             Coin_.setNational(Coin.isNational());            

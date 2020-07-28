@@ -480,6 +480,17 @@ public class ProductsRepository extends Repository {
     final public void updateAllProductsNotSolmaxmin() throws Exception{
         this.updateSQL("UPDATE prods SET solmaxmin = 0");
     }
+        
+    final public List<Product> getByLikeEncabezadosBasic(final String search) throws Exception{
+        
+        final List<String> likes = new ArrayList<>();
+        likes.add("code");        
+        likes.add("description");        
+        
+        final List<Product> items = (List<Product>) this.getAllLike(likes, search);
+        
+        return items;
+    }
     
     @Override
     final public List<Product> getByLikeEncabezados(final String search) throws Exception{

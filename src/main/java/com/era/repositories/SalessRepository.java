@@ -323,11 +323,11 @@ public class SalessRepository extends Repository {
                         final Product KitProduct = (Product)RepositoryFactory.getInstance().getProductsRepository().getByCode(Kit.getProd());
 
                         //Affect inventory
-                        RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), KitProduct.getUnit(), Kit.getCant(), ConcepssRepository.TYPES.VENTA);
+                        RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), KitProduct.getUnit(), Kit.getCant(), String.valueOf(Partvta.getVta()), ConcepssRepository.TYPES.VENTA);
                     }
                 }
                 else{ //Not a kit so affect inventory normally
-                    RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), ConcepssRepository.TYPES.VENTA);
+                    RepositoryFactory.getInstance().getExistalmasRepository().removeExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), String.valueOf(Partvta.getVta()),ConcepssRepository.TYPES.VENTA);
                 }
             }
             
@@ -402,12 +402,12 @@ public class SalessRepository extends Repository {
                 //Affect invetory for each component of the kit
                 for(int x = 0; x < Partvta.getCant().intValue(); x++){
                     for(Kits Kit: kits){
-                        RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), ConcepssRepository.TYPES.CANVENTA);
+                        RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), String.valueOf(Partvta.getVta()), ConcepssRepository.TYPES.CANVENTA);
                     }
                 }
             }
             else{ //Not kit affect inventory normally
-                RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), ConcepssRepository.TYPES.CANVENTA);
+                RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), String.valueOf(Partvta.getVta()), ConcepssRepository.TYPES.CANVENTA);
             }
         }
         
@@ -440,11 +440,11 @@ public class SalessRepository extends Repository {
                 
                 //Affect invetory for each component of the kit
                 for(Kits Kit: kits){
-                    RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), ConcepssRepository.TYPES.DEVVENTA);
+                    RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), String.valueOf(Partvta.getVta()), ConcepssRepository.TYPES.DEVVENTA);
                 }
             }
             else{ //Not kit affect inventory normally
-                RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), ConcepssRepository.TYPES.DEVVENTA);
+                RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), Partvta.getCant().floatValue(), String.valueOf(Partvta.getVta()), ConcepssRepository.TYPES.DEVVENTA);
             }
         }
         
@@ -478,17 +478,25 @@ public class SalessRepository extends Repository {
                 //Affect invetory for each component of the kit
                 for(int x = 0; x < toDevs.intValue(); x++){
                     for(Kits Kit: kits){
-                        RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), ConcepssRepository.TYPES.DEVPVENTA);
+                        RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Kit.getProd(), Partvta.getAlma(), Partvta.getUnid(), Kit.getCant(), String.valueOf(Partvta.getVta()), ConcepssRepository.TYPES.DEVPVENTA);
                     }
                 }
             }
             else{ //Not kit affect inventory normally
-                RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), toDevs.floatValue(), ConcepssRepository.TYPES.DEVPVENTA);
+                RepositoryFactory.getInstance().getExistalmasRepository().addExistenceToWarehouse(Partvta.getProd(), Partvta.getAlma(), Partvta.getUnid(), toDevs.floatValue(), String.valueOf(Partvta.getVta()), ConcepssRepository.TYPES.DEVPVENTA);
             }
-            
+                        
             if(totalDevs.compareTo(cant)!=0){
                 allDevsComplete = false;
             }
+            
+            //Update the total of devs if apply
+            if(Partvta.getToDevs().compareTo(BigDecimal.ZERO)>0){
+                Partvta.setDevs(Partvta.getDevs().add(Partvta.getToDevs()));
+            }                                    
+            
+            //Update the partvta
+            RepositoryFactory.getInstance().getPartvtaRepository().update(Partvta);
         }
         
         //Get the sale

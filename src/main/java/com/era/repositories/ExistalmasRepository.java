@@ -16,7 +16,7 @@ public class ExistalmasRepository extends Repository {
          super(Existalma.class);
     }
 
-    public void addExistenceToWarehouse(final String productCode, final String warehouseCode, final String unid, final float existence,ConcepssRepository.TYPES typeMoninven) throws Exception {
+    public void addExistenceToWarehouse(final String productCode, final String warehouseCode, final String unid, final float existence, final String nodoc,ConcepssRepository.TYPES typeMoninven) throws Exception {
         
         //Get the model
         Existalma Existalma = this.getByWarehouseAndProduct(warehouseCode, productCode);
@@ -56,7 +56,7 @@ public class ExistalmasRepository extends Repository {
         Moninven.setExistenciainicial(new BigDecimal(Float.toString(previousExitence)));
         Moninven.setEntsal(true);
         Moninven.setEmp("");
-        Moninven.setNodoc("");
+        Moninven.setNodoc(nodoc);
         Moninven.setNoser("");
         Moninven.setDescrip(Concep.getDescrip());
         Moninven.setUnid(unid);
@@ -67,7 +67,7 @@ public class ExistalmasRepository extends Repository {
         RepositoryFactory.getInstance().getMoninvensRepository().save(Moninven);
     }
    
-    public void removeExistenceToWarehouse(final String productCode, final String warehouseCode, final String unid, final float existence,ConcepssRepository.TYPES typeMoninven) throws Exception {
+    public void removeExistenceToWarehouse(final String productCode, final String warehouseCode, final String unid, final float existence, final String nodoc, ConcepssRepository.TYPES typeMoninven) throws Exception {
         
         //Get the model
         Existalma Existalma = this.getByWarehouseAndProduct(warehouseCode, productCode);
@@ -119,10 +119,10 @@ public class ExistalmasRepository extends Repository {
     public void moveExistencesFromTo(final String productCode, final String warehouseFrom, final String warehouseTo, final String unid, final float existences) throws Exception {
         
         //Remove from the first warehouse
-        this.removeExistenceToWarehouse(productCode, warehouseFrom, unid, existences,ConcepssRepository.TYPES.TRASPASO);
+        this.removeExistenceToWarehouse(productCode, warehouseFrom, unid, existences, "", ConcepssRepository.TYPES.TRASPASO);
         
         //Add existences to the new warehouse
-        this.addExistenceToWarehouse(productCode, warehouseTo, unid, existences,ConcepssRepository.TYPES.TRASPASO);
+        this.addExistenceToWarehouse(productCode, warehouseTo, unid, existences,"", ConcepssRepository.TYPES.TRASPASO);
     }            
     
     final public void updateExistences(final String warehouseCode, final String productCode, final double existence) throws Exception {

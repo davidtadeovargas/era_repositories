@@ -43,16 +43,14 @@ public class CCodigoPostalRepository extends Repository {
         return CCodigopostal;
     }
         
-    final public boolean existsExpeditionPlace(final String estate) throws Exception {
+    final public boolean existsExpeditionPlace(final String cp) throws Exception {
         
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
         
-        String hql = "FROM CCodigopostal where estate = :estate";
+        String hql = "FROM CCodigopostal where cp = :cp";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
-        query.setParameter("estate", estate);
-        query.setFirstResult(0);
-        query.setMaxResults(5);
+        query.setParameter("cp", cp);
         final boolean result = query.list().size() > 0;
         
         //Close database        

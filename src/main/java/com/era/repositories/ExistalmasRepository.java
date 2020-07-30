@@ -107,7 +107,7 @@ public class ExistalmasRepository extends Repository {
         Moninven.setExistenciainicial(new BigDecimal(Float.toString(previousExitence)));
         Moninven.setEntsal(false);
         Moninven.setEmp("");
-        Moninven.setNodoc("");
+        Moninven.setNodoc(nodoc);
         Moninven.setNoser("");
         Moninven.setUnid(unid);
         Moninven.setDescrip(Concep.getDescrip());

@@ -238,7 +238,7 @@ public abstract class Repository {
     final public List<?> getAllLike(final List<String> likes, final String search) throws Exception{
     
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        HibernateUtil.getSingleton().openSession(ClassEntity);
              
         //Get results
         String cad;

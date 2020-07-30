@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.era.repositories.utils;
+package com.era.repositories.datamodels;
 
 /**
  *
  * @author PC
  */
-public class MiClase {
-    
+public enum DocumentStatus {
+    CONFIRMED,
+    CANCELED,
+    DEV,
+    PARTIAL_DEV,
+    PENDING
 }

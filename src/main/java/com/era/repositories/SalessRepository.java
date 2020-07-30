@@ -1,5 +1,6 @@
 package com.era.repositories;
 
+import com.era.datamodels.enums.DocumentType;
 import com.era.models.CPaymentForm;
 import com.era.models.Coin;
 import com.era.models.Company;
@@ -12,6 +13,8 @@ import com.era.models.Partvta;
 import com.era.models.Product;
 import com.era.models.Sales;
 import com.era.models.User;
+import com.era.repositories.datamodels.DocumentStatus;
+import com.era.repositories.datamodels.SalesFilters;
 import com.era.repositories.utils.HibernateUtil;
 import com.era.repositories.utils.SatusDocuments;
 import com.era.utilities.UtilitiesFactory;
@@ -20,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import org.hibernate.Query;
@@ -516,26 +518,206 @@ public class SalessRepository extends Repository {
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
     }
     
-    final public List<Sales> getAllInvoicesNotRingedAndConfirmedWithPagination(final int pageNumber) throws Exception{
+    
+    final public List<Sales> getAllSales(final SalesFilters SalesFilters) throws Exception{
         
-        //Get invoice type
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
+        String hql = "FROM Sales WHERE";
+        
+        DocumentOrigin DocumentOrigin = null;        
+        if(SalesFilters.getDocumentType_()==DocumentType.INVOICE){
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();            
+        }
+        else if(SalesFilters.getDocumentType_()==DocumentType.NOTC){
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
+        }
+        else if(SalesFilters.getDocumentType_()==DocumentType.REMISION){
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
+        }
+        else if(SalesFilters.getDocumentType_()==DocumentType.TICKETS){
+            DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
+        }
+        else if(SalesFilters.getDocumentType_()==DocumentType.SALES){ //All sales
+            
+        }
+        String documentOriginCondition = "";
+        if(DocumentOrigin!=null){
+            documentOriginCondition = " tipdoc = :tipdoc AND";
+        }
+        hql += documentOriginCondition;
+                
+        String estatus = "";
+        if(SalesFilters.getDocumentStatus_()==DocumentStatus.CANCELED){
+            estatus = SatusDocuments.getSingleton().getCanceledEstate();
+        }
+        else if(SalesFilters.getDocumentStatus_()==DocumentStatus.CONFIRMED){
+            estatus = SatusDocuments.getSingleton().getConfirmedEstate();
+        }
+        else if(SalesFilters.getDocumentStatus_()==DocumentStatus.DEV){
+            estatus = SatusDocuments.getSingleton().getDevolutionEstate();
+        }
+        else if(SalesFilters.getDocumentStatus_()==DocumentStatus.PARTIAL_DEV){
+            estatus = SatusDocuments.getSingleton().getPartialDevolutionEstate();
+        }
+        else if(SalesFilters.getDocumentStatus_()==DocumentStatus.PENDING){
+            estatus = SatusDocuments.getSingleton().getPendingEstate();
+        }
+        String estatusCondition = "";
+        if(!estatus.isEmpty()){
+            estatusCondition = " estatus = :estatus AND";
+        }
+        hql += estatusCondition;
+        
+        String ringedCondition = "";
+        if(SalesFilters.isRinged()){
+            ringedCondition = " invoiced = :invoiced AND";
+        }
+        hql += ringedCondition;
+        
+        String invoiceCondition = "";
+        if(SalesFilters.isInvoiced()){
+            invoiceCondition = " facturado = :facturado AND";
+        }
+        hql += invoiceCondition;
+        
+        String originSaleCondition = "";
+        if(SalesFilters.getOriginSale()!=-1){
+            originSaleCondition = " originSale = :originSale AND";
+        }
+        hql += originSaleCondition;
+        
+        String betweenCondition = "";
+        Date fromDate = null, toDate = null;
+        if(SalesFilters.getFrom()!=null && SalesFilters.getUntil()!=null){
+            
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+            Calendar c = Calendar.getInstance();
+            c.setTime(SalesFilters.getUntil()); // Now use today date.
+            c.add(Calendar.DATE, 0);            
+            String fromDateStr = formatter.format(SalesFilters.getFrom());
+            String toDateStr = formatter.format(c.getTime());
+            fromDate = formatter.parse(fromDateStr);
+            toDate = formatter.parse(toDateStr);
+
+            betweenCondition = " falt BETWEEN :from AND :until AND";
+        }
+        hql += betweenCondition;
+        
+        String salesPointCondition = "";
+        if(SalesFilters.isSalesPoint()){
+            salesPointCondition = " salesPoint = :salesPoint AND";
+        }
+        hql += salesPointCondition;
+        
+        String notInCutCondition = "";
+        if(SalesFilters.isNotInCut()){
+            notInCutCondition = " cut = :notInCutCondition AND";
+        }
+        hql += notInCutCondition;
+        
+        String documentsTypeCondition = "";
+        if(SalesFilters.getDocumentsType().size()>0){
+            
+            documentsTypeCondition = "(";
+            
+            int x = 1;
+            for(DocumentType DocumentType_:SalesFilters.getDocumentsType()){
+                
+                documentsTypeCondition += " documentType = :documentType" + x + " OR";
+                ++x;
+            }
+            
+            documentsTypeCondition = documentsTypeCondition.substring(0,documentsTypeCondition.length() - 3);
+            documentsTypeCondition += ") AND";
+        }
+        hql += documentsTypeCondition;
+        
+        String likesCondition = "";
+        if(!SalesFilters.getLikes().isEmpty()){
+                       
+            likesCondition = " (";
+            
+            for(String like:SalesFilters.getLikes()){
+                likesCondition += like + " LIKE:" + like + " OR ";
+            }            
+            if(likesCondition.endsWith(" OR ")){
+                likesCondition = likesCondition.substring(0, likesCondition.length() - " OR ".length());
+            }
+            
+            likesCondition += ") AND ";
+        }
+        hql += likesCondition;
+        
+        //String condition        
+        hql = hql.trim();
+        if(hql.endsWith(" AND")){
+            hql = hql.substring(0,hql.length() - 4);
+        }
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
-                
-        String hql = "FROM Sales where tipdoc = :tipdoc AND estatus = :estatus AND facturado = :facturado AND invoiced = :invoiced";
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);
+        
         final Session Session = HibernateUtil.getSingleton().getSession();
         Query query = Session.createQuery(hql);
-        query.setParameter("tipdoc", DocumentOrigin.getType());
-        query.setParameter("estatus", SatusDocuments.getSingleton().getConfirmedEstate());
-        query.setParameter("facturado", false);
-        query.setParameter("invoiced", false);
+        if(!documentOriginCondition.isEmpty()){
+            query.setParameter("tipdoc", DocumentOrigin.getType());
+        }
+        if(!estatus.isEmpty()){
+            query.setParameter("estatus", SatusDocuments.getSingleton().getConfirmedEstate());
+        }
+        if(!ringedCondition.isEmpty()){
+            query.setParameter("invoiced", SalesFilters.isInvoiced());
+        }
+        if(!invoiceCondition.isEmpty()){
+            query.setParameter("facturado", SalesFilters.isRinged());
+        }
+        if(!originSaleCondition.isEmpty()){
+            query.setParameter("originSale", SalesFilters.getOriginSale());
+        }
+        if(!betweenCondition.isEmpty()){
+            query.setParameter("from", fromDate);
+            query.setParameter("until", toDate);
+        }
+        if(!salesPointCondition.isEmpty()){
+            query.setParameter("salesPoint", SalesFilters.isSalesPoint());
+        }
+        if(!notInCutCondition.isEmpty()){
+            query.setParameter("notInCutCondition", "N");
+        }
+        if(!documentsTypeCondition.isEmpty()){
+            
+            int x = 1;
+            for(DocumentType DocumentType_:SalesFilters.getDocumentsType()){
+                
+                if(DocumentType_==DocumentType.INVOICE){
+                    query.setParameter("documentType" + x, RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC());
+                }
+                else if(DocumentType_==DocumentType.NOTC){
+                    query.setParameter("documentType" + x, RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC());
+                }
+                else if(DocumentType_==DocumentType.REMISION){
+                    query.setParameter("documentType" + x, RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM());
+                }
+                else if(DocumentType_==DocumentType.TICKETS){
+                    query.setParameter("documentType" + x, RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK());
+                }
+                
+                ++x;
+            }
+        }
+        
+        if(!likesCondition.isEmpty()){
+            for(String like:SalesFilters.getLikes()){
+                query.setString(like,"%" + SalesFilters.getSearch() + "%");
+            }
+        }
         
         //Pagination
-        query.setFirstResult(pageNumber);
-        query.setMaxResults(this.paginationSize);
+        if(SalesFilters.isPagination()){
+            query.setFirstResult(SalesFilters.getPageNumber());
+            query.setMaxResults(SalesFilters.getPaginationSize());
+        }        
         
+        //Get the sales
         List<Sales> Sales = query.list();
         
         //Close database        
@@ -545,48 +727,83 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
-    final public List<Sales> getAllByTipDoc(final String tipdoc, final boolean pagination, final int pageNumber) throws Exception {
+    final public List<Sales> getAllInvoicesNotRingedAndConfirmedWithPagination(final int pageNumber) throws Exception{
         
-        //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
-                
-        String hql = "FROM Sales where tipdoc = :tipdoc";
-        final Session Session = HibernateUtil.getSingleton().getSession();
-        Query query = Session.createQuery(hql);
-        query.setParameter("tipdoc", tipdoc);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.INVOICE);
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);        
+        SalesFilters.setInvoiced(true);
+        SalesFilters.setRinged(false);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
         
-        //Use pagination?
-        if(pagination){
-            query.setFirstResult(pageNumber);
-            query.setMaxResults(this.paginationSize);
-        }
-        
-        List<Sales> Sales = query.list();
-        
-        //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
         
         //Return the result model
-        return Sales;
+        return sales;
+    }
+    
+    final public List<Sales> getAllJustConfirmedSalesWithPagination(final int pageNumber,DocumentType DocumentType_) throws Exception{
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType_);
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    
+    final public List<Sales> getAllByTipDocWithPagination(DocumentType DocumentType_, final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType_);        
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    
+    final public List<Sales> getAllByTipDoc(DocumentType DocumentType_) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType_);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     
     final public List<Sales> getAllTicketSales(final int vta) throws Exception {
         
-        //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
-                
-        String hql = "FROM Sales WHERE originSale = :vta";
-        final Session Session = HibernateUtil.getSingleton().getSession();
-        Query query = Session.createQuery(hql);
-        query.setParameter("vta", vta);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.TICKETS);        
+        SalesFilters.setOriginSale(vta);
         
-        List<Sales> Sales = query.list();
-        
-        //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
         
         //Return the result model
-        return Sales;
+        return sales;
     }
     
     final public void ringTicketSales(final Company Company, final List<Sales> sales, final String observations, final String serie, final String paymentMethod) throws Exception {
@@ -691,118 +908,176 @@ public class SalessRepository extends Repository {
     }
     
     final public List<Sales> getAllTicketsByDatesRange(final String companyCode, final Date from, final Date until) throws Exception {
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
-        return getAllByDatesRange(companyCode, DocumentOrigin.getType(), from, until, null);
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.TICKETS);        
+        SalesFilters.setCompanyCode(companyCode);
+        SalesFilters.setFrom(from);
+        SalesFilters.setUntil(until);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     
     final public List<Sales> getAllTicketsByDatesRangeOnlyNotFactured(final String companyCode, final Date from, final Date until) throws Exception {
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
-        return getAllByDatesRange(companyCode, DocumentOrigin.getType(), from, until, " AND facturado = false AND estatus = '" + SatusDocuments.getSingleton().getConfirmedEstate() + "'");
-    }
-    
-    private List<Sales> getAllByDatesRange(final String companyCode, final String tipdoc, final Date from, final Date until, final String extrCondition) throws Exception {
         
-        //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
-                
-        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
-        Calendar c = Calendar.getInstance();
-        c.setTime(until); // Now use today date.
-        c.add(Calendar.DATE, 0);
-        Date fromDate = null, toDate = null;
-        String fromDateStr = formatter.format(from);
-        String toDateStr = formatter.format(c.getTime());
-        fromDate = formatter.parse(fromDateStr);
-        toDate = formatter.parse(toDateStr);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.TICKETS);
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setCompanyCode(companyCode);
+        SalesFilters.setFrom(from);
+        SalesFilters.setUntil(until);
         
-        String hql = "FROM Sales WHERE companyCode = :companyCode AND tipdoc = :tipdoc AND falt BETWEEN :from AND :until";
-        
-        //If there is an extra condition ?
-        if(extrCondition!=null){
-            hql += extrCondition;
-        }
-        
-        final Session Session = HibernateUtil.getSingleton().getSession();
-        Query query = Session.createQuery(hql);
-        query.setParameter("tipdoc", tipdoc);
-        query.setParameter("from", fromDate);
-        query.setParameter("until", toDate);
-        query.setParameter("companyCode", companyCode);
-        
-        List<Sales> Sales = query.list();
-        
-        //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
         
         //Return the result model
-        return Sales;
-    }
+        return sales;
+    }        
     
     final public List<Sales> getAllNotsCred() throws Exception {
         
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
-        return getAllByTipDoc(DocumentOrigin.getType(), false, 0);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.NOTC);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     final public List<Sales> getAllNotsCredWithPagination(final int pageNumber) throws Exception {
         
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
-        return getAllByTipDoc(DocumentOrigin.getType(), true, pageNumber);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.NOTC);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     
     final public List<Sales> getAllInvoices() throws Exception {
         
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
-        return getAllByTipDoc(DocumentOrigin.getType(), false, 0);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.INVOICE);        
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     final public List<Sales> getAllInvoicesWithPagination(final int pageNumber) throws Exception {
         
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
-        return getAllByTipDoc(DocumentOrigin.getType(), true, pageNumber);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.INVOICE);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     
     final public List<Sales> getAllRems() throws Exception {
         
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
-        return getAllByTipDoc(DocumentOrigin.getType(), false, 0);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.REMISION);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }    
     final public List<Sales> getAllRemsWithPagination(final int pageNumber) throws Exception {
         
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
-        return getAllByTipDoc(DocumentOrigin.getType(),true, pageNumber);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.REMISION);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     
     final public List<Sales> getAllTickets() throws Exception {
         
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
-        return getAllByTipDoc(DocumentOrigin.getType(),false,0);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.TICKETS);       
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     final public List<Sales> getAllTicketsWithPagination(final int pageNumber) throws Exception {
         
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
-        return getAllByTipDoc(DocumentOrigin.getType(),true,pageNumber);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.TICKETS);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     final public List<Sales> getAllNotscWithPagination(final int pageNumber) throws Exception {
         
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
-        return getAllByTipDoc(DocumentOrigin.getType(),true,pageNumber);
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.NOTC);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     
     final public List<Sales> getAllConfirmedSales() throws Exception {
         
-        //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
-                
-        String hql = "FROM Sales WHERE estatus = :estatus";
-        final Session Session = HibernateUtil.getSingleton().getSession();
-        Query query = Session.createQuery(hql);
-        query.setParameter("estatus", "CO");
-        List<Sales> Sales = query.list();
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();                
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
         
-        //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
         
         //Return the result model
-        return Sales;
+        return sales;
     }
     
     final public CortZXData getTotalsForCortXZ() throws Exception {
@@ -1058,50 +1333,38 @@ public class SalessRepository extends Repository {
     
     final public List<Sales> getAllConfirmedSalesFromPointOfSales() throws Exception {
         
-        //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
-                
-        String hql = "FROM Sales WHERE estatus = :estatus AND salesPoint = :salesPoint AND cut = 'N'";
-        final Session Session = HibernateUtil.getSingleton().getSession();
-        Query query = Session.createQuery(hql);
-        query.setParameter("estatus", "CO");
-        query.setParameter("salesPoint", true);
-        List<Sales> Sales = query.list();
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();                
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setSalesPoint(true);
+        SalesFilters.setNotInCut(true);
         
-        //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
         
         //Return the result model
-        return Sales;
+        return sales;
     }
     
     final public List<Sales> getAllCortXZSales() throws Exception {
         
-        //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
-                
-        final DocumentOrigin DocumentOriginFAC = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
-        final DocumentOrigin DocumentOriginTIK = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
-        final DocumentOrigin DocumentOriginREM = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
-                
-        String hql = "FROM Sales WHERE estatus = :estatus AND salesPoint = :salesPoint AND facturado = :facturado AND cut = :cut AND (documentType = :documentType1 OR documentType = :documentType2 OR documentType = :documentType3)";
-        final Session Session = HibernateUtil.getSingleton().getSession();
-        Query query = Session.createQuery(hql);
-        query.setParameter("estatus", "CO");
-        query.setParameter("salesPoint", true);
-        query.setParameter("facturado", false);
-        query.setParameter("cut", "N");
-        query.setParameter("documentType1", DocumentOriginFAC.getType());
-        query.setParameter("documentType2", DocumentOriginREM.getType());
-        query.setParameter("documentType3", DocumentOriginTIK.getType());
+        final List<DocumentType> documentsType = new ArrayList<>();
+        documentsType.add(DocumentType.INVOICE);
+        documentsType.add(DocumentType.REMISION);
+        documentsType.add(DocumentType.TICKETS);
         
-        List<Sales> Sales = query.list();
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();                
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setSalesPoint(true);
+        SalesFilters.setNotInCut(true);
+        SalesFilters.setDocumentsType(documentsType);
         
-        //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
         
         //Return the result model
-        return Sales;
+        return sales;
     }
     
     final public Sales getByVenta(final int vta) throws Exception {
@@ -1190,8 +1453,7 @@ public class SalessRepository extends Repository {
         final List<String> likes = new ArrayList<>();
         likes.add("vta");
         likes.add("norefer");
-        likes.add("salesMan");
-        likes.add("tipdoc");
+        likes.add("salesMan");        
         likes.add("codemp");
         likes.add("falt");
         likes.add("fmod");
@@ -1199,63 +1461,123 @@ public class SalessRepository extends Repository {
         return likes;
     }
     
-    private List<Sales> getByLikeEncabezadosByTipdoc(final String search, final String tipdoc) throws Exception{
-        
-        final List<String> likes = getLikesFilters();        
-        
-        final HashMap<String,String> conditions = new HashMap<>();
-        conditions.put("documentType", tipdoc);
-        
-        final List<Sales> items = (List<Sales>) this.getAllLikeByCond(likes, search,"documentType = :documentType",conditions);
-        
-        return items;
-    }
-    
     final public List<Sales> getByLikeEncabezadosRems(final String search) throws Exception{
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginREM();
-        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+        
+        final List<String> likes = getLikesFilters();
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.REMISION);
+        SalesFilters.setLikes(likes);
+        SalesFilters.setSearch(search);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     
     final public List<Sales> getByLikeEncabezadosNotc(final String search) throws Exception{
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
-        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+        
+        final List<String> likes = getLikesFilters();
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.NOTC);
+        SalesFilters.setLikes(likes);
+        SalesFilters.setSearch(search);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     
     final public List<Sales> getByLikeEncabezadosInvoices(final String search) throws Exception{
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
-        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+        
+        final List<String> likes = getLikesFilters();
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.INVOICE);
+        SalesFilters.setLikes(likes);
+        SalesFilters.setSearch(search);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     final public List<Sales> getByLikeEncabezadosNotsc(final String search) throws Exception{
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
-        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+        
+        final List<String> likes = getLikesFilters();
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.NOTC);
+        SalesFilters.setLikes(likes);
+        SalesFilters.setSearch(search);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     final public List<Sales> getByLikeEncabezadosTickets(final String search) throws Exception{
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
-        return getByLikeEncabezadosByTipdoc(search, DocumentOrigin.getType());
+        
+        final List<String> likes = getLikesFilters();
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.TICKETS);
+        SalesFilters.setLikes(likes);
+        SalesFilters.setSearch(search);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    
+    final public List<Sales> getByLikeEncabezadosAllSalesCanceled(final String search) throws Exception{
+                
+        final List<String> likes = getLikesFilters();
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentStatus_(DocumentStatus.CANCELED);        
+        SalesFilters.setLikes(likes);
+        SalesFilters.setSearch(search);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
     }
     
     final public List<Sales> getByLikeEncabezadosInvoicesRingedAndConfirmed(final String search) throws Exception{
-        
-        //Get invoice type
-        final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();
-        
-        //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
                 
-        String hql = "FROM Sales where tipdoc = :tipdoc AND estatus = :estatus AND facturado = :facturado AND invoiced = :invoiced";
-        final Session Session = HibernateUtil.getSingleton().getSession();
-        Query query = Session.createQuery(hql);
-        query.setParameter("tipdoc", DocumentOrigin.getType());
-        query.setParameter("estatus", SatusDocuments.getSingleton().getConfirmedEstate());
-        query.setParameter("facturado", false);
-        query.setParameter("invoiced", false);
+        final List<String> likes = getLikesFilters();
         
-        List<Sales> Sales = query.list();
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.INVOICE);
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setRinged(true);
+        SalesFilters.setInvoiced(true);
+        SalesFilters.setLikes(likes);
+        SalesFilters.setSearch(search);
         
-        //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
         
         //Return the result model
-        return Sales;
+        return sales;
     }
 }

@@ -18,5 +18,15 @@ public enum DocumentTypeFilter {
     JUST_REM,
     JUST_NOTCS,
     JUST_INVOICES,
-    ALL_SALES
+    ALL_SALES,        
+    JUST_TICKET_CO,
+    JUST_REM_CO,
+    JUST_NOTCS_CO,
+    JUST_INVOICES_CO,
+    ALL_SALES_CO,        
+    JUST_TICKET_CO_DEVP,
+    JUST_REM_CO_DEVP,
+    JUST_NOTCS_CO_DEVP,
+    JUST_INVOICES_CO_DEVP,
+    ALL_SALES_CO_DEVP
 }

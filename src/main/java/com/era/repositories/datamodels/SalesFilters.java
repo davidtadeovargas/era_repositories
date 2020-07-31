@@ -21,9 +21,15 @@ public class SalesFilters {
     private boolean pagination;
     private DocumentType DocumentType_;
     private DocumentStatus DocumentStatus_;
+    private List<DocumentStatus> documentsStatus = new ArrayList<>();
     private String aditionalCondition;
+    
     private boolean ringed;
+    private boolean useRinged;    
+    
     private boolean invoiced;
+    private boolean useInvoiced;
+    
     private int originSale = -1;
     private String companyCode;
     private Date from;
@@ -170,4 +176,28 @@ public class SalesFilters {
     public void setSearch(String search) {
         this.search = search;
     }
+
+    public boolean isUseRinged() {
+        return useRinged;
+    }
+
+    public void setUseRinged(boolean useRinged) {
+        this.useRinged = useRinged;
+    }
+
+    public boolean isUseInvoiced() {
+        return useInvoiced;
+    }
+
+    public void setUseInvoiced(boolean useInvoiced) {
+        this.useInvoiced = useInvoiced;
+    }
+
+    public List<DocumentStatus> getDocumentsStatus() {
+        return documentsStatus;
+    }
+
+    public void setDocumentsStatus(List<DocumentStatus> documentsStatus) {
+        this.documentsStatus = documentsStatus;
+    }        
 }

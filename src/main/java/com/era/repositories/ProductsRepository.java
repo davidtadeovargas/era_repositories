@@ -5,6 +5,7 @@ import com.era.models.ImpuesXProduct;
 import com.era.models.Kits;
 import com.era.models.Product;
 import com.era.models.Tax;
+import com.era.repositories.models.ProductPriceListModel;
 import com.era.repositories.utils.HibernateUtil;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -53,6 +54,87 @@ public class ProductsRepository extends Repository {
         }
         
         return taxes;
+    }
+    
+    final public List<Float> getPriceListsFromProduct(final String codeProduct) throws Exception {
+        
+        final Product Product = (Product)this.getByCode(codeProduct);
+        
+        final List<Float> pricesList = new ArrayList<>();
+        pricesList.add(Product.getPriceList1());
+        pricesList.add(Product.getPriceList2());
+        pricesList.add(Product.getPriceList3());
+        pricesList.add(Product.getPriceList4());
+        pricesList.add(Product.getPriceList5());
+        pricesList.add(Product.getPriceList6());
+        pricesList.add(Product.getPriceList7());
+        pricesList.add(Product.getPriceList8());
+        pricesList.add(Product.getPriceList9());
+        pricesList.add(Product.getPriceList10());
+        
+        return pricesList;
+                
+    }        
+    
+    final public List<ProductPriceListModel> getPriceListsFromProductToListModel(final String codeProduct) throws Exception {
+        
+        final Product Product = (Product)this.getByCode(codeProduct);
+                
+        final List<ProductPriceListModel> pricesListModel = new ArrayList<>();
+        
+        ProductPriceListModel ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(1);
+        ProductPriceListModel.setPrice(Product.getPriceList1());
+        pricesListModel.add(ProductPriceListModel);
+        ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(2);
+        ProductPriceListModel.setPrice(Product.getPriceList2());
+        pricesListModel.add(ProductPriceListModel);
+        ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(3);
+        ProductPriceListModel.setPrice(Product.getPriceList3());
+        pricesListModel.add(ProductPriceListModel);
+        ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(4);
+        ProductPriceListModel.setPrice(Product.getPriceList4());
+        pricesListModel.add(ProductPriceListModel);
+        ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(5);
+        ProductPriceListModel.setPrice(Product.getPriceList5());
+        pricesListModel.add(ProductPriceListModel);
+        ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(6);
+        ProductPriceListModel.setPrice(Product.getPriceList6());
+        pricesListModel.add(ProductPriceListModel);
+        ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(7);
+        ProductPriceListModel.setPrice(Product.getPriceList7());
+        pricesListModel.add(ProductPriceListModel);
+        ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(8);
+        ProductPriceListModel.setPrice(Product.getPriceList8());
+        pricesListModel.add(ProductPriceListModel);
+        ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(9);
+        ProductPriceListModel.setPrice(Product.getPriceList9());
+        pricesListModel.add(ProductPriceListModel);
+        ProductPriceListModel = new ProductPriceListModel();
+        ProductPriceListModel.setProductCode(codeProduct);
+        ProductPriceListModel.setPriceList(10);
+        ProductPriceListModel.setPrice(Product.getPriceList10());
+        pricesListModel.add(ProductPriceListModel);
+        
+        return pricesListModel;
+                
     }
     
     final public boolean hasProductPriceInList(final String codeProduct, final int list) throws Exception {

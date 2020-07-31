@@ -205,6 +205,11 @@ public class SalessRepository extends Repository {
                         
         }
         
+        //If the sale is an invoice check it as invoiced
+        if(this.isInvoiceDocument(Sale)){
+            Sale.setFacturado(true);
+        }
+        
         //Save the new sale
         Sale = (Sales)this.save(Sale);
         
@@ -522,7 +527,7 @@ public class SalessRepository extends Repository {
     final public List<Sales> getAllSales(final SalesFilters SalesFilters) throws Exception{
         
         String hql = "FROM Sales WHERE";
-        
+                
         DocumentOrigin DocumentOrigin = null;        
         if(SalesFilters.getDocumentType_()==DocumentType.INVOICE){
             DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginFAC();            
@@ -567,14 +572,20 @@ public class SalessRepository extends Repository {
         }
         hql += estatusCondition;
         
+        String estatusesCondition = "";
+        if(SalesFilters.getDocumentsStatus().size()>0){            
+            estatusesCondition = " estatus IN(:estatuses) AND";
+        }
+        hql += estatusesCondition;
+        
         String ringedCondition = "";
-        if(SalesFilters.isRinged()){
+        if(SalesFilters.isUseRinged()){
             ringedCondition = " invoiced = :invoiced AND";
         }
         hql += ringedCondition;
         
         String invoiceCondition = "";
-        if(SalesFilters.isInvoiced()){
+        if(SalesFilters.isUseInvoiced()){
             invoiceCondition = " facturado = :facturado AND";
         }
         hql += invoiceCondition;
@@ -656,8 +667,13 @@ public class SalessRepository extends Repository {
         //Open database
         HibernateUtil.getSingleton().openSession(this.ClassEntity);
         
+        hql = hql.trim();
+        if(hql.endsWith("WHERE")){
+           hql = hql.substring(0,hql.length() - 5);
+        }
+        
         final Session Session = HibernateUtil.getSingleton().getSession();
-        Query query = Session.createQuery(hql);
+        Query query = Session.createQuery(hql + "  ORDER BY id DESC");
         if(!documentOriginCondition.isEmpty()){
             query.setParameter("tipdoc", DocumentOrigin.getType());
         }
@@ -665,10 +681,10 @@ public class SalessRepository extends Repository {
             query.setParameter("estatus", SatusDocuments.getSingleton().getConfirmedEstate());
         }
         if(!ringedCondition.isEmpty()){
-            query.setParameter("invoiced", SalesFilters.isInvoiced());
+            query.setParameter("invoiced", SalesFilters.isRinged());
         }
         if(!invoiceCondition.isEmpty()){
-            query.setParameter("facturado", SalesFilters.isRinged());
+            query.setParameter("facturado", SalesFilters.isInvoiced());
         }
         if(!originSaleCondition.isEmpty()){
             query.setParameter("originSale", SalesFilters.getOriginSale());
@@ -682,6 +698,31 @@ public class SalessRepository extends Repository {
         }
         if(!notInCutCondition.isEmpty()){
             query.setParameter("notInCutCondition", "N");
+        }
+        if(!estatusesCondition.isEmpty()){
+            final List<String> estatuses_ = new ArrayList<>();
+            for(DocumentStatus DocumentStatus_:SalesFilters.getDocumentsStatus()){
+                
+                String estatus_ = "";
+                if(DocumentStatus_==DocumentStatus.CANCELED){
+                    estatus_ = SatusDocuments.getSingleton().getCanceledEstate();
+                }
+                else if(DocumentStatus_==DocumentStatus.CONFIRMED){
+                    estatus_ = SatusDocuments.getSingleton().getConfirmedEstate();
+                }
+                else if(DocumentStatus_==DocumentStatus.DEV){
+                    estatus_ = SatusDocuments.getSingleton().getDevolutionEstate();
+                }
+                else if(DocumentStatus_==DocumentStatus.PARTIAL_DEV){
+                    estatus_ = SatusDocuments.getSingleton().getPartialDevolutionEstate();
+                }
+                else if(DocumentStatus_==DocumentStatus.PENDING){
+                    estatus_ = SatusDocuments.getSingleton().getPendingEstate();
+                }
+                
+                estatuses_.add(estatus_);
+            }
+            query.setParameterList("estatuses", estatuses_);
         }
         if(!documentsTypeCondition.isEmpty()){
             
@@ -733,7 +774,9 @@ public class SalessRepository extends Repository {
         final SalesFilters SalesFilters = new SalesFilters();
         SalesFilters.setDocumentType_(DocumentType.INVOICE);
         SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);        
+        SalesFilters.setUseInvoiced(true);
         SalesFilters.setInvoiced(true);
+        SalesFilters.setUseRinged(true);
         SalesFilters.setRinged(false);
         SalesFilters.setPagination(true);
         SalesFilters.setPageNumber(pageNumber);
@@ -995,6 +1038,39 @@ public class SalessRepository extends Repository {
         //Return the result model
         return sales;
     }
+    final public List<Sales> getAllInvoicesConfirmedWithPagination(final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.INVOICE);
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    final public List<Sales> getAllInvoicesConfirmedAndDevPWithPagination(final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.INVOICE);
+        SalesFilters.getDocumentsStatus().add(DocumentStatus.CONFIRMED);
+        SalesFilters.getDocumentsStatus().add(DocumentStatus.PARTIAL_DEV);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
     
     final public List<Sales> getAllRems() throws Exception {
         
@@ -1024,6 +1100,41 @@ public class SalessRepository extends Repository {
         return sales;
     }
     
+    final public List<Sales> getAllRemsConfirmedWithPagination(final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();        
+        SalesFilters.setDocumentType_(DocumentType.REMISION);
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    
+    final public List<Sales> getAllRemsConfirmedAndDevpWithPagination(final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();        
+        SalesFilters.setDocumentType_(DocumentType.REMISION);
+        SalesFilters.getDocumentsStatus().add(DocumentStatus.CONFIRMED);
+        SalesFilters.getDocumentsStatus().add(DocumentStatus.PARTIAL_DEV);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    
     final public List<Sales> getAllTickets() throws Exception {
         
         //Create the filters
@@ -1041,6 +1152,85 @@ public class SalessRepository extends Repository {
         //Create the filters
         final SalesFilters SalesFilters = new SalesFilters();
         SalesFilters.setDocumentType_(DocumentType.TICKETS);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    final public List<Sales> getAllTicketsConfirmedWithPagination(final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.TICKETS);
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    final public List<Sales> getAllTicketsConfirmedAndDevPWithPagination(final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setDocumentType_(DocumentType.TICKETS);
+        SalesFilters.getDocumentsStatus().add(DocumentStatus.CONFIRMED);
+        SalesFilters.getDocumentsStatus().add(DocumentStatus.PARTIAL_DEV);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    
+    final public List<Sales> getAllSalesConfirmedWithPagination(final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();        
+        SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    final public List<Sales> getAllSalesWithPagination(final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setPagination(true);
+        SalesFilters.setPageNumber(pageNumber);
+        SalesFilters.setPaginationSize(paginationSize);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    final public List<Sales> getAllSalesConfirmedAndDevpWithPagination(final int pageNumber) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();        
+        SalesFilters.getDocumentsStatus().add(DocumentStatus.CONFIRMED);
+        SalesFilters.getDocumentsStatus().add(DocumentStatus.PARTIAL_DEV);
         SalesFilters.setPagination(true);
         SalesFilters.setPageNumber(pageNumber);
         SalesFilters.setPaginationSize(paginationSize);
@@ -1569,7 +1759,9 @@ public class SalessRepository extends Repository {
         final SalesFilters SalesFilters = new SalesFilters();
         SalesFilters.setDocumentType_(DocumentType.INVOICE);
         SalesFilters.setDocumentStatus_(DocumentStatus.CONFIRMED);
+        SalesFilters.setUseRinged(true);
         SalesFilters.setRinged(true);
+        SalesFilters.setUseInvoiced(true);
         SalesFilters.setInvoiced(true);
         SalesFilters.setLikes(likes);
         SalesFilters.setSearch(search);

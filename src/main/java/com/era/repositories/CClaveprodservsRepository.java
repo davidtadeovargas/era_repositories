@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.era.models.CClaveprodserv;
 import com.era.repositories.utils.HibernateUtil;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 public class CClaveprodservsRepository extends Repository {
 
@@ -12,6 +13,30 @@ public class CClaveprodservsRepository extends Repository {
         super(CClaveprodserv.class);
     }
 
+    
+    @Override
+    public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM CClaveprodserv WHERE c_ClaveProdServ LIKE:c_ClaveProdServ OR description LIKE:description";
+        Query query = Session.createQuery(hql);
+        query.setParameter("c_ClaveProdServ", "%" + search + "%");
+        query.setParameter("description", "%" + search + "%");        
+        query.setFirstResult(pageNumber);
+        query.setMaxResults(pageSize);        
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return records;
+    }
+    
     @Override
     public Object getByCode(final String code) throws Exception {
         

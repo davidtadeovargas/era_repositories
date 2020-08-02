@@ -7,12 +7,14 @@ import com.era.models.Product;
 import com.era.models.Tax;
 import com.era.repositories.models.ProductPriceListModel;
 import com.era.repositories.utils.HibernateUtil;
+import com.era.utilities.UtilitiesFactory;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 
 public class ProductsRepository extends Repository {
 
@@ -20,6 +22,30 @@ public class ProductsRepository extends Repository {
         super(Product.class);
     }
    
+    @Override
+    public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM Product WHERE code LIKE:code OR description LIKE:description OR shortDescription LIKE:shortDescription";
+        Query query = Session.createQuery(hql);
+        query.setParameter("code", "%" + search + "%");
+        query.setParameter("description", "%" + search + "%");
+        query.setParameter("shortDescription", "%" + search + "%");
+        query.setFirstResult(pageNumber);
+        query.setMaxResults(pageSize);        
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return records;
+    }
+    
     final public Product getProductByCode(final String codeProduct) throws Exception {
                         
         LoggerUtility.getSingleton().logInfo(ProductsRepository.class, "Hibernate: Getting product by code " + codeProduct);
@@ -363,11 +389,16 @@ public class ProductsRepository extends Repository {
     
     final public Product deleteProductByCode(final String codeProduct) throws Exception {
 
+        //Validate that the product is not in any sale
+        if(RepositoryFactory.getInstance().getPartvtaRepository().existsProduct(codeProduct)){
+            UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_product_exists_in_partvta_and_cannot_be_deleted");
+        }
+        
         //Open database
         HibernateUtil.getSingleton().openSession(ClassEntity);
         
         //Get the product
-        final Product Product = this.getProductByCode(codeProduct);
+        final Product Product = this.getProductByCode(codeProduct);                
         
         //Delete the product
         if(Product!=null){

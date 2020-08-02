@@ -6,13 +6,36 @@ import com.era.utilities.UtilitiesFactory;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 public class UsersRepository extends Repository {
 
     public UsersRepository() {
         super(User.class);
     }
-   
+    
+    @Override
+    public List<?> getAllBySearchFilter(final String search) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM User WHERE code LIKE:code OR email LIKE:email OR name LIKE:name";
+        Query query = Session.createQuery(hql);
+        query.setParameter("code", "%" + search + "%");
+        query.setParameter("email", "%" + search + "%");
+        query.setParameter("name", "%" + search + "%");
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return records;
+    }
+    
     final public boolean isValidAdminUser(final String user, final String password) throws Exception {
     
         //Get if the user exists

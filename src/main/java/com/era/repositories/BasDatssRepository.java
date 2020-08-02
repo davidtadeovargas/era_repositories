@@ -6,14 +6,61 @@ import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
+import org.hibernate.classic.Session;
 
 public class BasDatssRepository extends Repository {
 
-   public BasDatssRepository() {
+    public BasDatssRepository() {
         super(BasDats.class);
     }
    
-   final public BasDats getByCompanyCode(final String companyCode) throws Exception{
+    @Override
+    public List<?> getAllBySearchFilter(final String search) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM " + ClassEntity.getName() + " WHERE nom LIKE:name OR codemp LIKE:companyCode OR RFC LIKE:RFC";
+        Query query = Session.createQuery(hql);
+        query.setParameter("name", "%" + search + "%");
+        query.setParameter("companyCode", "%" + search + "%");
+        query.setParameter("RFC", "%" + search + "%");
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return records;
+    }
+   
+    @Override
+    public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM " + ClassEntity.getName() + " WHERE nom LIKE:name OR codemp LIKE:companyCode OR RFC LIKE:RFC";
+        Query query = Session.createQuery(hql);
+        query.setParameter("name", search);
+        query.setParameter("companyCode", search);
+        query.setParameter("RFC", search);
+        query.setFirstResult(pageNumber);
+        query.setMaxResults(pageSize);        
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return records;
+    }
+    
+    final public BasDats getByCompanyCode(final String companyCode) throws Exception{
         
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: Getting basdats by code: " + companyCode);
         

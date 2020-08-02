@@ -71,6 +71,24 @@ public class SalessRepository extends Repository {
         return Sales;
     }
     
+    final public boolean existSalesByCustomer(final String companyCode) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+                
+        String hql = "FROM Sales WHERE companyCode = :companyCode";
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        Query query = Session.createQuery(hql);
+        query.setParameter("companyCode", companyCode);
+        Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return Sales!=null;
+    }
+    
     final public Sales getByVentaRef(final String vtaRef) throws Exception {
         
         //Open database

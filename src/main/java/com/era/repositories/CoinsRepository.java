@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.era.models.Coin;
 import com.era.repositories.utils.HibernateUtil;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 public class CoinsRepository extends Repository {
 
@@ -12,6 +13,27 @@ public class CoinsRepository extends Repository {
         super(Coin.class);
     }
 
+    @Override
+    public List<?> getAllBySearchFilter(final String search) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM " + ClassEntity.getName() + " WHERE code LIKE:code OR description LIKE:description";
+        Query query = Session.createQuery(hql);
+        query.setParameter("code", "%" + search + "%");
+        query.setParameter("description", "%" + search + "%");        
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return records;
+    }
+    
     public void removeAllNational() throws Exception {
         
         //Open database

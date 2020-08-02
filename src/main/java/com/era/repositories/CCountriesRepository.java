@@ -10,6 +10,7 @@ import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 /**
  *
@@ -21,6 +22,31 @@ public class CCountriesRepository extends Repository {
         super(CCountry.class);
     }
     
+    @Override
+    public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM CCountry WHERE code LIKE:code OR description LIKE:description OR Agrupaciones LIKE:Agrupaciones";
+        Query query = Session.createQuery(hql);
+        query.setParameter("code", "%" + search + "%");
+        query.setParameter("description", "%" + search + "%");
+        query.setParameter("Agrupaciones", "%" + search + "%");
+        query.setFirstResult(pageNumber);
+        query.setMaxResults(pageSize);        
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return records;
+    }
+    
+    @Override
     public List<CCountry> getAllByPage(final int pageNumber) throws Exception {
         final List<CCountry> records = (List<CCountry>) this.getAllByPage(pageNumber,50);
         return records;

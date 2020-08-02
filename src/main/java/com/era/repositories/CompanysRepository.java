@@ -2,21 +2,44 @@ package com.era.repositories;
 
 import com.era.logger.LoggerUtility;
 import com.era.models.Company;
+import com.era.models.Sales;
 import com.era.repositories.utils.HibernateUtil;
 import com.era.utilities.UtilitiesFactory;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
+import org.hibernate.classic.Session;
 
 public class CompanysRepository extends Repository {
 
-   public CompanysRepository() {
+    public CompanysRepository() {
         super(Company.class);
     }
    
-   final public int saveOrUpdateCustomer(final Company Company) throws Exception {
+    @Override
+    public List<?> getAllBySearchFilter(final String search) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM " + ClassEntity.getName() + " WHERE nom LIKE:nom OR companyCode LIKE:companyCode OR RFC LIKE:RFC";
+        Query query = Session.createQuery(hql);
+        query.setParameter("nom", "%" + search + "%");
+        query.setParameter("companyCode", "%" + search + "%");
+        query.setParameter("RFC", "%" + search + "%");
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return records;
+    }
+    
+    final public int saveOrUpdateCustomer(final Company Company) throws Exception {
         
         if(Company.getId()>0){
             
@@ -138,16 +161,14 @@ public class CompanysRepository extends Repository {
     
     final public void deleteByCodemp(final String codemp) throws Exception{
         
-        //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        //If the custmer is in another sale
+        if(RepositoryFactory.getInstance().getSalessRepository().existSalesByCustomer(codemp)){
+            UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_customer_exists_in_sales_and_cannot_be_deleted");
+        }
         
-        //Save
-        final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Company WHERE codemp = :codemp");
-        SQLQuery.setParameter("codemp", codemp);
-        SQLQuery.executeUpdate();
+        Company Company_ = (Company)this.getCustomerByCode(codemp);
         
-        //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        this.delete(Company_);
     }
     
    @Override

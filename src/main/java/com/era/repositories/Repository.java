@@ -60,6 +60,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import javax.mail.MethodNotSupportedException;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 
@@ -76,6 +77,14 @@ public abstract class Repository {
     
     public abstract List<?> getByLikeEncabezados(final String search) throws Exception;
     
+    public List<?> getAllBySearchFilter(final String search) throws Exception {
+        throw new MethodNotSupportedException();
+    }
+    
+    public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
+        throw new MethodNotSupportedException();
+    }
+        
     protected Repository(final Class ClassEntity){
         
         this.ClassEntity = ClassEntity;

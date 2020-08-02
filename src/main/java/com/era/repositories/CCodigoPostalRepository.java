@@ -10,6 +10,7 @@ import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 /**
  *
@@ -21,6 +22,31 @@ public class CCodigoPostalRepository extends Repository {
         super(CCodigopostal.class);
     }
     
+    @Override
+    public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
+        
+        //Open database
+        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM CCodigopostal WHERE cp LIKE:cp OR estate LIKE:estate OR municipio LIKE:municipio";
+        Query query = Session.createQuery(hql);
+        query.setParameter("cp", "%" + search + "%");
+        query.setParameter("estate", "%" + search + "%");
+        query.setParameter("municipio", "%" + search + "%");
+        query.setFirstResult(pageNumber);
+        query.setMaxResults(pageSize);        
+        List<?> records = query.list();
+        
+        //Close database        
+        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        
+        //Return the result model
+        return records;
+    }
+    
+    @Override
     public List<CCodigopostal> getAllByPage(final int pageNumber) throws Exception {
         final List<CCodigopostal> records = (List<CCodigopostal>) this.getAllByPage(pageNumber,50);
         return records;

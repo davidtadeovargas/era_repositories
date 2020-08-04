@@ -35,8 +35,10 @@ public class CCodigoPostalRepository extends Repository {
         query.setParameter("cp", "%" + search + "%");
         query.setParameter("estate", "%" + search + "%");
         query.setParameter("municipio", "%" + search + "%");
+        
         query.setFirstResult(pageNumber);
         query.setMaxResults(pageSize);        
+        
         List<?> records = query.list();
         
         //Close database        
@@ -45,7 +47,7 @@ public class CCodigoPostalRepository extends Repository {
         //Return the result model
         return records;
     }
-    
+        
     @Override
     public List<CCodigopostal> getAllByPage(final int pageNumber) throws Exception {
         final List<CCodigopostal> records = (List<CCodigopostal>) this.getAllByPage(pageNumber,50);

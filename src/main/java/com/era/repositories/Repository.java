@@ -71,7 +71,7 @@ import org.hibernate.classic.Session;
 public abstract class Repository {
     
     protected final Class ClassEntity;
-    protected final int paginationSize = 50;
+    protected final int paginationSize = 200;
     protected Properties props;
     
     
@@ -84,7 +84,7 @@ public abstract class Repository {
     public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
         throw new MethodNotSupportedException();
     }
-        
+    
     protected Repository(final Class ClassEntity){
         
         this.ClassEntity = ClassEntity;

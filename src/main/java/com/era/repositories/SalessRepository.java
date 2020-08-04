@@ -1,6 +1,9 @@
 package com.era.repositories;
 
 import com.era.datamodels.enums.DocumentType;
+import com.era.era_cfdi.RingManager;
+import com.era.era_cfdi.RingManager.ResultRing;
+import com.era.models.BasDats;
 import com.era.models.CPaymentForm;
 import com.era.models.Coin;
 import com.era.models.Company;
@@ -192,6 +195,14 @@ public class SalessRepository extends Repository {
     final public Sales saveSale(Sales Sale, final boolean ring, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+                        
+        //If the sale is an invoice check it as invoiced
+        if(this.isInvoiceDocument(Sale)){
+            Sale.setFacturado(true);
+        }
+        
+        //Save the new sale
+        Sale = (Sales)this.save(Sale);
         
         //If has to ring
         if(ring){
@@ -212,24 +223,30 @@ public class SalessRepository extends Repository {
                 }
             }
             
+            //Get the customer from the sale
+            final BasDats BasDats = UtilitiesFactory.getSingleton().getSessionUtility().getBasDats();
+            
+            //If the local company has not configured the certs
+            if(BasDats.getRutcer()==null || BasDats.getRutcer().isEmpty()){
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_certificates_digitals_not_configured");
+                return null;
+            }
+            
             //If the system is in test mode
             final boolean systemInTest = RepositoryFactory.getInstance().getConfgralRepository().getSistemInTestMode().getVal()==1;
             if(systemInTest){
                                 
             }
+        
+            //Get the coin
+            final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale.getCoinCode());
+                                    
+            //Generate the XML            
+            final ResultRing ResultRing = RingManager.getSingleton().ringSale(Sale, BasDats, Company, true, Coin.getValue(), "Traslado", BigDecimal.ZERO, BigDecimal.ZERO);
             
             //Set as reinged
             Sale.setInvoiced(true);
-                        
         }
-        
-        //If the sale is an invoice check it as invoiced
-        if(this.isInvoiceDocument(Sale)){
-            Sale.setFacturado(true);
-        }
-        
-        //Save the new sale
-        Sale = (Sales)this.save(Sale);
         
         //If the user will pay the sale in cash at the moment
         if(totalCash.compareTo(BigDecimal.ZERO)>0 || totalCardDebit.compareTo(BigDecimal.ZERO)>0 || totalCardCredit.compareTo(BigDecimal.ZERO)>0){

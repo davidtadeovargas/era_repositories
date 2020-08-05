@@ -11,6 +11,8 @@ import com.era.models.Consec;
 import com.era.models.Cxc;
 import com.era.models.DocumentOrigin;
 import com.era.models.Fluj;
+import com.era.models.ImpuesXProduct;
+import com.era.models.ImpuestosXVenta;
 import com.era.models.Kits;
 import com.era.models.Partvta;
 import com.era.models.Product;
@@ -199,12 +201,10 @@ public class SalessRepository extends Repository {
         //If the sale is an invoice check it as invoiced
         if(this.isInvoiceDocument(Sale)){
             Sale.setFacturado(true);
-        }
-        
-        //Save the new sale
-        Sale = (Sales)this.save(Sale);
+        }                
         
         //If has to ring
+        BasDats BasDats = null;
         if(ring){
             
             //If the sale is not an invoice
@@ -224,28 +224,13 @@ public class SalessRepository extends Repository {
             }
             
             //Get the customer from the sale
-            final BasDats BasDats = UtilitiesFactory.getSingleton().getSessionUtility().getBasDats();
+            BasDats = UtilitiesFactory.getSingleton().getSessionUtility().getBasDats();
             
             //If the local company has not configured the certs
             if(BasDats.getRutcer()==null || BasDats.getRutcer().isEmpty()){
                 UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_certificates_digitals_not_configured");
                 return null;
             }
-            
-            //If the system is in test mode
-            final boolean systemInTest = RepositoryFactory.getInstance().getConfgralRepository().getSistemInTestMode().getVal()==1;
-            if(systemInTest){
-                                
-            }
-        
-            //Get the coin
-            final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale.getCoinCode());
-                                    
-            //Generate the XML            
-            final ResultRing ResultRing = RingManager.getSingleton().ringSale(Sale, BasDats, Company, true, Coin.getValue(), "Traslado", BigDecimal.ZERO, BigDecimal.ZERO);
-            
-            //Set as reinged
-            Sale.setInvoiced(true);
         }
         
         //If the user will pay the sale in cash at the moment
@@ -342,6 +327,9 @@ public class SalessRepository extends Repository {
             RepositoryFactory.getInstance().getCompanysRepository().update(Company);
         }
 
+        //Save the new sale
+        Sale = (Sales)this.save(Sale);
+        
         //Save the rows
         for(Partvta Partvta: parts){
             Partvta.setVta(Sale.getId());
@@ -374,6 +362,12 @@ public class SalessRepository extends Repository {
             }
             
             this.save(Partvta);
+            
+            //Get all the taxes of the product
+            final List<ImpuesXProduct> taxesProduct = RepositoryFactory.getInstance().getImpuesXProductRepository().getAllByProd(Product_.getCode());                
+
+            //Save all the product taxes by item sale
+            RepositoryFactory.getInstance().getImpuestosXVentasRepository().saveProductTaxes(Sale.getId(), Partvta.getId(), Partvta.getCant(), Partvta.getPre(), taxesProduct);                            
         }
         
         //Save cash payment
@@ -412,6 +406,26 @@ public class SalessRepository extends Repository {
             RepositoryFactory.getInstance().getFlujsRepository().saveEnt(Fluj,FlujsRepository.TypePayment.CARD_CREDIT);
         }
 
+        //If has to ring
+        if(ring){
+            
+            //If the system is in test mode
+            final boolean systemInTest = RepositoryFactory.getInstance().getConfgralRepository().getSistemInTestMode().getVal()==1;
+            if(systemInTest){
+            }
+        
+            //Get the coin
+            final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale.getCoinCode());
+                                    
+            //Generate the XML            
+            final ResultRing ResultRing = RingManager.getSingleton().ringSale(Sale, BasDats, Company, true, Coin.getValue(), "Traslado", BigDecimal.ZERO, BigDecimal.ZERO);
+            
+            //Set as reinged
+            Sale.setInvoiced(true);
+            
+            Sale = (Sales)this.save(Sale);
+        }
+        
         HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
         
         return Sale;

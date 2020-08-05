@@ -369,7 +369,8 @@ public class HibernateUtil {
         //If there is not a transaction in course
         if(!sessionInTransacction){
             
-            if(this.Transaction.isActive()){
+            if(this.Transaction!=null && this.Transaction.isActive()){
+                //this.Transaction.commit();
                 this.Session.getTransaction().commit();
             }
             if(this.Session.isOpen()){
@@ -419,8 +420,7 @@ public class HibernateUtil {
         //If there is not a transaction in course
         if(!sessionInTransacction){
                         
-            this.Session = this.sessionFactoryCurrent.openSession();
-            HibernateUtil.getSingleton().begginTransaction();
+            this.Session = this.sessionFactoryCurrent.openSession();            
 
             //Save who oppended the connection
             this.ClassHasConnection = ClassEntity;

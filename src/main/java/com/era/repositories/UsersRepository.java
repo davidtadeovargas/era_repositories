@@ -29,7 +29,7 @@ public class UsersRepository extends Repository {
         query.setParameter("name", "%" + search + "%");
         List<?> records = query.list();
         
-        //Close database        
+        //Close database
         HibernateUtil.getSingleton().closeSession(ClassEntity);
         
         //Return the result model

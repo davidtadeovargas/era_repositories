@@ -163,6 +163,10 @@ public class ProductsRepository extends Repository {
                 
     }
     
+    final public boolean productExists(final String codeProduct) throws Exception {
+        return this.getByCode(codeProduct)!=null;
+    }
+    
     final public boolean hasProductPriceInList(final String codeProduct, final int list) throws Exception {
                         
         //Open database
@@ -330,10 +334,8 @@ public class ProductsRepository extends Repository {
     
     final public Product addOrUpdateProduct(final Product Product) throws Exception {                                
         
-        //Get the product
-        final Product Product_ = (Product)this.getByID(Product.getId());
-                
-        if(Product_==null){
+        //If product exists
+        if(Product.getId()==0){
             LoggerUtility.getSingleton().logInfo(ProductsRepository.class, "Hibernate: Adding Product");
             
             //Save or update the product        
@@ -354,12 +356,7 @@ public class ProductsRepository extends Repository {
             
     final public Product addOrUpdateProduct(final Product Product, final List<ImpuesXProduct> taxesProduct, final List<Kits> kits) throws Exception {
         
-        //Determine if previusly was a kit
-        final Product ProductKit = (Product)this.getByCode(Product.getCode());
-        boolean wasKit = false;
-        if(ProductKit!=null && ProductKit.getCompound()){
-            wasKit = true;
-        }
+        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         //Add or update the product
         final Product Product_ = addOrUpdateProduct(Product);
@@ -367,8 +364,11 @@ public class ProductsRepository extends Repository {
         //If it is not a kit
         if(!Product_.getCompound()){
             
+            //Check if the product has components
+            final boolean hasComponents = RepositoryFactory.getInstance().getKitssRepository().productHasComponents(Product.getCode());
+            
             //If previusly was kit
-            if(wasKit){
+            if(hasComponents){
                 
                 //Delete all components
                 RepositoryFactory.getInstance().getKitssRepository().deleteAllComponentsFromKit(Product_.getCode());
@@ -377,12 +377,18 @@ public class ProductsRepository extends Repository {
         else{ //It is a kit
             
             //Save the kits
-            RepositoryFactory.getInstance().getKitssRepository().saveComponentsToKit(Product_.getCode(), kits);
+            if(kits!=null){ //There are components to save ?
+                RepositoryFactory.getInstance().getKitssRepository().saveComponentsToKit(Product_.getCode(), kits);
+            }            
         }
         
         //Save or update the taxes of the product
-        RepositoryFactory.getInstance().getImpuesXProductRepository().save(Product.getCode(), taxesProduct);
-                
+        if(taxesProduct!=null){
+            RepositoryFactory.getInstance().getImpuesXProductRepository().save(Product.getCode(), taxesProduct);
+        }
+         
+        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        
         //Return the moel
         return Product_;
     }

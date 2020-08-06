@@ -405,7 +405,9 @@ public class SalessRepository extends Repository {
             Fluj.setNorefer(Sale.getReferenceNumber());
             RepositoryFactory.getInstance().getFlujsRepository().saveEnt(Fluj,FlujsRepository.TypePayment.CARD_CREDIT);
         }
-
+        
+        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        
         //If has to ring
         if(ring){
             
@@ -417,7 +419,7 @@ public class SalessRepository extends Repository {
             //Get the coin
             final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale.getCoinCode());
                                     
-            //Generate the XML            
+            //Generate the XML
             final ResultRing ResultRing = RingManager.getSingleton().ringSale(Sale, BasDats, Company, true, Coin.getValue(), "Traslado", BigDecimal.ZERO, BigDecimal.ZERO);
             
             //Set as reinged
@@ -425,8 +427,6 @@ public class SalessRepository extends Repository {
             
             Sale = (Sales)this.save(Sale);
         }
-        
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
         
         return Sale;
     }

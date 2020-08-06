@@ -31,6 +31,12 @@ public class KitssRepository extends Repository {
         
     }
     
+    public boolean productHasComponents(final String kitCode) throws Exception {
+        
+        final List<Kits> kits = getComponentsByKit(kitCode);
+        return kits.size()>0;
+    }
+    
     public void deleteAllComponentsFromKit(final String codeKit) throws Exception {
         
         //Open database

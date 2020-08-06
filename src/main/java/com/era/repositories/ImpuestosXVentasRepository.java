@@ -26,6 +26,7 @@ public class ImpuestosXVentasRepository extends Repository {
             
             final ImpuestosXVenta ImpuestosXVenta = new ImpuestosXVenta();
             ImpuestosXVenta.setId_partida(partID);
+            ImpuestosXVenta.setVenta(saleID);
             ImpuestosXVenta.setImpuesto(ImpuesXProduct_.getImpue());
             ImpuestosXVenta.setRetencion(Tax.isRetention());            
                         
@@ -45,7 +46,7 @@ public class ImpuestosXVentasRepository extends Repository {
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
-        String hql = "FROM ImpuestosXVenta WHERE venta :saleID";
+        String hql = "FROM ImpuestosXVenta WHERE venta = :saleID";
         Query query = Session.createQuery(hql);
         query.setParameter("saleID", saleID);        
         List<ImpuestosXVenta> records = query.list();

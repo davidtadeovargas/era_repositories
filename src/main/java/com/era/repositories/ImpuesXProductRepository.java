@@ -7,7 +7,6 @@ package com.era.repositories;
 
 import com.era.models.ImpuesXProduct;
 import com.era.models.Tax;
-import com.era.repositories.exceptions.RecordExistsException;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +44,9 @@ public class ImpuesXProductRepository extends Repository {
     }            
     
     final public void save(final String productCode, final List<ImpuesXProduct> taxes) throws Exception {
+                                
+        //Delete all product taxes
+        deleteAllTaxesFromProduct(productCode);
         
         //Loop over all the taxes
         for(ImpuesXProduct ImpuesXProduct:taxes){

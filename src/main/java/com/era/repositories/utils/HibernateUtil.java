@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import com.era.models.*;
 import java.util.List;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
 
@@ -27,18 +26,17 @@ public class HibernateUtil {
     private SessionFactory sessionFactoryCurrent;
     private SessionFactory sessionFactoryDbEmpresas;
     private SessionFactory sessionFactoryLocal;
- 
-    private Transaction Transaction;
     
     private HibernateConfigModel HibernateConfigModelCurrent;
     private HibernateConfigModel HibernateConfigModelDbEmpresas;
     private HibernateConfigModel HibernateConfigModelLocal;
         
-    private boolean sessionInTransacction;
+    private boolean sessionLocalInTransacction;    
     
     private Class ClassHasConnection;
     
     private Session Session;
+    private Session SessionDbempresas;
     
     
     
@@ -69,7 +67,13 @@ public class HibernateUtil {
     } 
 
     public Session getSession() {
-        return Session;
+        
+        if(SessionDbempresas!=null){
+            return SessionDbempresas;
+        }
+        else{
+            return Session;
+        }
     }
             
     public void useDbEmpresas() {
@@ -140,6 +144,7 @@ public class HibernateUtil {
         AnnotationConfiguration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
         AnnotationConfiguration.setProperty("hibernate.connection.url", "jdbc:mysql://" + HibernateConfigModel.getInstance() + ":" + HibernateConfigModel.getPort() + "/" + HibernateConfigModel.getDatabase());
         AnnotationConfiguration.setProperty("hibernate.connection.username", HibernateConfigModel.getUser());
+        //AnnotationConfiguration.setProperty("hibernate.connection.autocommit", "true");
         AnnotationConfiguration.setProperty("hibernate.connection.password", HibernateConfigModel.getPassword());
         AnnotationConfiguration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         AnnotationConfiguration.setProperty("show_sql", "true");
@@ -204,19 +209,19 @@ public class HibernateUtil {
     }
     
     public void begginTransaction() throws Exception  {        
-        this.Transaction = this.Session.beginTransaction();
+        this.Session.beginTransaction();        
     }
     
     public void commitTransacton() throws Exception {
-        this.Transaction.commit();
+        this.Session.getTransaction().commit();
     }
 
-    public Transaction getTransaction() {
-        return Transaction;
-    }
-            
     public void rollbackTransaction() throws Exception  {        
-        this.Transaction.rollback();
+        this.Session.getTransaction().rollback();
+    }
+    
+    private boolean isInClassesForLocal(Class Class_) throws Exception {
+        return getAnnottatedClassesForLocal().contains(Class_);
     }
     
     public List<Class> getAnnottatedClassesForLocal() throws Exception {
@@ -366,15 +371,28 @@ public class HibernateUtil {
     
     public void closeSession(final Class ClassEntity) throws Exception {
         
-        //If there is not a transaction in course
-        if(!sessionInTransacction){
+        //If there is an operation in this database so ?
+        if(this.SessionDbempresas==null){
             
-            if(this.Transaction!=null && this.Transaction.isActive()){
-                //this.Transaction.commit();
-                this.Session.getTransaction().commit();
+            //If there is not a transaction in course
+            if(!sessionLocalInTransacction){
+
+                if(this.Session.getTransaction().isActive()){
+                    this.Session.getTransaction().commit();
+                    if(this.Session.isOpen()){
+                        this.Session.close();
+                    }                
+                }
             }
-            if(this.Session.isOpen()){
-                this.Session.close();
+        }
+        else{
+            
+            if(this.SessionDbempresas.getTransaction().isActive()){
+                this.SessionDbempresas.getTransaction().commit();
+                if(this.SessionDbempresas.isOpen()){
+                    this.SessionDbempresas.close();
+                    this.SessionDbempresas = null;
+                }
             }
         }
     }
@@ -382,7 +400,7 @@ public class HibernateUtil {
     public void closeSessionInTransaction(final Class ClassEntity) throws Exception {
      
         //Set that the transaction in course has finished
-        sessionInTransacction = false;
+        sessionLocalInTransacction = false;
         
         //Open the database in transaction
         closeSession(ClassEntity);
@@ -392,10 +410,9 @@ public class HibernateUtil {
         
         //Open the databsase in transaction
         this.openSession(ClassEntity);
-        this.begginTransaction();
         
         //Set that there is a transaction in course
-        sessionInTransacction = true;
+        sessionLocalInTransacction = true;
     }
     
     public void openSession(Class ClassEntity) throws Exception {
@@ -417,13 +434,28 @@ public class HibernateUtil {
             useDbLocal();
         }
         
-        //If there is not a transaction in course
-        if(!sessionInTransacction){
-                        
-            this.Session = this.sessionFactoryCurrent.openSession();            
+        boolean localDB = true;
+        if(!this.isInClassesForLocal(ClassEntity)){
+            localDB = false;
+        }
+        
+        //If is in the local db
+        if(localDB){
+            
+            //If there is not a transaction in course
+            if(!sessionLocalInTransacction){
 
-            //Save who oppended the connection
-            this.ClassHasConnection = ClassEntity;
+                this.Session = this.sessionFactoryCurrent.openSession();
+                this.Session.beginTransaction();
+
+                //Save who oppended the connection
+                this.ClassHasConnection = ClassEntity;
+            }
+        }
+        else{ //Else on dbempresas db
+            
+            this.SessionDbempresas = this.sessionFactoryCurrent.openSession();
+            this.SessionDbempresas.beginTransaction();
         }
     }
     

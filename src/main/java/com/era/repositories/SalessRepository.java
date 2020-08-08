@@ -425,7 +425,7 @@ public class SalessRepository extends Repository {
             //Set as reinged
             Sale.setInvoiced(true);
             
-            Sale = (Sales)this.save(Sale);
+            Sale = (Sales)this.update(Sale);
         }
         
         return Sale;

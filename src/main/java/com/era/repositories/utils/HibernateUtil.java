@@ -9,10 +9,13 @@ import com.era.logger.LoggerUtility;
 import com.era.repositories.models.HibernateConfigModel;
 import java.util.ArrayList;
 import com.era.models.*;
+import java.sql.Connection;
 import java.util.List;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
+import org.hibernate.connection.ConnectionProvider;
+import org.hibernate.engine.SessionFactoryImplementor;
 
 /**
  *
@@ -57,7 +60,20 @@ public class HibernateUtil {
     public SessionFactory getSessionFactoryLocal() {
         return sessionFactoryLocal;
     }
-       
+    
+    public Connection getDBEmpresasJDBCConnection() throws Exception {
+        
+        SessionFactoryImplementor sessionFactoryImplementation = (SessionFactoryImplementor) sessionFactoryDbEmpresas;
+        ConnectionProvider connectionProvider = sessionFactoryImplementation.getConnectionProvider();
+        return connectionProvider.getConnection();
+    }
+    
+    public Connection getLocalJDBCConnection() throws Exception {
+        
+        SessionFactoryImplementor sessionFactoryImplementation = (SessionFactoryImplementor) sessionFactoryLocal;
+        ConnectionProvider connectionProvider = sessionFactoryImplementation.getConnectionProvider();
+        return connectionProvider.getConnection();
+    }
     
     final static public HibernateUtil getSingleton(){
         if(HibernateUtil==null){

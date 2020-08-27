@@ -89,9 +89,11 @@ public class UsersRepository extends Repository {
                                         final boolean m52,
                                         final boolean cort) throws Exception {
                
-        final User User = (User)this.getByCod(code);
-        User.setInvoicePrinter(ticketPrinter);
-        User.setTicketPrinter(invoicePrinter);
+        final User User = (User)this.getByCode(code);
+        User.setInvoicePrinter(invoicePrinter);
+        User.setTicketPrinter(ticketPrinter);
+        final String decryptedPassword = this.getDecryptedUserPassword(User.getCode());        
+        User.setPassword(decryptedPassword);
         this.update(User);
     }
     

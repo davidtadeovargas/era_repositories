@@ -92,6 +92,8 @@ public class UsersRepository extends Repository {
         final User User = (User)this.getByCode(code);
         User.setInvoicePrinter(invoicePrinter);
         User.setTicketPrinter(ticketPrinter);
+        User.setM52(m52);
+        User.setCort(cort);
         final String decryptedPassword = this.getDecryptedUserPassword(User.getCode());        
         User.setPassword(decryptedPassword);
         this.update(User);

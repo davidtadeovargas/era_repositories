@@ -16,6 +16,7 @@ public class RepositoryFactory {
    private AuxiliarsRepository AuxiliarsRepository;
    private BancosRepository BancosRepository;
    private BasDatssRepository BasDatssRepository;
+   private BanksRepository BanksRepository;
    private CAduanasRepository CAduanasRepository;
    private CClaveprodservsRepository CClaveprodservsRepository;
    private CClaveUnidadsRepository CClaveUnidadsRepository;
@@ -582,6 +583,9 @@ public class RepositoryFactory {
    }
    public ZonasRepository getZonasRepository() {
        if(ZonasRepository==null){ZonasRepository = new ZonasRepository();}return ZonasRepository;
+   }
+   public BanksRepository getBanksRepository(){
+       if(BanksRepository==null){BanksRepository = new BanksRepository();}return BanksRepository;       
    }
    
    public PaymentsSalesRepository getPaymentsSalesRepository(){       

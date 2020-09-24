@@ -26,7 +26,7 @@ public class CCodigoPostalRepository extends Repository {
     public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -42,7 +42,7 @@ public class CCodigoPostalRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -57,7 +57,7 @@ public class CCodigoPostalRepository extends Repository {
     final public CCodigopostal getByPostalCode(final String cp) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM CCodigopostal where cp = :cp";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -65,7 +65,7 @@ public class CCodigoPostalRepository extends Repository {
         CCodigopostal CCodigopostal = query.list().size() > 0 ? (CCodigopostal)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return CCodigopostal;
@@ -74,7 +74,7 @@ public class CCodigoPostalRepository extends Repository {
     final public boolean existsExpeditionPlace(final String cp) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM CCodigopostal where cp = :cp";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -82,7 +82,7 @@ public class CCodigoPostalRepository extends Repository {
         final boolean result = query.list().size() > 0;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
                
         return result;
     }
@@ -90,7 +90,7 @@ public class CCodigoPostalRepository extends Repository {
     public List<CCodigopostal> getAllByPageExpeditionPlace(final int pageNumber) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         final int pageSize = 50;
         
@@ -101,7 +101,7 @@ public class CCodigoPostalRepository extends Repository {
         List<CCodigopostal> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;

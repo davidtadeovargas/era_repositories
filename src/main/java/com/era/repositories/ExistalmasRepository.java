@@ -145,7 +145,7 @@ public class ExistalmasRepository extends Repository {
     final public Existalma getByWarehouseAndProduct(final String warehouseCode, final String productCode) throws Exception {
 
          //Open database
-         HibernateUtil.getSingleton().openSession(ClassEntity);
+         openDatabase();
 
          String hql = "FROM Existalma where alma = :warehouseCode AND prod = :productCode";
          Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -154,7 +154,7 @@ public class ExistalmasRepository extends Repository {
          Existalma Existalma = query.list().size() > 0 ? (Existalma)query.list().get(0):null;
 
          //Close database        
-         HibernateUtil.getSingleton().closeSession(ClassEntity);
+         closeDatabase();
 
          //Return the result model
          return Existalma;
@@ -163,7 +163,7 @@ public class ExistalmasRepository extends Repository {
     final public Existalma getByWarehouse(final String warehouseCode) throws Exception {
 
          //Open database
-         HibernateUtil.getSingleton().openSession(ClassEntity);
+         openDatabase();
 
          String hql = "FROM Existalma where alma = :warehouseCode";
          Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -171,7 +171,7 @@ public class ExistalmasRepository extends Repository {
          Existalma Existalma = query.list().size() > 0 ? (Existalma)query.list().get(0):null;
 
          //Close database        
-         HibernateUtil.getSingleton().closeSession(ClassEntity);
+         closeDatabase();
 
          //Return the result model
          return Existalma;
@@ -257,7 +257,7 @@ public class ExistalmasRepository extends Repository {
     final public float getGeneralExistenceFromProduct(final String productCode) throws Exception {
 
          //Open database
-         HibernateUtil.getSingleton().openSession(ClassEntity);
+         openDatabase();
 
          String hql = "FROM Existalma where prod = :productCode";
          Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
@@ -265,7 +265,7 @@ public class ExistalmasRepository extends Repository {
          List<Existalma> almas = query.list();
 
          //Close database        
-         HibernateUtil.getSingleton().closeSession(ClassEntity);
+         closeDatabase();
 
          //Get the general existence
          float existente = 0;
@@ -280,7 +280,7 @@ public class ExistalmasRepository extends Repository {
     final public List<Existalma> getAllWarehousesExistencesByProduct(final String productCode) throws Exception {
 
          //Open database
-         HibernateUtil.getSingleton().openSession(ClassEntity);
+         openDatabase();
 
          String hql = "FROM Existalma where prod = :productCode";
          Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
@@ -288,7 +288,7 @@ public class ExistalmasRepository extends Repository {
          List<Existalma> Existalma = query.list();
 
          //Close database        
-         HibernateUtil.getSingleton().closeSession(ClassEntity);
+         closeDatabase();
 
          //Return the result model
          return Existalma;

@@ -29,7 +29,7 @@ public class IngresosEncabRepository extends Repository {
     
     final public void saveIngres(final IngresosEncab IngresosEncab, final List<Ingres> items, final MovinvenType MovinvenType) throws Exception {
         
-        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         //Get the national tip cam
         final Coin Coin = RepositoryFactory.getInstance().getCoinsRepository().getNationalCoin();
@@ -71,13 +71,13 @@ public class IngresosEncabRepository extends Repository {
             RepositoryFactory.getInstance().getMoninvensRepository().addOrRemove(Moninven,MovinvenType);
         }
         
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        HibernateUtil.getSingleton().closeSession(ClassEntity,transactionId_);
     }
     
     final public IngresosEncab getByNoserNorefer(final String noser, final String norefer) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();
         
         String hql = "FROM IngresosEncab WHERE noser = :noser AND norefer = :norefer";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -86,7 +86,7 @@ public class IngresosEncabRepository extends Repository {
         List<IngresosEncab> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return list.size()>0?list.get(0):null;

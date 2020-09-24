@@ -26,7 +26,7 @@ public class CxpRepository extends Repository {
     final public Cxp getByNorefer(final String norefer) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();
         
         String hql = "FROM Cxp WHERE norefer = :norefer";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -34,7 +34,7 @@ public class CxpRepository extends Repository {
         List<Cxp> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return list.size()>0?list.get(0):null;
@@ -43,7 +43,7 @@ public class CxpRepository extends Repository {
     final public void deleteByConfg(final String norefer) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         //Save
         final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Cxp WHERE norefer = :norefer");
@@ -51,13 +51,13 @@ public class CxpRepository extends Repository {
         SQLQuery.executeUpdate();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
     }
     
     final public double getPendientePago(final String prov) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         //Save
         final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("SELECT IFNULL((SUM(carg) - SUM(abon)),0) AS pendpag WHERE prov = :prov");
@@ -69,7 +69,7 @@ public class CxpRepository extends Repository {
         }
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         return pendiente;
     }

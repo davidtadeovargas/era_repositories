@@ -42,7 +42,7 @@ public class ImpuestosXVentasRepository extends Repository {
     public List<ImpuestosXVenta> getAllBySaleId(final int saleID) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -52,7 +52,7 @@ public class ImpuestosXVentasRepository extends Repository {
         List<ImpuestosXVenta> records = query.list();
         
         //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;

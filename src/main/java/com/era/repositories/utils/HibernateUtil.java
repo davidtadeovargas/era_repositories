@@ -36,10 +36,10 @@ public class HibernateUtil {
         
     private boolean sessionLocalInTransacction;    
     
-    private Class ClassHasConnection;
-    
     private Session Session;
     private Session SessionDbempresas;
+    
+    private long transactionId;
     
     
     
@@ -245,7 +245,6 @@ public class HibernateUtil {
         final List<Class> classes = new ArrayList<>();
         classes.add(Company.class);        
         classes.add(CFDIRelacionadosPago.class);
-        classes.add(BasDats.class);
         classes.add(Banco.class);
         classes.add(Auxiliar.class);
         classes.add(Asocdesc.class);
@@ -307,8 +306,7 @@ public class HibernateUtil {
         classes.add(Marcprod.class);
         classes.add(Lugs.class);
         classes.add(Log.class);
-        classes.add(Line.class);
-        classes.add(License.class);
+        classes.add(Line.class);        
         classes.add(Kits.class);
         classes.add(Ingres.class);
         classes.add(IngresosEncab.class);        
@@ -336,8 +334,7 @@ public class HibernateUtil {
         classes.add(Tars.class);
         classes.add(Supplier.class);
         classes.add(Sucursal.class);
-        classes.add(Subramos.class);
-        classes.add(ServerSession.class);
+        classes.add(Subramos.class);        
         classes.add(Serieprod.class);
         classes.add(Serie.class);
         classes.add(Payment.class);
@@ -386,50 +383,57 @@ public class HibernateUtil {
         return classes;
     }
     
-    public void closeSession(final Class ClassEntity) throws Exception {
+    public void closeSession(final Class ClassEntity, final long transactionId) throws Exception {
         
-        //If there is an operation in this database so ?
-        if(this.SessionDbempresas==null){
+        //If there is not a transaction in course
+        if(sessionLocalInTransacction){
             
-            //If there is not a transaction in course
-            if(!sessionLocalInTransacction){
-
+            if(this.transactionId == transactionId){
+                
+                //Set that the transaction in course has finished
+                sessionLocalInTransacction = false;
+                
                 if(this.Session.getTransaction().isActive()){
                     this.Session.getTransaction().commit();
-                    if(this.Session.isOpen()){
-                        this.Session.close();
-                    }                
+                }
+                if(this.Session.isOpen()){
+                    this.Session.close();
                 }
             }
         }
         else{
-            
-            if(this.SessionDbempresas.getTransaction().isActive()){
-                this.SessionDbempresas.getTransaction().commit();
+         
+            if(SessionDbempresas!=null){
                 if(this.SessionDbempresas.isOpen()){
                     this.SessionDbempresas.close();
-                    this.SessionDbempresas = null;
+                }
+            }
+            else{
+                if(this.Session.isOpen()){
+                    this.Session.close();
                 }
             }
         }
     }
 
-    public void closeSessionInTransaction(final Class ClassEntity) throws Exception {
-     
-        //Set that the transaction in course has finished
-        sessionLocalInTransacction = false;
+    public long openSessionInTransacction(Class ClassEntity) throws Exception {
         
-        //Open the database in transaction
-        closeSession(ClassEntity);
-    }
-    
-    public void openSessionInTransacction(Class ClassEntity) throws Exception {
-        
-        //Open the databsase in transaction
-        this.openSession(ClassEntity);
-        
-        //Set that there is a transaction in course
-        sessionLocalInTransacction = true;
+        if(!sessionLocalInTransacction){
+         
+            //Open the databsase in transaction
+            this.openSession(ClassEntity);
+
+            //Set that there is a transaction in course
+            sessionLocalInTransacction = true;
+            
+            //Transaction id
+            this.transactionId = System.currentTimeMillis();
+            
+            return this.transactionId;
+        }
+        else{
+            return -1;
+        }
     }
     
     public void openSession(Class ClassEntity) throws Exception {
@@ -451,9 +455,9 @@ public class HibernateUtil {
             useDbLocal();
         }
         
-        boolean localDB = true;
-        if(!this.isInClassesForLocal(ClassEntity)){
-            localDB = false;
+        boolean localDB = false;
+        if(this.isInClassesForLocal(ClassEntity)){
+            localDB = true;
         }
         
         //If is in the local db
@@ -461,12 +465,11 @@ public class HibernateUtil {
             
             //If there is not a transaction in course
             if(!sessionLocalInTransacction){
-
+                
+                SessionDbempresas = null;
+                
                 this.Session = this.sessionFactoryCurrent.openSession();
                 this.Session.beginTransaction();
-
-                //Save who oppended the connection
-                this.ClassHasConnection = ClassEntity;
             }
         }
         else{ //Else on dbempresas db

@@ -24,7 +24,7 @@ public class CuentasContablesRepository extends Repository {
     final public CuentasContables getByCuenta(final String cuenta) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();
         
         String hql = "FROM CuentasContables where cuenta = :cuenta";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -32,7 +32,7 @@ public class CuentasContablesRepository extends Repository {
         CuentasContables CuentasContables = query.list().size() > 0 ? (CuentasContables)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return CuentasContables;

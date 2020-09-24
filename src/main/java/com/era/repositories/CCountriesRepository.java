@@ -26,7 +26,7 @@ public class CCountriesRepository extends Repository {
     public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -40,7 +40,7 @@ public class CCountriesRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -55,7 +55,7 @@ public class CCountriesRepository extends Repository {
     final public CCountry getCountryByCode(final String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM CCountry where code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -63,7 +63,7 @@ public class CCountriesRepository extends Repository {
         CCountry CCountry = query.list().size() > 0 ? (CCountry)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return CCountry;

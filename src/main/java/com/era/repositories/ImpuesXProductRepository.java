@@ -25,7 +25,7 @@ public class ImpuesXProductRepository extends Repository {
     final public List<ImpuesXProduct> getAllByProd(final String produ) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();
         
         String hql = "FROM ImpuesXProduct WHERE code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -33,7 +33,7 @@ public class ImpuesXProductRepository extends Repository {
         List<ImpuesXProduct> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return list;
@@ -122,7 +122,7 @@ public class ImpuesXProductRepository extends Repository {
     final public ImpuesXProduct getByProductAndTax(final String productCode, final String taxCode) throws Exception{
         
        //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM ImpuesXProduct where code = :productCode AND impue = :taxCode";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -131,7 +131,7 @@ public class ImpuesXProductRepository extends Repository {
         ImpuesXProduct ImpuesXProduct = query.list().size() > 0 ? (ImpuesXProduct)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return ImpuesXProduct;

@@ -68,14 +68,14 @@ public class FlujsRepository extends Repository {
     final public List<Fluj> getAllPendingCut() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Fluj WHERE corta = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<Fluj> flujs = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return flujs;
@@ -84,7 +84,7 @@ public class FlujsRepository extends Repository {
     public BigDecimal getTotalSalesPendingCortByConcep(final String concep) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Fluj WHERE corta = false AND concep = :concep";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -92,7 +92,7 @@ public class FlujsRepository extends Repository {
         List<Fluj> flujs = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Get the total
         BigDecimal total = BigDecimal.ZERO;

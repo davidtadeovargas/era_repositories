@@ -45,7 +45,7 @@ public class LogsRepository extends Repository {
     final public List<Log> getAllByAction(final String accio) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Log WHERE accio = :accio";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -53,7 +53,7 @@ public class LogsRepository extends Repository {
         List<Log> logs = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the results
         return logs;
@@ -62,7 +62,7 @@ public class LogsRepository extends Repository {
     final public List<Log> getAllLogins() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Log WHERE accio = :accio OR accio = :accio2";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -71,7 +71,7 @@ public class LogsRepository extends Repository {
         List<Log> logs = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the results
         return logs;
@@ -137,7 +137,7 @@ public class LogsRepository extends Repository {
     final public List<Log> getByLikeEncabezadosByAccio(final String search, final String accio) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Log WHERE accio = :accio AND (code LIKE :code OR descrip LIKE :descrip)";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -147,7 +147,7 @@ public class LogsRepository extends Repository {
         List<Log> logs = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the results
         return logs;

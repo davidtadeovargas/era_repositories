@@ -15,7 +15,7 @@ public class TipssRepository extends Repository {
    final public Tips getBytType(final String type) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         String hql = "FROM Tips where code = :type";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -23,7 +23,7 @@ public class TipssRepository extends Repository {
         Tips Tips = query.list().size() > 0 ? (Tips)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Tips;

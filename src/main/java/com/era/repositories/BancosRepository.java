@@ -16,7 +16,7 @@ public class BancosRepository extends Repository {
     public Banco getByAccount(final String account) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -26,7 +26,7 @@ public class BancosRepository extends Repository {
         Banco Banco = query.list().size() > 0 ? (Banco)query.list().get(0):null;
         
         //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Banco;

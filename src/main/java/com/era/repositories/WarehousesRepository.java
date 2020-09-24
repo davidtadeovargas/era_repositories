@@ -17,7 +17,7 @@ public class WarehousesRepository extends Repository {
     public List<?> getAllBySearchFilter(final String search) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -29,7 +29,7 @@ public class WarehousesRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;

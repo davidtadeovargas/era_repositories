@@ -25,7 +25,7 @@ public class PartcomprsRepository extends Repository {
     final public List<Partcomprs> getAllByComp(final String codcom) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Partcomprs where codcom = :codcom";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -33,7 +33,7 @@ public class PartcomprsRepository extends Repository {
         List<Partcomprs> parts = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return parts;

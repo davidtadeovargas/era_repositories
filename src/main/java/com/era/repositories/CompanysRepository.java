@@ -2,7 +2,6 @@ package com.era.repositories;
 
 import com.era.logger.LoggerUtility;
 import com.era.models.Company;
-import com.era.models.Sales;
 import com.era.repositories.utils.HibernateUtil;
 import com.era.utilities.UtilitiesFactory;
 import java.math.BigDecimal;
@@ -21,7 +20,7 @@ public class CompanysRepository extends Repository {
     public List<?> getAllBySearchFilter(final String search) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -33,7 +32,7 @@ public class CompanysRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -90,7 +89,7 @@ public class CompanysRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(CompanysRepository.class, "Hibernate: Getting customer by code " + companyCode);
                 
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Company where companyCode = :companyCode";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -98,7 +97,7 @@ public class CompanysRepository extends Repository {
         Company Customer = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         LoggerUtility.getSingleton().logInfo(CompanysRepository.class, "Hibernate: Returning customer");
         
@@ -109,7 +108,7 @@ public class CompanysRepository extends Repository {
     final public Company getCustomerBySerieAndCode(final String serie,final String companyCode) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Company where companyCode = :companyCode and serie = :serie";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -118,7 +117,7 @@ public class CompanysRepository extends Repository {
         Company Company = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Company;
@@ -127,7 +126,7 @@ public class CompanysRepository extends Repository {
     final public Company rfcExists(final String existRFC, final String rfcOri) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Company where rfc = :existRFC and rfc != :rfcOri";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -136,7 +135,7 @@ public class CompanysRepository extends Repository {
         Company Company = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Company;
@@ -145,7 +144,7 @@ public class CompanysRepository extends Repository {
     final public Company rfcExists(final String RFC) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Company where rfc = :RFC";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -153,7 +152,7 @@ public class CompanysRepository extends Repository {
         Company Company = query.list().size() > 0 ? (Company)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Company;

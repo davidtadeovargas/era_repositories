@@ -24,14 +24,14 @@ public class CortszxsRepository extends Repository {
     
     final public void updateAllAvailableCortsAsZNotAvailableAnyMore() throws Exception {
         
-        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         updateSQL("UPDATE Cortszx SET regis = true WHERE regis = false");
         
         //Update sales
         RepositoryFactory.getInstance().getSalessRepository().updateAllSalesAsCutS();
         
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        HibernateUtil.getSingleton().closeSession(ClassEntity,transactionId_);
     }
     
     final public Cortszx updateNextCortXorZ(final Cortszx Cortszx, final Type Type_) throws Exception {
@@ -68,7 +68,7 @@ public class CortszxsRepository extends Repository {
     final public Cortszx getNextCorteXZObject(final Type Type_) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();
         
         String type = "";
         switch(Type_){
@@ -90,7 +90,7 @@ public class CortszxsRepository extends Repository {
         Cortszx Cortszx = SQLQuery.list().size() > 0 ? (Cortszx)SQLQuery.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         return Cortszx;
     }
@@ -98,7 +98,7 @@ public class CortszxsRepository extends Repository {
     final public BigInteger getNextCorteXZ(final Type Type_) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String type = "";
         switch(Type_){
@@ -120,7 +120,7 @@ public class CortszxsRepository extends Repository {
         final BigInteger consec = results.size()>0?(BigInteger)((HashMap)results.get(0)).get("numcort"):BigInteger.ZERO;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         return consec;
     }

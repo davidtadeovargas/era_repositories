@@ -16,7 +16,7 @@ public class PaymentFormsRepository extends Repository {
     public Object getByCode(String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM CPaymentForm WHERE c_FormaPago = :c_FormaPago";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -24,7 +24,7 @@ public class PaymentFormsRepository extends Repository {
         CPaymentForm CPaymentForm = query.list().size() > 0 ? (CPaymentForm)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return CPaymentForm;

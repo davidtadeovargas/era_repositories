@@ -16,7 +16,7 @@ public class KitssRepository extends Repository {
     public List<Kits> getComponentsByKit(final String kitCode) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Kits where code = :kitCode";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -24,7 +24,7 @@ public class KitssRepository extends Repository {
         final List<Kits> kits = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return kits;
@@ -40,20 +40,20 @@ public class KitssRepository extends Repository {
     public void deleteAllComponentsFromKit(final String codeKit) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();
                 
         SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Kits WHERE code = :codeKit");
         SQLQuery.setParameter("codeKit", codeKit);
         SQLQuery.executeUpdate();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);        
+        closeDatabase();
     }
     
     public void saveComponentsToKit(final String codeKit, final List<Kits> kits) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         //Delete all components from the kit
         deleteAllComponentsFromKit(codeKit);        
@@ -78,13 +78,13 @@ public class KitssRepository extends Repository {
         }
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
     }
     
     final public Kits getByKitAndComponent(final String codeKit, final String componentCode) throws Exception {
     
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Kits where code = :codeKit AND prod = :componentCode";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -93,7 +93,7 @@ public class KitssRepository extends Repository {
         final  Kits Kits = query.list().size() > 0 ? (Kits)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Kits;

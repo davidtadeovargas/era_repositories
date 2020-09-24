@@ -39,15 +39,15 @@ public class CorrselecRepository extends Repository {
     final public Corrselec getByEstacGlob(final String estacglo) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();
         
         String hql = "FROM Corrselec WHERE estacglo = :estacglo";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         query.setParameter("estacglo", estacglo);
         Corrselec Corrselec = query.list().size() > 0 ? (Corrselec)query.list().get(0):null;
         
-        //Close database       
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        //Close database
+        closeDatabase();
         
         //Return the result model
         return Corrselec;

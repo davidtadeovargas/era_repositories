@@ -18,7 +18,7 @@ public class CClaveprodservsRepository extends Repository {
     public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -31,7 +31,7 @@ public class CClaveprodservsRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -41,7 +41,7 @@ public class CClaveprodservsRepository extends Repository {
     public Object getByCode(final String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM CClaveprodserv where c_ClaveProdServ = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -49,7 +49,7 @@ public class CClaveprodservsRepository extends Repository {
         CClaveprodserv CClaveprodserv = query.list().size() > 0 ? (CClaveprodserv)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return CClaveprodserv;

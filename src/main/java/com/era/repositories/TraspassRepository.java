@@ -13,7 +13,7 @@ public class TraspassRepository extends Repository {
 
     public void traspass(final Traspas Traspas) throws Exception {
     
-        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         //Save the traspas
         this.save(Traspas);
@@ -21,7 +21,7 @@ public class TraspassRepository extends Repository {
         //Move existences from warehouses
         RepositoryFactory.getInstance().getExistalmasRepository().moveExistencesFromTo(Traspas.getCode(), Traspas.getAlma(), Traspas.getAlmaa(), Traspas.getUnid(), Traspas.getCantent());
         
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        HibernateUtil.getSingleton().closeSession(ClassEntity,transactionId_);
     }
     
     @Override

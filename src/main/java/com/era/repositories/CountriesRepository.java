@@ -24,7 +24,7 @@ public class CountriesRepository extends Repository {
     final public CCountry getCountryByCode(final String countryCode) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Country where countryCode = :countryCode";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -32,7 +32,7 @@ public class CountriesRepository extends Repository {
         CCountry Country = query.list().size() > 0 ? (CCountry)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Country;

@@ -17,7 +17,7 @@ public class CoinsRepository extends Repository {
     public List<?> getAllBySearchFilter(final String search) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -28,7 +28,7 @@ public class CoinsRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -37,14 +37,14 @@ public class CoinsRepository extends Repository {
     public void removeAllNational() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Coin where national = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<Coin> coins = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Iterate all the coins
         for(Coin Coin_:coins){
@@ -97,14 +97,14 @@ public class CoinsRepository extends Repository {
     final public Coin getNationalCoin() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Coin where national = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         Coin Coin = query.list().size() > 0 ? (Coin)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Coin;

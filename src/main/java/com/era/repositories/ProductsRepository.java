@@ -26,7 +26,7 @@ public class ProductsRepository extends Repository {
     public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -40,7 +40,7 @@ public class ProductsRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -51,7 +51,7 @@ public class ProductsRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(ProductsRepository.class, "Hibernate: Getting product by code " + codeProduct);
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product where code = :codeProduct";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -170,7 +170,7 @@ public class ProductsRepository extends Repository {
     final public boolean hasProductPriceInList(final String codeProduct, final int list) throws Exception {
                         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product WHERE code = :codeProduct";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -227,7 +227,7 @@ public class ProductsRepository extends Repository {
     final public BigDecimal getPriceList(final String codeProduct, final int list) throws Exception {
                         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product WHERE code = :codeProduct";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -303,14 +303,14 @@ public class ProductsRepository extends Repository {
     final public List<Product> getAllKits() throws Exception {
                         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product where compound = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<Product> Products = query.list();                        
         
         //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the response model
         return Products;
@@ -319,14 +319,14 @@ public class ProductsRepository extends Repository {
     final public List<Product> getAllForSale() throws Exception {
                         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product where isForSale = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<Product> Products = query.list();                        
         
         //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the response model
         return Products;
@@ -356,7 +356,7 @@ public class ProductsRepository extends Repository {
             
     final public Product addOrUpdateProduct(final Product Product, final List<ImpuesXProduct> taxesProduct, final List<Kits> kits) throws Exception {
         
-        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         //Add or update the product
         final Product Product_ = addOrUpdateProduct(Product);
@@ -387,7 +387,7 @@ public class ProductsRepository extends Repository {
             RepositoryFactory.getInstance().getImpuesXProductRepository().save(Product.getCode(), taxesProduct);
         }
          
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        HibernateUtil.getSingleton().closeSession(ClassEntity,transactionId_);
         
         //Return the moel
         return Product_;
@@ -401,7 +401,7 @@ public class ProductsRepository extends Repository {
         }
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         //Get the product
         final Product Product = this.getProductByCode(codeProduct);                
@@ -422,7 +422,7 @@ public class ProductsRepository extends Repository {
         }
         
         //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         return Product;
     }
@@ -430,7 +430,7 @@ public class ProductsRepository extends Repository {
     final public Product removeKit(final String codeProduct) throws Exception {
 
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         //Get the product
         final Product Product = this.getProductByCode(codeProduct);
@@ -442,7 +442,7 @@ public class ProductsRepository extends Repository {
         HibernateUtil.getSingleton().getSession().update(Product);                    
         
         //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         return Product;
     }
@@ -450,7 +450,7 @@ public class ProductsRepository extends Repository {
     final public void deleteProductWithTaxes(final String prod) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
                 
         SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Product WHERE prod = :prod");
         SQLQuery.setParameter("prod", prod);
@@ -461,20 +461,20 @@ public class ProductsRepository extends Repository {
         SQLQuery.executeUpdate();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
     }
     
     final public List<Product> getAllOrderdByProdAsc() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product ORDER BY prod ASC";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return prods;
@@ -483,14 +483,14 @@ public class ProductsRepository extends Repository {
     final public List<Product> getAllProdsWithSerie() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product WHERE serialNumber =! '' ORDER BY prod DESC";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return prods;
@@ -499,14 +499,14 @@ public class ProductsRepository extends Repository {
     final public List<Product> getAllProdsNotSerie() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product WHERE serialNumber = '' ORDER BY prod DESC";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return prods;
@@ -515,14 +515,14 @@ public class ProductsRepository extends Repository {
     final public List<Product> getAllCompuests() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product WHERE compound = 0 ORDER BY prod DESC";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return prods;
@@ -531,14 +531,14 @@ public class ProductsRepository extends Repository {
     final public List<Product> getAllProductsSolMaxMin() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product WHERE askMaxMin = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return prods;
@@ -547,14 +547,14 @@ public class ProductsRepository extends Repository {
     final public List<Product> getAllOrderdByProdDes() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product ORDER BY prod DESC";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return prods;
@@ -563,7 +563,7 @@ public class ProductsRepository extends Repository {
     final public List<Product> getAllByLine(final String codeLine) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Product WHERE codeLine = :codeLine";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -571,7 +571,7 @@ public class ProductsRepository extends Repository {
         List<Product> prods = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return prods;

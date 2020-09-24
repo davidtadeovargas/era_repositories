@@ -12,7 +12,6 @@ import com.era.models.Cxc;
 import com.era.models.DocumentOrigin;
 import com.era.models.Fluj;
 import com.era.models.ImpuesXProduct;
-import com.era.models.ImpuestosXVenta;
 import com.era.models.Kits;
 import com.era.models.Partvta;
 import com.era.models.Product;
@@ -42,7 +41,7 @@ public class SalessRepository extends Repository {
     final public int getTotalSalesFromCustomer(final String codemp) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);
+        openDatabase();
         
         String hql = "select count(*) from Sales where codemp = :codemp";
         final Session Session = HibernateUtil.getSingleton().getSession();
@@ -51,7 +50,7 @@ public class SalessRepository extends Repository {
         Iterator count = query.iterate();
         
         //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return (int) count.next();
@@ -60,7 +59,7 @@ public class SalessRepository extends Repository {
     final public Sales getByNotCred(final String notcred) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+        openDatabase();        
         
         
         String hql = "FROM Sales where notcred = :notcred";
@@ -70,7 +69,7 @@ public class SalessRepository extends Repository {
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Sales;
@@ -79,7 +78,7 @@ public class SalessRepository extends Repository {
     final public boolean existSalesByCustomer(final String companyCode) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+        openDatabase();        
                 
         String hql = "FROM Sales WHERE companyCode = :companyCode";
         final Session Session = HibernateUtil.getSingleton().getSession();
@@ -88,7 +87,7 @@ public class SalessRepository extends Repository {
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Sales!=null;
@@ -97,7 +96,7 @@ public class SalessRepository extends Repository {
     final public Sales getByVentaRef(final String vtaRef) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);                
+        openDatabase();                
         
         String hql = "FROM Sales where vtaRef = :vtaRef";
         final Session Session = HibernateUtil.getSingleton().getSession();
@@ -106,7 +105,7 @@ public class SalessRepository extends Repository {
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
         //Close database       
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Sales;
@@ -196,7 +195,7 @@ public class SalessRepository extends Repository {
     
     final public Sales saveSale(Sales Sale, final boolean ring, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
-        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
                         
         //If the sale is an invoice check it as invoiced
         if(this.isInvoiceDocument(Sale)){
@@ -406,7 +405,7 @@ public class SalessRepository extends Repository {
             RepositoryFactory.getInstance().getFlujsRepository().saveEnt(Fluj,FlujsRepository.TypePayment.CARD_CREDIT);
         }
         
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        HibernateUtil.getSingleton().closeSession(ClassEntity,transactionId_);
         
         //If has to ring
         if(ring){
@@ -433,7 +432,7 @@ public class SalessRepository extends Repository {
     
     final public void cancelSale(final int saleID, final String motiv) throws Exception {
         
-        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         //Get the sale
         Sales Sale = (Sales)this.getByID(saleID);
@@ -467,12 +466,12 @@ public class SalessRepository extends Repository {
             }
         }
         
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        HibernateUtil.getSingleton().closeSession(ClassEntity,transactionId_);
     }
     
     final public void returnSale(final int saleID, final String motiv) throws Exception {
         
-        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+        final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         //Get the sale
         Sales Sale = (Sales)this.getByID(saleID);
@@ -504,7 +503,7 @@ public class SalessRepository extends Repository {
             }
         }
         
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        HibernateUtil.getSingleton().closeSession(ClassEntity,transactionId_);
     }
     
     final public String getConfirmedSaleStatus(){
@@ -513,7 +512,7 @@ public class SalessRepository extends Repository {
     
     final public void returnPartialSale(final int saleID, final String motiv, final List<Partvta> items) throws Exception {
         
-        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);                
+        final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
         //Loop all to affect inventories
         boolean allDevsComplete = true;
@@ -569,7 +568,7 @@ public class SalessRepository extends Repository {
         Sale.setRazon(motiv);
         this.update(Sale);
         
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        HibernateUtil.getSingleton().closeSession(ClassEntity,transactionId_);
     }
     
     
@@ -648,13 +647,17 @@ public class SalessRepository extends Repository {
         String betweenCondition = "";
         Date fromDate = null, toDate = null;
         if(SalesFilters.getFrom()!=null && SalesFilters.getUntil()!=null){
-            
-            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+                        
             Calendar c = Calendar.getInstance();
             c.setTime(SalesFilters.getUntil()); // Now use today date.
-            c.add(Calendar.DATE, 0);            
+            c.add(Calendar.DATE, 0);
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");            
             String fromDateStr = formatter.format(SalesFilters.getFrom());
+            fromDateStr = fromDateStr + " 00:00:00";
             String toDateStr = formatter.format(c.getTime());
+            toDateStr = toDateStr + " 23:59:59";
+            
+            formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
             fromDate = formatter.parse(fromDateStr);
             toDate = formatter.parse(toDateStr);
 
@@ -714,7 +717,7 @@ public class SalessRepository extends Repository {
         }
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);
+        openDatabase();
         
         hql = hql.trim();
         if(hql.endsWith("WHERE")){
@@ -811,7 +814,7 @@ public class SalessRepository extends Repository {
         List<Sales> Sales = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Sales;
@@ -902,8 +905,8 @@ public class SalessRepository extends Repository {
         
         final CPaymentForm CPaymentForm = RepositoryFactory.getInstance().getPaymentFormsRepository().getByCash();
         
-        HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
-        
+        final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
+                
         //Get national coin
         final Coin Coin = RepositoryFactory.getInstance().getCoinsRepository().getNationalCoin();
         
@@ -996,7 +999,7 @@ public class SalessRepository extends Repository {
         }
         
         //Close database
-        HibernateUtil.getSingleton().closeSessionInTransaction(ClassEntity);
+        HibernateUtil.getSingleton().closeSession(ClassEntity,transactionId_);
     }
     
     final public List<Sales> getAllTicketsByDatesRange(final String companyCode, final Date from, final Date until) throws Exception {
@@ -1024,6 +1027,8 @@ public class SalessRepository extends Repository {
         SalesFilters.setCompanyCode(companyCode);
         SalesFilters.setFrom(from);
         SalesFilters.setUntil(until);
+        SalesFilters.setUseInvoiced(true);
+        SalesFilters.setInvoiced(false);
         
         //Get all the sales
         final List<Sales> sales = this.getAllSales(SalesFilters);
@@ -1609,7 +1614,7 @@ public class SalessRepository extends Repository {
     final public Sales getByVenta(final int vta) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+        openDatabase();
         
         String hql = "FROM Sales where vta = :vta";
         final Session Session = HibernateUtil.getSingleton().getSession();
@@ -1618,7 +1623,7 @@ public class SalessRepository extends Repository {
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Sales;
@@ -1627,7 +1632,7 @@ public class SalessRepository extends Repository {
     final public Sales getLastSale() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(this.ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Sales ORDER BY vta DESC";
         final Session Session = HibernateUtil.getSingleton().getSession();
@@ -1636,7 +1641,7 @@ public class SalessRepository extends Repository {
         Sales Sales = query.list().size() > 0 ? (Sales)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Sales;

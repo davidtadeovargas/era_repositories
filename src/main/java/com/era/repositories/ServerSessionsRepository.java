@@ -27,13 +27,13 @@ public class ServerSessionsRepository extends Repository {
     final public ServerSession getServerSession() throws Exception {
                         
         //Open database        
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         Query query = HibernateUtil.getSingleton().getSession().createQuery("from ServerSession");
         ServerSession ServerSession = query.list().size() > 0 ? (ServerSession) query.list().get(0):null;
         
         //Close database                
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the response model
         return ServerSession;

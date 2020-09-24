@@ -478,7 +478,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getSistemClasifByConf(final String conf) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();
         
         String hql = "FROM Confgral where clasif = 'sist' AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -486,7 +486,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral;
@@ -495,7 +495,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getSalesClasifByConf(final String conf) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = 'vtas' AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -503,7 +503,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral;
@@ -512,7 +512,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getCotsClasifByConf(final String conf) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = 'cots' AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -520,7 +520,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral;
@@ -529,7 +529,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getSistClasifByConf(final String conf) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = 'sist' AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -537,7 +537,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral;
@@ -546,7 +546,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getCompsClasifByConf(final String conf) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = 'comps' AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -554,7 +554,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral;
@@ -563,7 +563,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getInvClasifByConf(final String conf) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = 'inv' AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -571,7 +571,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral;
@@ -580,7 +580,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getPrevClasifByConf(final String conf) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = 'prev' AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -588,7 +588,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral;
@@ -597,7 +597,7 @@ public class ConfgralRepository extends Repository {
     final public String getPtovtaAlmacen() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = 'vtas' AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -605,7 +605,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         final String almacen = Confgral==null?null:Confgral.getExtr();
         
@@ -615,7 +615,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getByClasif(final String clasif) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = :clasif";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -623,7 +623,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral;
@@ -633,7 +633,7 @@ public class ConfgralRepository extends Repository {
     final public Confgral getByConfigPostdecimal() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = :clasif AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -642,7 +642,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral;
@@ -651,7 +651,7 @@ public class ConfgralRepository extends Repository {
     final public boolean initWithSalesPointWindow() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = :clasif AND conf = :conf";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -660,7 +660,7 @@ public class ConfgralRepository extends Repository {
         Confgral Confgral = query.list().size() > 0 ? (Confgral)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Confgral!=null?Confgral.getVal()==1:false;
@@ -669,7 +669,7 @@ public class ConfgralRepository extends Repository {
     final public List<Confgral> getAllActivesByClasif(final String clasif) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = :clasif AND val = 1";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -677,7 +677,7 @@ public class ConfgralRepository extends Repository {
         List<Confgral> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return list;
@@ -686,7 +686,7 @@ public class ConfgralRepository extends Repository {
     final public List<Confgral> getAllActivesByConf(final String clasif) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where clasif = :clasif";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -694,7 +694,7 @@ public class ConfgralRepository extends Repository {
         List<Confgral> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return list;
@@ -703,7 +703,7 @@ public class ConfgralRepository extends Repository {
     final public List<Confgral> getAllActivesConfs() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Confgral where val = :val";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -711,7 +711,7 @@ public class ConfgralRepository extends Repository {
         List<Confgral> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return list;
@@ -733,7 +733,7 @@ public class ConfgralRepository extends Repository {
     final public void deleteByConfg(final String conf) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         //Save
         final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM confgral WHERE conf = :conf");
@@ -741,7 +741,7 @@ public class ConfgralRepository extends Repository {
         SQLQuery.executeUpdate();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
     }
     
     @Override

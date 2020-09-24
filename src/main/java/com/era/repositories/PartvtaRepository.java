@@ -30,7 +30,7 @@ public class PartvtaRepository extends Repository {
     final public List<Partvta> getPartsVta(final int saleId) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Partvta where vta = :vta";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -38,7 +38,7 @@ public class PartvtaRepository extends Repository {
         List<Partvta> parts = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return parts;
@@ -47,7 +47,7 @@ public class PartvtaRepository extends Repository {
     final public boolean existsProduct(final String productCode) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Partvta WHERE prod = :productCode";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -55,7 +55,7 @@ public class PartvtaRepository extends Repository {
         List<Partvta> parts = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return parts.size()>0;
@@ -64,7 +64,7 @@ public class PartvtaRepository extends Repository {
     final public int getPartidasXImpuesto(final String codimpue) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "select count(*) from Partvta where codimpue = :codimpue";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -72,7 +72,7 @@ public class PartvtaRepository extends Repository {
         Iterator count = query.iterate();
         
         //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return (int) count.next();

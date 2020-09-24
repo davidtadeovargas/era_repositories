@@ -18,7 +18,7 @@ public class BasDatssRepository extends Repository {
     public List<?> getAllBySearchFilter(final String search) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -30,7 +30,7 @@ public class BasDatssRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -40,7 +40,7 @@ public class BasDatssRepository extends Repository {
     public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();       
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -54,7 +54,7 @@ public class BasDatssRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -65,7 +65,7 @@ public class BasDatssRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: Getting basdats by code: " + companyCode);
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM BasDats where codemp = :codemp";        
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -73,7 +73,7 @@ public class BasDatssRepository extends Repository {
         BasDats BasDats = query.list().size() > 0 ? (BasDats)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: BasDats returned");
         
@@ -86,14 +86,14 @@ public class BasDatssRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: Getting the db test");
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM BasDats where test = true";        
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         BasDats BasDats = query.list().size() > 0 ? (BasDats)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: DB test returned");
         
@@ -106,7 +106,7 @@ public class BasDatssRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: Getting basdats by bd: " + bd);
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM BasDats where bd = :bd";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -114,7 +114,7 @@ public class BasDatssRepository extends Repository {
         BasDats BasDats = query.list().size() > 0 ? (BasDats)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         LoggerUtility.getSingleton().logInfo(BasDatssRepository.class, "Hibernate: BasDats returned");
         

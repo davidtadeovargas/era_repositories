@@ -15,7 +15,7 @@ public class MaxminconfsRepository extends Repository {
     final public Maxminconf getByUser(final String userCode) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Maxminconf where estacglo = :userCode";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -23,7 +23,7 @@ public class MaxminconfsRepository extends Repository {
         Maxminconf Maxminconf = query.list().size() > 0 ? (Maxminconf)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Maxminconf;

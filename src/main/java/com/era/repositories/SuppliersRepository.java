@@ -17,7 +17,7 @@ public class SuppliersRepository extends Repository {
     public List<?> getAllByPageWithSearchFilter(final String search, final int pageNumber, int pageSize) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -31,7 +31,7 @@ public class SuppliersRepository extends Repository {
         List<?> records = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -40,7 +40,7 @@ public class SuppliersRepository extends Repository {
     final public Supplier rfcExists(final String existRFC, final String rfcOri) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Supplier where rfc = :existRFC and rfc != :rfcOri";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -49,7 +49,7 @@ public class SuppliersRepository extends Repository {
         Supplier Supplier = query.list().size() > 0 ? (Supplier)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Supplier;
@@ -58,7 +58,7 @@ public class SuppliersRepository extends Repository {
     final public Supplier rfcExists(final String RFC) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Supplier where rfc = :RFC";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -66,7 +66,7 @@ public class SuppliersRepository extends Repository {
         Supplier Supplier = query.list().size() > 0 ? (Supplier)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Supplier;

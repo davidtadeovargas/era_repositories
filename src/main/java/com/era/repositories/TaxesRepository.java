@@ -9,7 +9,6 @@ import com.era.models.Tax;
 import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
-import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 
 /**
@@ -37,7 +36,7 @@ public class TaxesRepository extends Repository {
     final public void deleteByCodimpue(final String codimpue) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();
         
         //Save
         final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Tax WHERE codimpue = :codimpue");
@@ -45,9 +44,10 @@ public class TaxesRepository extends Repository {
         SQLQuery.executeUpdate();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
     }
     
+    @Override
     final public List<Tax> getByLikeEncabezados(final String search) throws Exception{
         
         final List<String> likes = new ArrayList<>();

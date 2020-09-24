@@ -31,7 +31,7 @@ public class CxcRepository extends Repository {
     final public List<Cxc> getAllPaymentFromCustomerByStatus(final String customerCode, final List<String> statuses, final Date from, final Date until, final int vencidoDays) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
         Calendar c = Calendar.getInstance();
@@ -102,7 +102,7 @@ public class CxcRepository extends Repository {
         List<Cxc> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return list;
@@ -111,7 +111,7 @@ public class CxcRepository extends Repository {
     final public Cxc getByNorefer(final String norefer) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Cxc WHERE norefer = :norefer";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -119,7 +119,7 @@ public class CxcRepository extends Repository {
         List<Cxc> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return list.size()>0?list.get(0):null;
@@ -128,7 +128,7 @@ public class CxcRepository extends Repository {
     final public BigDecimal getTotalPositiveAmmountFromCustomer(final String customerCode) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Cxc WHERE empre = :customerCode";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -136,7 +136,7 @@ public class CxcRepository extends Repository {
         List<Cxc> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Iterate to get the sum
         BigDecimal totalPositive = BigDecimal.ZERO;        
@@ -151,7 +151,7 @@ public class CxcRepository extends Repository {
     final public BigDecimal getTotalNegativeAmmountFromCustomer(final String customerCode) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Cxc WHERE empre = :customerCode";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -159,7 +159,7 @@ public class CxcRepository extends Repository {
         List<Cxc> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Iterate to get the sum        
         BigDecimal totalNegative = BigDecimal.ZERO;
@@ -200,7 +200,7 @@ public class CxcRepository extends Repository {
                             final String empre) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         String hql = "FROM Cxc WHERE norefer = :norefer AND noser = :noser AND id_venta = :id_venta AND empre = :empre";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -211,7 +211,7 @@ public class CxcRepository extends Repository {
         List<Cxc> list = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return list.size()>0?list.get(0):null;
@@ -220,7 +220,7 @@ public class CxcRepository extends Repository {
     final public void deleteByConfg(final String norefer) throws Exception{
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);        
+        openDatabase();        
         
         //Save
         final SQLQuery SQLQuery = HibernateUtil.getSingleton().getSession().createSQLQuery("DELETE FROM Cxc WHERE norefer = :norefer");
@@ -228,7 +228,7 @@ public class CxcRepository extends Repository {
         SQLQuery.executeUpdate();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
     }
     
     final public void cancelaCXC(final int id) throws Exception{

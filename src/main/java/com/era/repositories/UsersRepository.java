@@ -18,7 +18,7 @@ public class UsersRepository extends Repository {
     public List<?> getAllBySearchFilter(final String search) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);       
+        openDatabase();       
         
         final Session Session = HibernateUtil.getSingleton().getSession();
         
@@ -30,7 +30,7 @@ public class UsersRepository extends Repository {
         List<?> records = query.list();
         
         //Close database
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return records;
@@ -102,7 +102,7 @@ public class UsersRepository extends Repository {
     final public boolean isSalesPointUser(final String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM User where code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -110,7 +110,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return User!=null?User.isUserOfsalesOfPoint():false;
@@ -119,7 +119,7 @@ public class UsersRepository extends Repository {
     final public boolean userExists(final String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM User where code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -127,7 +127,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return User!=null;
@@ -136,7 +136,7 @@ public class UsersRepository extends Repository {
     final public String getDecryptedUserPassword(final String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM User where code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -144,7 +144,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         if(User!=null){
             
@@ -163,7 +163,7 @@ public class UsersRepository extends Repository {
     final public void userLoggedToSystem(final String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM User where code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -171,7 +171,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         if(User!=null){
             RepositoryFactory.getInstance().getLogsRepository().userLoggedToSystem();
@@ -181,7 +181,7 @@ public class UsersRepository extends Repository {
     final public void userDeloggedToSystem(final String code) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM User where code = :code";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -189,7 +189,7 @@ public class UsersRepository extends Repository {
         User User = query.list().size() > 0 ? (User)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         if(User!=null){
             RepositoryFactory.getInstance().getLogsRepository().userLoggedOutToSystem();
@@ -199,14 +199,14 @@ public class UsersRepository extends Repository {
     final public List<User> getAllVends() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM User where vend = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<User> users = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return users;
@@ -215,14 +215,14 @@ public class UsersRepository extends Repository {
     final public List<User> getAllCashAdmin() throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM User where admcaj = true";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
         List<User> users = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return users;

@@ -61,7 +61,7 @@ public class LicensesRepository extends Repository {
         LoggerUtility.getSingleton().logInfo(LicensesRepository.class, "Hibernate: Getting license");
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         Query query = HibernateUtil.getSingleton().getSession().createQuery("from License");
         License License = query.list().size() > 0 ? (License) query.list().get(0):null;
@@ -95,7 +95,7 @@ public class LicensesRepository extends Repository {
         }            
         
         //Close database       
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         LoggerUtility.getSingleton().logInfo(LicensesRepository.class, "Hibernate: Returning license: " + License);
         
@@ -159,7 +159,7 @@ public class LicensesRepository extends Repository {
         final License License = getLicense();
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         //Delete the license
         if(License!=null){
@@ -167,7 +167,7 @@ public class LicensesRepository extends Repository {
         }            
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         return License;
     }

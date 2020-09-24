@@ -118,7 +118,7 @@ public class ConsecsRepository extends Repository {
     private Consec getConsec(final String serie, final String type) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Consec where type = :type AND serie = :serie";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -127,7 +127,7 @@ public class ConsecsRepository extends Repository {
         Consec Consec = query.list().size() > 0 ? (Consec)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Consec;
@@ -136,7 +136,7 @@ public class ConsecsRepository extends Repository {
     private List<Consec> getByType(final String type) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Consec where type = :type";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -144,7 +144,7 @@ public class ConsecsRepository extends Repository {
         final List<Consec> consecs = query.list();
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return consecs;

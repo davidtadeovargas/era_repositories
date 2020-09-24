@@ -24,7 +24,7 @@ public class LotpedRepository extends Repository {
     final public Lotped getByLotAndPed(final String lot, final String pedimen) throws Exception {
         
         //Open database
-        HibernateUtil.getSingleton().openSession(ClassEntity);
+        openDatabase();
         
         String hql = "FROM Lotped where lot = :lot AND configuration = :configuration AND pedimen = :pedimen";
         Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
@@ -33,7 +33,7 @@ public class LotpedRepository extends Repository {
         Lotped Lotped = query.list().size() > 0 ? (Lotped)query.list().get(0):null;
         
         //Close database        
-        HibernateUtil.getSingleton().closeSession(ClassEntity);
+        closeDatabase();
         
         //Return the result model
         return Lotped;

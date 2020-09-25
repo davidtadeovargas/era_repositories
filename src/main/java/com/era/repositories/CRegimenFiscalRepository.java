@@ -10,6 +10,7 @@ import com.era.repositories.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
+import org.hibernate.classic.Session;
 
 /**
  *
@@ -21,15 +22,35 @@ public class CRegimenFiscalRepository extends Repository {
         super(CRegimenfiscal.class);
     }
     
+    @Override
+    public List<?> getAllBySearchFilter(final String search) throws Exception {
+        
+        //Open database
+        openDatabase();
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM " + ClassEntity.getName() + " WHERE c_RegimenFiscal LIKE:c_RegimenFiscal OR description LIKE:description";
+        Query query = Session.createQuery(hql);
+        query.setParameter("c_RegimenFiscal", "%" + search + "%");
+        query.setParameter("description", "%" + search + "%");        
+        List<?> records = query.list();
+        
+        //Close database        
+        closeDatabase();
+        
+        //Return the result model
+        return records;
+    }
+    
     final public CRegimenfiscal getRegimenByCode(final String c_RegimenFiscal) throws Exception {
         
         //Open database
         openDatabase();
         
         String hql = "FROM CRegimenfiscal where c_RegimenFiscal = :c_RegimenFiscal";
-        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
-        final int intc_RegimenFiscal = Integer.valueOf(c_RegimenFiscal);
-        query.setParameter("c_RegimenFiscal", intc_RegimenFiscal);
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);        
+        query.setParameter("c_RegimenFiscal", c_RegimenFiscal);
         CRegimenfiscal CRegimenfiscal = query.list().size() > 0 ? (CRegimenfiscal)query.list().get(0):null;
         
         //Close database        

@@ -405,11 +405,17 @@ public class HibernateUtil {
          
             if(SessionDbempresas!=null){
                 if(this.SessionDbempresas.isOpen()){
+                    if(this.SessionDbempresas.getTransaction().isActive()){
+                        this.SessionDbempresas.getTransaction().commit();
+                    }                    
                     this.SessionDbempresas.close();
                 }
             }
             else{
                 if(this.Session.isOpen()){
+                    if(this.Session.getTransaction().isActive()){
+                        this.Session.getTransaction().commit();
+                    }                    
                     this.Session.close();
                 }
             }

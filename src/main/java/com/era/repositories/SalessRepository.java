@@ -230,6 +230,13 @@ public class SalessRepository extends Repository {
                 UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_certificates_digitals_not_configured");
                 return null;
             }
+            
+            //Vaidate the certificates
+            final boolean validCertificate = UtilitiesFactory.getSingleton().getCertificatesUtility().validateCertificate(BasDats.getRutcer(), BasDats.getRutkey(), BasDats.getPasscer());
+            if(!validCertificate){
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("basdats_frame_msg8");
+                return null;
+            }
         }
         
         //If the user will pay the sale in cash at the moment

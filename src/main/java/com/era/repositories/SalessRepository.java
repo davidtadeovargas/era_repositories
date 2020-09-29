@@ -449,6 +449,13 @@ public class SalessRepository extends Repository {
         Sale.setRazon(motiv);        
         this.update(Sale);
         
+        //Get all the origin sales of this sale and free them from invoiced
+        final List<Sales> sales = getAllByOriginSaleDoc(Sale.getId());
+        for(Sales Sale_: sales){
+            Sale_.setFacturado(false);
+            this.update(Sale_);
+        }
+        
         //Get all items of the sale
         final List<Partvta> items = RepositoryFactory.getInstance().getPartvtaRepository().getPartsVta(saleID);
         
@@ -894,6 +901,19 @@ public class SalessRepository extends Repository {
         return sales;
     }
     
+    final public List<Sales> getAllByOriginSaleDoc(final int originSale) throws Exception {
+        
+        //Create the filters
+        final SalesFilters SalesFilters = new SalesFilters();
+        SalesFilters.setOriginSale(originSale);
+        
+        //Get all the sales
+        final List<Sales> sales = this.getAllSales(SalesFilters);
+        
+        //Return the result model
+        return sales;
+    }
+    
     final public List<Sales> getAllTicketSales(final int vta) throws Exception {
         
         //Create the filters
@@ -906,6 +926,58 @@ public class SalessRepository extends Repository {
         
         //Return the result model
         return sales;
+    }
+    
+    final public List<Partvta> getPartvtaListCopy(final List<Partvta> items){
+        
+        final List<Partvta> newItems = new ArrayList<>();
+        for(Partvta Partvta_:items){
+            
+            Partvta Partvta = this.getPartvtaCopy(Partvta_);
+            newItems.add(Partvta);
+        }
+        
+        return newItems;
+    }
+    
+    final public Partvta getPartvtaCopy(final Partvta Partvta_){
+        
+        final Partvta Partvta = new Partvta();
+        Partvta.setProd(Partvta_.getProd());
+        Partvta.setCant(Partvta_.getCant());
+        Partvta.setTipcam(Partvta_.getTipcam());
+        Partvta.setDevs(Partvta_.getDevs());
+        Partvta.setToDevs(Partvta_.getToDevs());
+        Partvta.setGaran(Partvta_.getGaran());
+        Partvta.setEskit(Partvta_.isEskit());
+        Partvta.setKitmae(Partvta_.getKitmae());
+        Partvta.setIdkit(Partvta_.getIdkit());
+        Partvta.setIdlotped(Partvta_.getIdlotped());
+        Partvta.setList(Partvta_.getList());
+        Partvta.setUnid(Partvta_.getUnid());
+        Partvta.setAlma(Partvta_.getAlma());
+        Partvta.setSerprod(Partvta_.getSerprod());
+        Partvta.setComenser(Partvta_.getComenser());
+        Partvta.setDescrip(Partvta_.getDescrip());
+        Partvta.setPre(Partvta_.getPre());
+        Partvta.setDescu(Partvta_.getDescu());
+        Partvta.setCost(Partvta_.getCost());
+        Partvta.setMon(Partvta_.getMon());
+        Partvta.setLot(Partvta_.getLot());
+        Partvta.setPedimen(Partvta_.getPedimen());
+        Partvta.setFcadu(Partvta_.getFcadu());
+        Partvta.setImpo(Partvta_.getImpo());
+        Partvta.setImpue(Partvta_.getImpue());
+        Partvta.setTall(Partvta_.getTall());
+        Partvta.setColo(Partvta_.getColo());
+        Partvta.setCantentre(Partvta_.getCantentre());
+        Partvta.setEntrenow(Partvta_.getEntrenow());
+        Partvta.setFentre(Partvta_.getFentre());
+        Partvta.setActivo(Partvta_.getActivo());
+        Partvta.setCuentacontable(Partvta_.getCuentacontable());
+        Partvta.setLotePedimento(Partvta_.getLotePedimento());
+        
+        return Partvta;
     }
     
     final public void ringTicketSales(final Company Company, final List<Sales> sales, final String observations, final String serie, final String paymentMethod) throws Exception {
@@ -975,13 +1047,15 @@ public class SalessRepository extends Repository {
             //Get all the items from the sale
             final List<Partvta> items_ = RepositoryFactory.getInstance().getPartvtaRepository().getPartsVta(Sale.getId());
             
+            //Get a new copy of the items
+            final List<Partvta> newItems = getPartvtaListCopy(items_);
+                    
             //Not inventariable
-            for(Partvta Partvta:items_){
+            for(Partvta Partvta:newItems){
                 Partvta.setInventory(false);
             }
             
-            //Join to the global items
-            items.addAll(items_);
+            items.addAll(newItems);
         }
         
         //Set the totals

@@ -373,7 +373,6 @@ public class HibernateUtil {
         classes.add(CClaveprodserv.class);
         classes.add(CClaveUnidad.class);
         classes.add(CAduana.class);
-        classes.add(MetogoPago.class);
         classes.add(Banks.class);
         classes.add(CPaymentMethod.class);
         classes.add(CPaymentForm.class);

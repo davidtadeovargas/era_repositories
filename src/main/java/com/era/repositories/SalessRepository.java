@@ -5,6 +5,7 @@ import com.era.era_cfdi.RingManager;
 import com.era.era_cfdi.RingManager.ResultRing;
 import com.era.models.BasDats;
 import com.era.models.CPaymentForm;
+import com.era.models.CPaymentMethod;
 import com.era.models.Coin;
 import com.era.models.Company;
 import com.era.models.Consec;
@@ -240,12 +241,17 @@ public class SalessRepository extends Repository {
         }
         
         //If the user will pay the sale in cash at the moment
+        String CPaymentMethod;
         if(totalCash.compareTo(BigDecimal.ZERO)>0 || totalCardDebit.compareTo(BigDecimal.ZERO)>0 || totalCardCredit.compareTo(BigDecimal.ZERO)>0){
             Sale.setCredit(false);
+            CPaymentMethod = RepositoryFactory.getInstance().getCPaymentMethodsRepository().getUnaSolExhibicionString();
         }
         else{
             Sale.setCredit(true);
+            CPaymentMethod = RepositoryFactory.getInstance().getCPaymentMethodsRepository().getParcialidadesString();
         }
+        
+        Sale.setPaymentMethod(CPaymentMethod);
         
         //If is cliente mostrador
         if(Company.isCashCustomer()){

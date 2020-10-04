@@ -1055,15 +1055,31 @@ public class SalessRepository extends Repository {
             
             //Get a new copy of the items
             final List<Partvta> newItems = getPartvtaListCopy(items_);
-                    
-            //Not inventariable
-            for(Partvta Partvta:newItems){
-                Partvta.setInventory(false);
-            }
             
-            items.addAll(newItems);
+            //Not inventariable
+            for(Partvta Partvta:newItems){                                
+                
+                boolean insert = true;
+                
+                //Joing the same items by the same item code and price
+                for(Partvta Partvta_:items){
+                    if(Partvta_.getProd().compareTo(Partvta.getProd())==0 && 
+                            Partvta_.getPre().longValue() == Partvta.getPre().longValue()){
+                        
+                        final BigDecimal newQty = Partvta_.getCant().add(Partvta.getCant());
+                        Partvta_.setCant(newQty);
+                        
+                        insert = false;
+                    }
+                }
+                
+                if(insert){
+                    Partvta.setInventory(false);
+                    items.add(Partvta);
+                }
+            }
         }
-        
+                
         //Set the totals
         SaleNew.setSubtotal(subtotal);
         SaleNew.setTax(taxes);

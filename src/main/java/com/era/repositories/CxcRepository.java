@@ -45,10 +45,15 @@ public class CxcRepository extends Repository {
         if(vencidoDays==-1){
                         
             fromDateStr = formatter.format(from);
+            fromDateStr = fromDateStr + " 00:00:00";
+            
             toDateStr = formatter.format(c.getTime());
+            toDateStr = toDateStr + " 23:59:59";
+            
+            formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
             fromDate = formatter.parse(fromDateStr);
             toDate = formatter.parse(toDateStr);
-
+            
             hql = "FROM Cxc WHERE empre = :customerCode AND falt BETWEEN :from AND :until";
         }
         else{                        

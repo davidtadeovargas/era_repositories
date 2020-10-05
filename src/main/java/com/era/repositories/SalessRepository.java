@@ -5,7 +5,6 @@ import com.era.era_cfdi.RingManager;
 import com.era.era_cfdi.RingManager.ResultRing;
 import com.era.models.BasDats;
 import com.era.models.CPaymentForm;
-import com.era.models.CPaymentMethod;
 import com.era.models.Coin;
 import com.era.models.Company;
 import com.era.models.Consec;
@@ -258,57 +257,6 @@ public class SalessRepository extends Repository {
             Sale.setCredit(false);
         }
         
-        //If the customer will pay in credit verify that really can do it
-        if(Sale.isCredit()){
-            
-            //If the customer doesnt have credit stop
-            if(!Company.hasCredit()){
-                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_customer_with_no_available_credit");
-                return null;
-            }
-                        
-            //Get positive sald of the customer
-            final BigDecimal favorSald = RepositoryFactory.getInstance().getCxcRepository().getSaldoFavorFromCustomer(Company.getCompanyCode());
-
-            //If the customer doesnt have money credit avaible
-            if(favorSald.compareTo(BigDecimal.ZERO)<=0){
-                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_customer_with_no_sald_for_credit");
-                return null;
-            }
-            
-            //Get the date for payment
-            final Date Date_ = UtilitiesFactory.getSingleton().getDateTimeUtility().getDatePlusDays(Company.getDiacred());
-            
-            final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale.getCoinCode());
-            
-            //Create the model
-            final Cxc Cxc = new Cxc();
-            Cxc.setNorefer(Sale.getReferenceNumber());
-            Cxc.setNoser(Sale.getNoser());
-            Cxc.setEmpre(Company.getCompanyCode());
-            Cxc.setFormpag(Sale.getPaymentForm());
-            Cxc.setConceppag("");
-            Cxc.setSer("");
-            Cxc.setEstado(SatusDocuments.getSingleton().getPendingEstate());
-            Cxc.setSubtot(Sale.getSubtotal());
-            Cxc.setImpue(Sale.getTax());
-            Cxc.setTot(Sale.getTotal());
-            Cxc.setAbon(BigDecimal.ZERO);
-            Cxc.setCarg(Sale.getTotal());
-            Cxc.setComen("");
-            Cxc.setConcep("");
-            Cxc.setFolbanc("");
-            Cxc.setFvenc(Date_);
-            Cxc.setFdoc(UtilitiesFactory.getSingleton().getDateTimeUtility().getCurrentDate());
-            Cxc.setFol(0);
-            Cxc.setCuentabanco("");
-            Cxc.setId_venta(Sale.getId());
-            Cxc.setMonedaID(Coin.getId());
-            
-            //Insert in cxc
-            RepositoryFactory.getInstance().getCxcRepository().save(Cxc);
-        }
-        
         //Depends of the document type get the consec
         Consec Consec;
         if(this.isTicketDocument(Sale)){
@@ -341,6 +289,57 @@ public class SalessRepository extends Repository {
 
         //Save the new sale
         Sale = (Sales)this.save(Sale);
+        
+        //If the customer will pay in credit verify that really can do it
+        if(Sale.isCredit()){
+            
+            //If the customer doesnt have credit stop
+            if(!Company.hasCredit()){
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_customer_with_no_available_credit");
+                return null;
+            }
+                        
+            //Get positive sald of the customer
+            final BigDecimal favorSald = RepositoryFactory.getInstance().getCxcRepository().getSaldoFavorFromCustomer(Company.getCompanyCode());
+
+            //If the customer doesnt have money credit avaible
+            if(favorSald.compareTo(BigDecimal.ZERO)<=0){
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("errors_customer_with_no_sald_for_credit");
+                return null;
+            }
+            
+            //Get the date for payment
+            final Date Date_ = UtilitiesFactory.getSingleton().getDateTimeUtility().getDatePlusDays(Company.getDiacred());
+            
+            final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale.getCoinCode());
+            
+            //Create the model
+            final Cxc Cxc = new Cxc();
+            Cxc.setNorefer(Sale.getReferenceNumber());
+            Cxc.setNoser(Sale.getNoser());
+            Cxc.setEmpre(Company.getCompanyCode());
+            Cxc.setFormpag(Sale.getPaymentForm());
+            Cxc.setConceppag("");
+            Cxc.setSer("");
+            Cxc.setEstado(SatusDocuments.getSingleton().getPendingEstate());
+            Cxc.setSubtot(Sale.getSubtotal());            
+            Cxc.setImpue(Sale.getTax());
+            Cxc.setTot(Sale.getTotal());
+            Cxc.setAbon(BigDecimal.ZERO);
+            Cxc.setCarg(Sale.getTotal());
+            Cxc.setComen("");
+            Cxc.setConcep("");
+            Cxc.setFolbanc("");
+            Cxc.setFvenc(Date_);
+            Cxc.setFdoc(UtilitiesFactory.getSingleton().getDateTimeUtility().getCurrentDate());
+            Cxc.setFol(0);
+            Cxc.setCuentabanco("");
+            Cxc.setId_venta(Sale.getId());
+            Cxc.setMonedaID(Coin.getId());
+            
+            //Insert in cxc
+            RepositoryFactory.getInstance().getCxcRepository().save(Cxc);
+        }
         
         //Save the rows
         for(Partvta Partvta: parts){
@@ -671,7 +670,7 @@ public class SalessRepository extends Repository {
             Calendar c = Calendar.getInstance();
             c.setTime(SalesFilters.getUntil()); // Now use today date.
             c.add(Calendar.DATE, 0);
-            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");            
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
             String fromDateStr = formatter.format(SalesFilters.getFrom());
             fromDateStr = fromDateStr + " 00:00:00";
             String toDateStr = formatter.format(c.getTime());

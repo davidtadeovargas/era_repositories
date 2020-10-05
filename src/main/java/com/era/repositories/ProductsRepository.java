@@ -300,6 +300,19 @@ public class ProductsRepository extends Repository {
         }
     }
    
+    final public void updateGeneralExistence(final String codeProduct, final float generalExistence) throws Exception {
+                        
+        Product Product = (Product)this.getByCode(codeProduct);
+        
+        //Set the product as kit
+        if(Product!=null){
+            
+            Product.setExistence(generalExistence);
+
+            this.update(Product);
+        }
+    }
+    
     final public List<Product> getAllKits() throws Exception {
                         
         //Open database

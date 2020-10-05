@@ -96,7 +96,13 @@ public class ExistalmasRepository extends Repository {
             Existalma.setExist(newExistence);
             this.update(Existalma);
         }
-            
+        
+        //Get the general existences of the product
+        final float generalExistence = this.getGeneralExistenceFromProduct(productCode);
+        
+        //Update the general existence of the product
+        RepositoryFactory.getInstance().getProductsRepository().updateGeneralExistence(productCode, generalExistence);
+        
         //Get the type of concep
         final Conceps Concep = RepositoryFactory.getInstance().getConcepssRepository().getByType(typeMoninven);
         

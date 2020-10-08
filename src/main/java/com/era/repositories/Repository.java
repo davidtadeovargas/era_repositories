@@ -829,7 +829,7 @@ public abstract class Repository {
             }
             else if(Object instanceof Payment){
                 Payment Payment = (Payment)Object;
-                cod = Payment.getCode();
+                cod = Payment.getCuentabanco();
             }
             else if(Object instanceof Ords){
                 Ords Ords = (Ords)Object;

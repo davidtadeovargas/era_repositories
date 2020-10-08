@@ -22,6 +22,7 @@ public class CxpRepository extends Repository {
     public CxpRepository() {
         super(Cxp.class);
     }
+        
     
     final public Cxp getByNorefer(final String norefer) throws Exception{
         

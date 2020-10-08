@@ -13,6 +13,28 @@ public class BancosRepository extends Repository {
         super(Banco.class);
     }
 
+    @Override
+    public List<?> getAllBySearchFilter(final String search) throws Exception {
+        
+        //Open database
+        openDatabase();       
+        
+        final Session Session = HibernateUtil.getSingleton().getSession();
+        
+        String hql = "FROM Banco WHERE cuentabanco LIKE:cuentabanco OR banco LIKE:banco OR descrip LIKE:descrip";
+        Query query = Session.createQuery(hql);
+        query.setParameter("cuentabanco", "%" + search + "%");
+        query.setParameter("banco", "%" + search + "%");
+        query.setParameter("descrip", "%" + search + "%");
+        List<?> records = query.list();
+        
+        //Close database
+        closeDatabase();
+        
+        //Return the result model
+        return records;
+    }
+    
     public Banco getByAccount(final String account) throws Exception {
         
         //Open database

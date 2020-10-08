@@ -201,7 +201,7 @@ public class CxcRepository extends Repository {
     
     final public Cxc getCXC(final String norefer,
                             final String noser,
-                            final String id_venta,
+                            final Integer id_venta,
                             final String empre) throws Exception{
         
         //Open database
@@ -220,6 +220,13 @@ public class CxcRepository extends Repository {
         
         //Return the result model
         return list.size()>0?list.get(0):null;
+    }
+    
+    final public void confirmCXC(final int id) throws Exception{
+        
+        final Cxc Cxc = (Cxc) this.getByID(id);        
+        Cxc.setEstado("CO");
+        this.update(Cxc);
     }
     
     final public void deleteByConfg(final String norefer) throws Exception{

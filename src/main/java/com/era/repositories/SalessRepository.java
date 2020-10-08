@@ -316,11 +316,11 @@ public class SalessRepository extends Repository {
             //Create the model
             final Cxc Cxc = new Cxc();
             Cxc.setNorefer(Sale.getReferenceNumber());
-            Cxc.setNoser(Sale.getNoser());
+            Cxc.setNoser(Sale.getSerie());
             Cxc.setEmpre(Company.getCompanyCode());
             Cxc.setFormpag(Sale.getPaymentForm());
             Cxc.setConceppag("");
-            Cxc.setSer("");
+            Cxc.setSer("");                        
             Cxc.setEstado(SatusDocuments.getSingleton().getPendingEstate());
             Cxc.setSubtot(Sale.getSubtotal());            
             Cxc.setImpue(Sale.getTax());

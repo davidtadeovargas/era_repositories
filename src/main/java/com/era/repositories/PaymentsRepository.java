@@ -24,6 +24,8 @@ public class PaymentsRepository extends Repository {
             
         final long transactionId_ = HibernateUtil.getSingleton().openSessionInTransacction(ClassEntity);
         
+        Payment.setEstatus("CO");
+        
         //Save the payment
         final Payment Payment_ = (Payment)this.save(Payment);
         
@@ -37,17 +39,49 @@ public class PaymentsRepository extends Repository {
         return Payment_;
     }
     
+    public Object cancel(final Payment Payment) throws Exception {
+
+        Payment.setEstatus("CA");
+        
+        //Save the payment
+        final Payment Payment_ = (Payment)this.update(Payment);
+        
+        return Payment_;
+    }
+    
+    final public boolean isConfirmed(final Payment Payment){
+        return Payment.getEstatus().compareTo("CO")==0;
+    }
+    
+    final public List<Payment> getAllPaymentsOfDocument(final String folio, final String serie) throws Exception {
+        
+        //Open database
+        openDatabase();
+        
+        String hql = "FROM Payment where folio = :folio AND serie = :serie";
+        Query query = HibernateUtil.getSingleton().getSession().createQuery(hql);
+        query.setParameter("folio", folio);
+        query.setParameter("serie", serie);        
+        List<Payment> payments = query.list();
+        
+        //Close database        
+        closeDatabase();
+        
+        //Return the result model
+        return payments;
+    }
         
     final public BigDecimal getTotalPaidForDocument(final String serie, final String folio) throws Exception {
         
         //Open database
         openDatabase();
         
-        String hql = "select sum(importe) from Payment where serie = :serie AND folio = :folio";
+        String hql = "select sum(importe) from Payment where serie = :serie AND folio = :folio AND estatus = :estatus";
         final Session Session = HibernateUtil.getSingleton().getSession();
         Query query = Session.createQuery(hql);
         query.setParameter("serie", serie);
         query.setParameter("folio", folio);
+        query.setParameter("estatus", "CO");
         Iterator count = query.iterate();
         
         final BigDecimal sum = (BigDecimal) count.next();

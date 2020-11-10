@@ -83,6 +83,12 @@ public class UsersRepository extends Repository {
         super.update(User);                
     }
     
+    final public void updateUser(final User User) throws Exception {
+        
+        //Save the user
+        super.update(User);                
+    }
+    
     final public void updatePrinters(   final String code, 
                                         final String ticketPrinter, 
                                         final String invoicePrinter,

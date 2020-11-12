@@ -112,6 +112,9 @@ public class SalessRepository extends Repository {
     }
     
     
+    public boolean cxcDocument(final Sales Sale) throws Exception {
+        return this.isInvoiceDocument(Sale) || this.isRemDocument(Sale) || this.isTicketDocument(Sale);
+    }
     
     public boolean isTicketDocument(final Sales Sale) throws Exception {
         final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginTIK();
@@ -170,7 +173,7 @@ public class SalessRepository extends Repository {
         Sale.setDocumentType(DocumentOrigin.getType());
         
         //Continue with the sale generation
-        return this.saveSale(Sale, ring,Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+        return this.saveSale(Sale, ring, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
     }
     final public void saveSaleRemision(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
@@ -181,14 +184,14 @@ public class SalessRepository extends Repository {
         //Continue with the sale generation
         this.saveSale(Sale, false, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
     }
-    final public void saveSaleNotc(Sales Sale, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
+    final public void saveSaleNotc(Sales Sale, final boolean ring, final Company Company, final boolean updateCustomerInfo, final List<Partvta> parts, final BigDecimal totalCash, final BigDecimal totalCardDebit, final BigDecimal totalCardCredit) throws Exception {
         
         //Set the document type
         final DocumentOrigin DocumentOrigin = RepositoryFactory.getInstance().getDocumentOriginRepository().getDocumentOriginNOTC();
         Sale.setDocumentType(DocumentOrigin.getType());
         
         //Continue with the sale generation
-        this.saveSale(Sale, false, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
+        this.saveSale(Sale, ring, Company, updateCustomerInfo, parts, totalCash, totalCardDebit, totalCardCredit);
     }
     
     
@@ -232,9 +235,9 @@ public class SalessRepository extends Repository {
             }
             
             //Vaidate the certificates
-            final boolean validCertificate = UtilitiesFactory.getSingleton().getCertificatesUtility().validateCertificate(BasDats.getRutcer(), BasDats.getRutkey(), BasDats.getPasscer());
-            if(!validCertificate){
-                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException("basdats_frame_msg8");
+            final String error = UtilitiesFactory.getSingleton().getCertificatesUtility().validateCertificate(BasDats.getRutcer(), BasDats.getRutkey(), BasDats.getPasscer());
+            if(error!=null){
+                UtilitiesFactory.getSingleton().getGenericExceptionUtil().generateException(error);
                 return null;
             }
         }
@@ -430,8 +433,16 @@ public class SalessRepository extends Repository {
             //Get the coin
             final Coin Coin = (Coin)RepositoryFactory.getInstance().getCoinsRepository().getByCode(Sale.getCoinCode());
                                     
+            //Get test mode ring in invoice from configuration
+            final boolean testMode = RepositoryFactory.getInstance().getConfgralRepository().getSistemInTestMode().getVal()==1;
+        
             //Generate the XML
-            final ResultRing ResultRing = RingManager.getSingleton().ringSale(Sale, BasDats, Company, true, Coin.getValue(), "Traslado", BigDecimal.ZERO, BigDecimal.ZERO);
+            final ResultRing ResultRing = RingManager.getSingleton().ringSale(Sale, BasDats, Company, true,Coin.getValue(), "Traslado", BigDecimal.ZERO, BigDecimal.ZERO, testMode);
+            
+            //Complete sale
+            Sale.setCertsat(ResultRing.getCertificateSAT());
+            Sale.setFiscalFolio(ResultRing.getFiscalFolio());
+            Sale.setTransactionID(ResultRing.getTransactionID());
             
             //Set as reinged
             Sale.setInvoiced(true);
@@ -1082,8 +1093,8 @@ public class SalessRepository extends Repository {
         //Set the totals
         SaleNew.setSubtotal(subtotal);
         SaleNew.setTax(taxes);
-        SaleNew.setTotal(total);
-        
+        SaleNew.setTotal(total);                
+                
         //Save the sale
         SaleNew = this.saveSaleInvoice(SaleNew, true, Company, false, items, BigDecimalTotalCash, BigDecimalCardDebit, BigDecimalCardCredit);
         

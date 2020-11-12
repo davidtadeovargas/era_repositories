@@ -105,7 +105,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>era_cfdi</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>    
     

@@ -203,7 +203,7 @@ public class SalessRepository extends Repository {
         //If the sale is an invoice check it as invoiced
         if(this.isInvoiceDocument(Sale)){
             Sale.setFacturado(true);
-        }                
+        }
         
         //If has to ring
         BasDats BasDats = null;

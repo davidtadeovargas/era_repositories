@@ -437,7 +437,7 @@ public class SalessRepository extends Repository {
             final boolean testMode = RepositoryFactory.getInstance().getConfgralRepository().getSistemInTestMode().getVal()==1;
         
             //Generate the XML
-            final ResultRing ResultRing = RingManager.getSingleton().ringSale(Sale, BasDats, Company, true,Coin.getValue(), "Traslado", BigDecimal.ZERO, BigDecimal.ZERO, testMode);
+            final ResultRing ResultRing = RingManager.getSingleton().ringSale(Sale, BasDats, Company, true,Coin.getValue(), "T", BigDecimal.ZERO, BigDecimal.ZERO, testMode);
             
             //Complete sale
             Sale.setCertsat(ResultRing.getCertificateSAT());
